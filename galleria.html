@@ -3,389 +3,163 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Galleria Auto — Padania Tuning</title>
+<title>Galleria — Padania Tuning</title>
 <link rel="icon" href="assets/img/logo.jpg">
 <link rel="stylesheet" href="assets/css/site.css">
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Rajdhani:wght@400;500;600;700&display=swap" rel="stylesheet">
 <style>
-  :root {
-    --bg:       #0a0c10;
-    --panel:    #11141b;
-    --border:   #1e2330;
-    --fg:       #f2f2f4;
-    --muted:    #6b7280;
-    --silver:   #3498db;
-    --gaz-pink: #e84393;
-    --gaz-red:  #e81010;
-    --gaz-blue: #00d2ff;
-    --gaz-deep: #3a7bd5;
-    --gaz-green:#00e676;
-    --font-d:   'Orbitron', sans-serif;
-    --font-b:   'Rajdhani', sans-serif;
-  }
+  .page-head { padding: 56px 0 30px; }
+  .page-head .pt-display { margin-bottom: 18px; }
 
-  * { box-sizing: border-box; margin: 0; padding: 0; }
-  
-  body {
-    background-color: var(--bg);
-    color: var(--fg);
-    font-family: var(--font-b);
-    line-height: 1.4;
-    overflow-x: hidden;
-    -webkit-tap-highlight-color: transparent;
+  .filters { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 24px; }
+  .filter {
+    font-family: var(--cond); font-weight: 700; font-size: 17px;
+    color: var(--soft); background: var(--panel);
+    border: 1px solid var(--line); border-radius: 100px;
+    padding: 9px 18px; cursor: pointer; transition: all 0.2s;
   }
+  .filter:hover { color: #fff; border-color: rgba(255,255,255,0.3); }
+  .filter.active { background: #fff; color: #000; border-color: #fff; }
 
-  /* ── HERO SECTION ── */
-  .cpg-hero {
+  .albums { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 16px; }
+
+  .album {
     position: relative;
-    padding: 35px 20px 25px;
-    text-align: center;
-    background: 
-      linear-gradient(to bottom, rgba(10,12,16,0.6) 0%, var(--bg) 100%),
-      url('https://images.unsplash.com/photo-1612825173281-9a193378527e?w=1200&q=80') center/cover no-repeat;
-  }
-
-  .cpg-logo-container {
-    position: relative;
-    display: inline-block;
-    margin-bottom: 12px;
-  }
-
-  #cpg-logo {
-    width: 100px; 
-    height: 100px;
-    object-fit: cover;
-    -webkit-mask-image: radial-gradient(circle, black 45%, transparent 95%);
-    mask-image: radial-gradient(circle, black 45%, transparent 95%);
-    opacity: 0.9;
-  }
-
-  .cpg-title {
-    font-family: var(--font-d);
-    font-weight: 900;
-    font-size: 1.5rem;
-    letter-spacing: 0.05em;
-    text-transform: uppercase;
-    color: #fff;
-    margin-top: -5px;
-  }
-
-  /* ── MAIN CONTAINER ── */
-  .cpg-container {
-    max-width: 480px;
-    margin: 0 auto;
-    padding: 0 18px 60px;
-  }
-
-  .cpg-select-area {
-    background: var(--panel);
-    border: 1px solid var(--border);
-    border-radius: 14px;
-    padding: 14px;
-    margin-bottom: 30px;
-    box-shadow: 0 8px 25px rgba(0,0,0,0.4);
-  }
-
-  .cpg-label {
-    display: block;
-    font-family: var(--font-d);
-    font-size: 0.50rem;
-    color: var(--gaz-pink);
-    letter-spacing: 0.12em;
-    margin-bottom: 8px;
-    text-transform: uppercase;
-  }
-
-  .cpg-select {
-    width: 100%;
-    background: #1c222d;
-    border: 1px solid var(--border);
-    color: #fff;
-    padding: 10px 35px 10px 12px;
-    border-radius: 8px;
-    font-family: var(--font-b);
-    font-weight: 600;
-    font-size: 0.85rem;
-    appearance: none;
-    outline: none;
-    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewBox='0 0 24 24' fill='none' stroke='%236b7280' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E");
-    background-repeat: no-repeat;
-    background-position: right 10px center;
-    background-size: 14px;
-    text-overflow: ellipsis;
-    white-space: nowrap;
-  }
-
-  /* ── SPEED BLUR TRANSITION ── */
-  #cpg-event-target {
-    position: relative;
-    min-height: 220px;
-  }
-
-  .cpg-event-card {
-    animation: speedIn 0.45s cubic-bezier(0.23, 1, 0.32, 1) forwards;
-  }
-
-  .slide-out {
-    animation: speedAway 0.35s ease-in forwards;
-    pointer-events: none;
-    position: absolute;
-    width: 100%;
-  }
-
-  @keyframes speedAway {
-    from { opacity: 1; transform: translateX(0) skewX(0deg); filter: blur(0); }
-    to { opacity: 0; transform: translateX(-120px) skewX(-15deg); filter: blur(15px); }
-  }
-
-  @keyframes speedIn {
-    from { opacity: 0; transform: translateX(120px) skewX(15deg); filter: blur(15px); }
-    to { opacity: 1; transform: translateX(0) skewX(0deg); filter: blur(0); }
-  }
-
-  /* ── EVENT CARD UI ── */
-  .cpg-event-header {
-    margin-bottom: 20px;
-    padding-left: 14px;
-    border-left: 4px solid var(--gaz-pink);
-  }
-  .cpg-event-header.blue-theme { border-color: var(--gaz-blue); }
-  .cpg-event-header.green-theme { border-color: var(--gaz-green); }
-
-  .cpg-event-subtitle {
-    font-size: 0.60rem;
-    text-transform: uppercase;
-    color: var(--muted);
-    letter-spacing: 0.1em;
-  }
-
-  .cpg-event-title {
-    font-family: var(--font-d);
-    font-size: 1.1rem;
-    color: #fff;
-    text-transform: uppercase;
-  }
-
-  /* ── BUTTONS ── */
-  .cpg-btn-grid {
-    display: grid;
-    gap: 14px;
-  }
-
-  .cpg-btn {
     display: flex;
-    align-items: center;
+    flex-direction: column;
     justify-content: space-between;
-    padding: 18px 22px;
-    border-radius: 12px;
-    color: #fff;
-    text-decoration: none;
-    font-family: var(--font-d);
-    font-size: 0.75rem;
-    font-weight: 700;
-    text-transform: uppercase;
-    background: linear-gradient(135deg, var(--gaz-pink) 0%, var(--gaz-red) 100%);
-    box-shadow: 0 6px 20px rgba(232, 67, 147, 0.25);
-    transition: transform 0.1s, filter 0.1s;
+    min-height: 230px;
+    padding: 22px;
+    overflow: hidden;
+    isolation: isolate;
+    animation: albumIn 0.45s cubic-bezier(0.23, 1, 0.32, 1) both;
   }
+  @keyframes albumIn { from { opacity: 0; transform: translateX(40px) skewX(8deg); filter: blur(8px); } to { opacity: 1; transform: none; filter: none; } }
 
-  .cpg-btn.blue-btn {
-    background: linear-gradient(135deg, var(--gaz-blue) 0%, var(--gaz-deep) 100%);
-    color: #fff;
-    box-shadow: 0 6px 20px rgba(58, 123, 213, 0.3);
+  .album-num {
+    position: absolute;
+    right: -6px; bottom: -28px;
+    z-index: -1;
+    font-family: var(--cond); font-style: italic; font-weight: 900;
+    font-size: 170px; line-height: 1;
+    color: transparent; -webkit-text-stroke: 1.5px rgba(255, 255, 255, 0.08);
   }
-
-  .cpg-btn.green-btn {
-    background: linear-gradient(135deg, #00c853 0%, var(--gaz-green) 100%);
-    color: #0a0c10;
-    box-shadow: 0 6px 20px rgba(0, 230, 118, 0.3);
+  .album-type {
+    align-self: flex-start;
+    font-size: 13px; font-weight: 700;
+    padding: 5px 11px; border-radius: 100px;
+    background: var(--pink-soft); color: #ececf0; border: 1px solid rgba(220,220,228,0.25);
   }
+  .album[data-type="drift"] .album-type { background: rgba(53,224,111,0.1); color: #bff5d1; border-color: rgba(53,224,111,0.3); }
+  .album[data-type="special"] .album-type { background: rgba(255,255,255,0.08); color: #fff; border-color: rgba(255,255,255,0.2); }
 
-  .cpg-btn:active {
-    transform: scale(0.96);
-    filter: brightness(0.9);
+  .album h2 {
+    font-family: var(--cond); font-style: italic; font-weight: 900;
+    font-size: 36px; line-height: 0.95; text-transform: uppercase;
+    margin: 18px 0 18px;
   }
-
-  /* ── SHARE BUTTON ── */
-  .cpg-share-wrap {
-    margin-top: 50px;
-    text-align: center;
+  .album-links { display: grid; gap: 8px; }
+  .album-links a {
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 14px 16px; border-radius: 12px;
+    background: var(--pink); color: var(--ink);
+    text-decoration: none; font-family: var(--cond); font-weight: 800; font-size: 19px;
+    transition: filter 0.2s, transform 0.12s;
   }
+  .album-links a:hover { filter: brightness(1.07); }
+  .album-links a:active { transform: scale(0.98); }
+  .album-links small { font-family: var(--body); font-weight: 600; font-size: 13px; opacity: 0.7; }
 
-  .cpg-btn-share {
-    background: rgba(255,255,255,0.03);
-    border: 1px solid var(--border);
-    color: var(--muted);
-    padding: 10px 20px;
-    border-radius: 40px;
-    font-family: var(--font-b);
-    font-size: 0.8rem;
-    font-weight: 600;
-    display: inline-flex;
-    align-items: center;
-    gap: 10px;
-    cursor: pointer;
+  .share-wrap { text-align: center; margin-top: 40px; }
+  .share {
+    display: inline-flex; align-items: center; gap: 10px;
+    background: var(--panel); border: 1px solid var(--line);
+    color: var(--soft); padding: 12px 22px; border-radius: 100px;
+    font-family: var(--body); font-size: 15px; font-weight: 600; cursor: pointer;
+    transition: border-color 0.2s, color 0.2s;
   }
+  .share:hover { color: #fff; border-color: rgba(255,255,255,0.3); }
 
-  .cpg-footer {
-    text-align: center;
-    margin-top: 40px;
-    opacity: 0.15;
-    font-size: 0.6rem;
-    letter-spacing: 0.2em;
+  @media (max-width: 520px) {
+    .page-head { padding: 36px 0 22px; }
+    .albums { grid-template-columns: 1fr; }
   }
 </style>
 </head>
 <body>
-<div class="cpg-hero">
-  <div class="cpg-logo-container">
-    <img id="cpg-logo" src="" alt="Padania Tuning">
-  </div>
-  <h1 class="cpg-title">Gallery</h1>
-  <p style="font-size: 0.55rem; letter-spacing: 0.3em; color: var(--muted); text-transform: uppercase; margin-top: 5px;">Official Motorsport Media</p>
-</div>
 
-<div class="cpg-container">
-  
-  <div class="cpg-select-area">
-    <label class="cpg-label">Seleziona Tappa</label>
-    <select id="cpg-select" class="cpg-select">
-      <option value="padania1">Stage 1 — PadaniaTuning</option>
-      <option value="padania2">Stage 2 — PadaniaTuning</option>
-      <option value="padania3">Stage 3 — PadaniaTuning</option>
-      <option value="racing">Racing Meeting</option>
-      <option value="drift1">Number one - Drift 1</option>
-      <option value="drift2">Number One - Drift 2</option>
-    </select>
-  </div>
+<main class="pt-wrap">
+  <header class="page-head">
+    <h1 class="pt-display"><span>La</span><em><span>Galleria</span></em></h1>
+    <p class="pt-lead">Le foto ufficiali di ogni tappa Padania Tuning, scattate dai nostri fotografi. Apri l'album e cerca la tua auto.</p>
+  </header>
 
-  <div id="cpg-event-target"></div>
+  <div class="filters" id="filters"></div>
+  <div class="albums" id="albums"></div>
 
-  <div class="cpg-share-wrap">
-    <button class="cpg-btn-share" onclick="sharePage()">
-      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M4 12v8a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-8"></path><polyline points="16 6 12 2 8 6"></polyline><line x1="12" y1="2" x2="12" y2="15"></line></svg>
-      Condividi questa pagina
+  <div class="share-wrap">
+    <button class="share" type="button" id="shareBtn">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M4 12v8a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-8"></path><polyline points="16 6 12 2 8 6"></polyline><line x1="12" y1="2" x2="12" y2="15"></line></svg>
+      <span>Condividi la galleria</span>
     </button>
   </div>
-
-  
-</div>
+</main>
 
 <script src="assets/js/site.js"></script>
 <script>
-(function() {
-  const LOGO_SRC = 'assets/img/logo.jpg';
-  document.getElementById('cpg-logo').src = LOGO_SRC;
+(function () {
+  /* =========================================================
+     ALBUM — per aggiungerne uno copia un blocco { ... }
+     tipo: 'stage' | 'special' | 'drift'
+     ========================================================= */
+  var ALBUM = [
+    { tipo: 'stage',   titolo: 'Stage 1 — PadaniaTuning', foto: [{ label: 'Foto di Enea',    href: 'https://drive.google.com/drive/folders/1wOBG0VEXsYGXkmghEqgKlR2tAoZhYWyE' }] },
+    { tipo: 'stage',   titolo: 'Stage 2 — PadaniaTuning', foto: [{ label: 'Foto di Enea',    href: 'https://drive.google.com/drive/folders/1IF2WT-NSf_EBfRCZa87I6c1Bd28GqVwL' }] },
+    { tipo: 'stage',   titolo: 'Stage 3 — PadaniaTuning', foto: [{ label: 'Foto di Il Fato', href: 'https://drive.google.com/drive/folders/1JSjCVbnz3HQsowb1gMgRSxqbrkJOgWmR?usp=drive_link' }] },
+    { tipo: 'special', titolo: 'Racing Meeting',          foto: [{ label: 'Foto dell\'evento', href: 'https://drive.google.com/drive/folders/1BrkTME_Bv7cJDd-F_ZC_z66287N1EmaW?usp=drive_link' }] },
+    { tipo: 'drift',   titolo: 'Number One — Drift 1',    foto: [{ label: 'Foto di Il Fato', href: 'https://drive.google.com/drive/folders/1h6AhN9HtR1wsxjPs4HNHfSDZoh1QaQ6f' }] },
+    { tipo: 'drift',   titolo: 'Number One — Drift 2',    foto: [{ label: 'Foto di Il Fato', href: 'https://drive.google.com/drive/folders/1FW_in6882YF8OvblCfp3vHiHEMBSam3d?usp=sharing' }] }
+  ];
 
-  const EVENTS = {
-    padania1: {
-      subtitle: 'Motorsport Photography',
-      title: 'Stage 1 — PadaniaTuning',
-      theme: 'blue',
-      buttons: [
-        { label: '📷 Foto Enea', href: 'https://drive.google.com/drive/folders/1wOBG0VEXsYGXkmghEqgKlR2tAoZhYWyE' }
-      ]
-    },
-    padania2: {
-      subtitle: 'Motorsport Photography',
-      title: 'Stage 2 — PadaniaTuning',
-      theme: 'blue',
-      buttons: [
-        { label: '📷 Foto Enea', href: 'https://drive.google.com/drive/folders/1IF2WT-NSf_EBfRCZa87I6c1Bd28GqVwL' }
-      ]
-    },
-    padania3: {
-      subtitle: 'Motorsport Photography',
-      title: 'Stage 3 — PadaniaTuning',
-      theme: 'blue',
-      buttons: [
-        { label: '📷 Il fato', href: 'https://drive.google.com/drive/folders/1JSjCVbnz3HQsowb1gMgRSxqbrkJOgWmR?usp=drive_link' }
-      ]
-    },
-    racing: {
-      subtitle: 'Special Event',
-      title: 'Racing Meeting',
-      theme: 'pink',
-      buttons: [
-        { label: '📷 Foto Evento', href: 'https://drive.google.com/drive/folders/1BrkTME_Bv7cJDd-F_ZC_z66287N1EmaW?usp=drive_link' }
-      ]
-    },
-    drift1: {
-      subtitle: 'Drift Exhibition',
-      title: 'Number one - Drift 1',
-      theme: 'green',
-      buttons: [
-        { label: '📷 Ilfato', href: 'https://drive.google.com/drive/folders/1h6AhN9HtR1wsxjPs4HNHfSDZoh1QaQ6f' }
-      ]
-    },
-    drift2: {
-      subtitle: 'Drift Exhibition',
-      title: 'Number One - Drift 2',
-      theme: 'green',
-      buttons: [
-        { label: '📷 Il fato', href: 'https://drive.google.com/drive/folders/1FW_in6882YF8OvblCfp3vHiHEMBSam3d?usp=sharing' }
-      ]
-    }
-  };
+  var TIPI = { tutti: 'Tutti', stage: 'Tappe ufficiali', special: 'Special event', drift: 'Drift' };
+  var filtri = document.getElementById('filters');
+  var lista = document.getElementById('albums');
 
-  const container = document.getElementById('cpg-event-target');
-  const select = document.getElementById('cpg-select');
+  filtri.innerHTML = Object.keys(TIPI).map(function (k) {
+    return '<button type="button" class="filter" data-tipo="' + k + '">' + TIPI[k] + '</button>';
+  }).join('');
 
-  function render(key) {
-    const data = EVENTS[key];
-    const themeClass = data.theme === 'blue' ? 'blue-btn' : (data.theme === 'green' ? 'green-btn' : '');
-    const headerClass = data.theme === 'blue' ? 'blue-theme' : (data.theme === 'green' ? 'green-theme' : '');
-    const oldCard = container.querySelector('.cpg-event-card');
-    
-    if (oldCard) {
-      oldCard.classList.add('slide-out');
-      setTimeout(() => { createNewCard(data, headerClass, themeClass); }, 300);
-    } else {
-      createNewCard(data, headerClass, themeClass);
-    }
+  function render(tipo) {
+    filtri.querySelectorAll('.filter').forEach(function (b) { b.classList.toggle('active', b.dataset.tipo === tipo); });
+    lista.innerHTML = ALBUM
+      .map(function (a, i) { a.n = i + 1; return a; })
+      .filter(function (a) { return tipo === 'tutti' || a.tipo === tipo; })
+      .map(function (a, i) {
+        return '<article class="pt-card album" data-type="' + a.tipo + '" style="animation-delay:' + (i * 0.06) + 's">' +
+          '<span class="album-num">' + ('0' + a.n).slice(-2) + '</span>' +
+          '<div><span class="album-type">' + TIPI[a.tipo] + '</span><h2>' + a.titolo + '</h2></div>' +
+          '<div class="album-links">' + a.foto.map(function (f) {
+            return '<a href="' + f.href + '" target="_blank" rel="noopener">📷 ' + f.label + ' <small>Apri album →</small></a>';
+          }).join('') + '</div>' +
+        '</article>';
+      }).join('');
   }
 
-  function createNewCard(data, headerClass, themeClass) {
-    container.innerHTML = `
-      <div class="cpg-event-card">
-        <div class="cpg-event-header ${headerClass}">
-          <p class="cpg-event-subtitle">${data.subtitle}</p>
-          <h2 class="cpg-event-title">${data.title}</h2>
-        </div>
-        <div class="cpg-btn-grid">
-          ${data.buttons.map(btn => `
-            <a href="${btn.href}" target="_blank" rel="noopener" class="cpg-btn ${themeClass}">
-              <span>${btn.label}</span>
-              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
-            </a>
-          `).join('')}
-        </div>
-      </div>
-    `;
-  }
+  filtri.addEventListener('click', function (e) { if (e.target.dataset.tipo) render(e.target.dataset.tipo); });
+  render('tutti');
 
-  select.addEventListener('change', (e) => render(e.target.value));
-  render('padania1');
-
-  window.sharePage = function() {
+  // Condividi
+  var shareBtn = document.getElementById('shareBtn');
+  shareBtn.addEventListener('click', function () {
     if (navigator.share) {
-      navigator.share({
-        title: 'Padania Tuning Gallery',
-        text: 'Guarda le foto ufficiali degli eventi Padania Tuning!',
-        url: window.location.href
-      }).catch(console.error);
-    } else {
-      const dummy = document.createElement('input');
-      document.body.appendChild(dummy);
-      dummy.value = window.location.href;
-      dummy.select();
-      document.execCommand('copy');
-      document.body.removeChild(dummy);
-      var b=document.querySelector(".cpg-btn-share"); var t=b.innerHTML; b.textContent="Link copiato ✓"; setTimeout(function(){b.innerHTML=t;},2000);
+      navigator.share({ title: 'Padania Tuning — Galleria', text: 'Guarda le foto ufficiali degli eventi Padania Tuning!', url: location.href }).catch(function () {});
+    } else if (navigator.clipboard) {
+      navigator.clipboard.writeText(location.href).then(function () {
+        var s = shareBtn.querySelector('span'); var t = s.textContent;
+        s.textContent = 'Link copiato ✓';
+        setTimeout(function () { s.textContent = t; }, 2000);
+      });
     }
-  };
+  });
 })();
 </script>
 </body>

@@ -15,8 +15,8 @@
    CONFERMA — stesso stile "pass d'ingresso" del form
    ========================================================= */
 .ok {
-  --pink: #ff69b4;
-  --pink-soft: rgba(255, 105, 180, 0.14);
+  --pink: #d9d9de;
+  --pink-soft: rgba(220, 220, 228, 0.14);
   --panel: #141216;
   --line: rgba(255, 255, 255, 0.09);
   --text: #f4f2f5;
@@ -40,7 +40,7 @@
   overflow: hidden;
   background: var(--panel);
   border: 1px solid var(--line);
-  box-shadow: 0 30px 60px -20px rgba(255, 105, 180, 0.3);
+  box-shadow: 0 30px 60px -20px rgba(220, 220, 228, 0.3);
   animation: passIn 0.7s cubic-bezier(0.2, 0.9, 0.3, 1.2) both;
 }
 @keyframes passIn {
@@ -61,11 +61,11 @@
   border-radius: 50%;
   background: var(--pink);
   display: flex; align-items: center; justify-content: center;
-  box-shadow: 0 0 0 8px rgba(255, 105, 180, 0.18), 0 10px 30px rgba(255, 105, 180, 0.5);
+  box-shadow: 0 0 0 8px rgba(220, 220, 228, 0.18), 0 10px 30px rgba(220, 220, 228, 0.5);
 }
 .check svg { width: 30px; height: 30px; }
 .check path {
-  stroke: #1a0010; stroke-width: 3.5; fill: none; stroke-linecap: round; stroke-linejoin: round;
+  stroke: #0a0a0a; stroke-width: 3.5; fill: none; stroke-linecap: round; stroke-linejoin: round;
   stroke-dasharray: 30; stroke-dashoffset: 30;
   animation: draw 0.5s 0.5s ease-out forwards;
 }
@@ -117,7 +117,7 @@
   padding: 10px 14px 9px;
   border-radius: 14px;
   background: var(--pink);
-  color: #1a0010;
+  color: #0a0a0a;
   min-width: 82px;
 }
 .pass-date b { display: block; font-size: 44px; font-weight: 800; }
@@ -169,7 +169,7 @@
 }
 .timeline li.done .dot { background: var(--green); border-color: var(--green); box-shadow: 0 0 10px rgba(53, 224, 111, 0.6); }
 .timeline li.now .dot { border-color: var(--pink); background: var(--pink-soft); animation: pulse 1.8s ease-in-out infinite; }
-@keyframes pulse { 50% { box-shadow: 0 0 0 6px rgba(255, 105, 180, 0.15); } }
+@keyframes pulse { 50% { box-shadow: 0 0 0 6px rgba(220, 220, 228, 0.15); } }
 .timeline b { display: block; color: var(--text); font-weight: 700; }
 .timeline span { font-size: 14px; color: var(--muted); }
 
@@ -182,10 +182,10 @@
   padding: 16px 18px;
   border-radius: 16px;
   background: var(--pink-soft);
-  border: 1px solid rgba(255, 105, 180, 0.3);
+  border: 1px solid rgba(220, 220, 228, 0.3);
   font-size: 14px;
   line-height: 1.5;
-  color: #f0dbe7;
+  color: #e6e6ea;
 }
 .mailnote .ico { font-size: 22px; line-height: 1; }
 .mailnote b { color: #fff; }
@@ -206,7 +206,7 @@
   transition: transform 0.12s, filter 0.2s, border-color 0.2s;
 }
 .btn:active { transform: scale(0.98); }
-.btn-main { background: var(--pink); color: #1a0010; box-shadow: 0 12px 30px -8px rgba(255, 105, 180, 0.6); }
+.btn-main { background: var(--pink); color: #0a0a0a; box-shadow: 0 12px 30px -8px rgba(220, 220, 228, 0.6); }
 .btn-main:hover { filter: brightness(1.06); }
 .btn-ghost { color: var(--text); border: 1px solid rgba(255, 255, 255, 0.18); }
 .btn-ghost:hover { border-color: rgba(255, 255, 255, 0.4); }
@@ -299,7 +299,7 @@
 
   // Un solo lancio di coriandoli
   if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
-  var colori = ['#ff69b4', '#ffffff', '#ff9fd0', '#35e06f'];
+  var colori = ['#d9d9de', '#ffffff', '#9a9aa3', '#35e06f'];
   for (var i = 0; i < 46; i++) {
     var c = document.createElement('div');
     c.className = 'confetti';

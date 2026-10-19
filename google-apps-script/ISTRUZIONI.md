@@ -39,7 +39,7 @@ Fatto! ✅ Fai un'iscrizione di prova dal sito: deve comparire una riga nel Fogl
 - Nuova riga nella scheda **Iscrizioni** (con colonna **Stato** che puoi cambiare in *Selezionato* / *Scartato*)
 - Le foto finiscono nella cartella Drive **Padania Tuning - Foto iscrizioni**, con il link nel Foglio
 - Il pilota riceve la mail di conferma con il QR code della targa
-- Lo staff riceve la notifica su padaniatuning@gmail.com
+- Lo staff riceve la notifica su alessandro.radulescu03@gmail.com
 
 ### Scaricare l'Excel
 Dal Foglio: **File → Scarica → Microsoft Excel (.xlsx)**

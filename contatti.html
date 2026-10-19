@@ -7,10 +7,9 @@
 <link rel="icon" href="assets/img/logo.jpg">
 <link rel="stylesheet" href="assets/css/site.css">
 <style>
-@import url('https://fonts.googleapis.com/css2?family=Oswald:wght@400;600;700&family=Inter:wght@300;400&display=swap');
 
-.pt-wrap{position:relative;min-height:calc(100vh - 60px);background:#0a0a0a;overflow:hidden;font-family:'Inter',sans-serif;margin:0;padding:0;box-sizing:border-box; display: flex; flex-direction: column;}
-.pt-wrap *{box-sizing:border-box;margin:0;padding:0}
+.ct-wrap{position:relative;min-height:calc(100vh - 60px);background:#0a0a0a;overflow:hidden;font-family:var(--body);margin:0;padding:0;box-sizing:border-box; display: flex; flex-direction: column;}
+.ct-wrap *{box-sizing:border-box;margin:0;padding:0}
 
 /* Background con immagine verticale richiesta */
 .pt-bg-layer{position:absolute;inset:0;z-index:0}
@@ -22,8 +21,8 @@
 
 /* Header */
 .pt-hdr{text-align:center;margin-bottom:1rem;animation:ptFadeIn .7s ease-out}
-.pt-brand{font-family:'Oswald',sans-serif;font-size:11px;letter-spacing:.4em;text-transform:uppercase;color:rgba(255,255,255,.4);margin-bottom:.5rem}
-.pt-h1{font-family:'Oswald',sans-serif;font-size:clamp(2.2rem,8vw,3.5rem);font-weight:700;color:#f0f0f0;letter-spacing:-.01em}
+.pt-brand{font-family:var(--body);font-size:15px;font-weight:600;color:#d9d9de;margin-bottom:.4rem}
+.pt-h1{font-family:var(--cond);font-style:italic;font-size:clamp(3.4rem,13vw,6.5rem);font-weight:900;color:#f4f2f5;letter-spacing:-1px;line-height:.9;text-transform:uppercase}
 
 /* Gauge Container */
 .pt-gauge{position:relative;width:290px;height:290px;margin:1.5rem auto 2.5rem auto;animation:ptScaleIn .8s ease-out .2s backwards}
@@ -31,10 +30,10 @@
 
 /* Needle animation */
 .pt-needle,.pt-needle-glow{transform-origin:200px 200px;transition:transform .7s cubic-bezier(.16,1,.3,1)}
-.pt-wrap[data-active="whatsapp"] .pt-needle,.pt-wrap[data-active="whatsapp"] .pt-needle-glow{transform:rotate(-60deg)}
-.pt-wrap[data-active="email"] .pt-needle,.pt-wrap[data-active="email"] .pt-needle-glow{transform:rotate(-20deg)}
-.pt-wrap[data-active="tiktok"] .pt-needle,.pt-wrap[data-active="tiktok"] .pt-needle-glow{transform:rotate(20deg)}
-.pt-wrap[data-active="instagram"] .pt-needle,.pt-wrap[data-active="instagram"] .pt-needle-glow{transform:rotate(60deg)}
+.ct-wrap[data-active="whatsapp"] .pt-needle,.ct-wrap[data-active="whatsapp"] .pt-needle-glow{transform:rotate(-60deg)}
+.ct-wrap[data-active="email"] .pt-needle,.ct-wrap[data-active="email"] .pt-needle-glow{transform:rotate(-20deg)}
+.ct-wrap[data-active="tiktok"] .pt-needle,.ct-wrap[data-active="tiktok"] .pt-needle-glow{transform:rotate(20deg)}
+.ct-wrap[data-active="instagram"] .pt-needle,.ct-wrap[data-active="instagram"] .pt-needle-glow{transform:rotate(60deg)}
 
 /* Contact points */
 .pt-point{position:absolute;transform:translate(-50%,-50%);text-decoration:none;display:flex;flex-direction:column;align-items:center;gap:4px;transition:all .3s ease; z-index: 20;}
@@ -44,7 +43,7 @@
 .pt-point-circle svg{width:20px;height:20px;stroke:rgba(255,255,255,.7);fill:none;stroke-width:1.8;transition:stroke .3s}
 @media(min-width:768px){.pt-point-circle svg{width:26px;height:26px}}
 
-.pt-point-label{font-family:'Oswald',sans-serif;font-size:9px;letter-spacing:.1em;text-transform:uppercase;color:rgba(255,255,255,0.5);transition:color .3s; font-weight: 600;}
+.pt-point-label{font-family:var(--cond);font-size:14px;color:rgba(255,255,255,0.7);transition:color .3s; font-weight: 700;}
 
 /* Positions Mobile e Desktop */
 .pt-p-whatsapp{left:5%;top:30%}
@@ -54,26 +53,26 @@
 
 /* Active state colors */
 .pt-point:hover .pt-point-circle,.pt-point.active .pt-point-circle{transform:scale(1.1); background: rgba(255,255,255,0.1); border-color: #fff;}
-.pt-wrap[data-active="whatsapp"] .active .pt-point-circle { box-shadow: 0 0 20px rgba(37, 211, 102, 0.4); border-color: #25D366; }
-.pt-wrap[data-active="instagram"] .active .pt-point-circle { box-shadow: 0 0 20px rgba(193, 53, 132, 0.4); border-color: #C13584; }
-.pt-wrap[data-active="tiktok"] .active .pt-point-circle { box-shadow: 0 0 20px rgba(255, 255, 255, 0.4); border-color: #fff; }
-.pt-wrap[data-active="email"] .active .pt-point-circle { box-shadow: 0 0 20px rgba(0, 102, 255, 0.4); border-color: #0066ff; }
+.ct-wrap[data-active="whatsapp"] .active .pt-point-circle { box-shadow: 0 0 20px rgba(37, 211, 102, 0.4); border-color: #25D366; }
+.ct-wrap[data-active="instagram"] .active .pt-point-circle { box-shadow: 0 0 20px rgba(193, 53, 132, 0.4); border-color: #C13584; }
+.ct-wrap[data-active="tiktok"] .active .pt-point-circle { box-shadow: 0 0 20px rgba(255, 255, 255, 0.4); border-color: #fff; }
+.ct-wrap[data-active="email"] .active .pt-point-circle { box-shadow: 0 0 20px rgba(0, 102, 255, 0.4); border-color: #0066ff; }
 
 /* Info panel */
 .pt-info{min-height:5rem;display:flex;align-items:center;justify-content:center;text-align:center;margin-top:0.5rem; width: 100%;}
-.pt-info-text{font-size:.9rem;color:rgba(255,255,255,0.9);max-width:280px;line-height:1.4;display:none;animation:ptFadeIn .3s ease; font-weight: 400;}
+.pt-info-text{font-size:1.05rem;color:rgba(255,255,255,0.9);max-width:280px;line-height:1.4;display:none;animation:ptFadeIn .3s ease; font-weight: 400;}
 .pt-info-text.visible{display:block}
-.pt-info-hint{font-size:.75rem;color:rgba(255,255,255,0.3);letter-spacing:.05em; text-transform: uppercase;}
+.pt-info-hint{font-size:.95rem;color:rgba(255,255,255,0.45);}
 
 /* Footer */
-.pt-foot{font-family:'Oswald',sans-serif;font-size:10px;letter-spacing:.3em;text-transform:uppercase;color:rgba(255,255,255,.2);text-align:center;padding:2rem 0; animation:ptFadeIn 1s ease-out 1.2s backwards}
+.pt-foot{font-family:var(--cond);font-style:italic;font-size:16px;font-weight:700;color:rgba(255,255,255,.3);text-align:center;padding:2rem 0; animation:ptFadeIn 1s ease-out 1.2s backwards}
 
 @keyframes ptFadeIn{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:translateY(0)}}
 @keyframes ptScaleIn{from{opacity:0;transform:scale(.9)}to{opacity:1;transform:scale(1)}}
 </style>
 </head>
 <body data-no-footer>
-<div class="pt-wrap" id="ptWrap">
+<div class="ct-wrap" id="ptWrap">
   <div class="pt-bg-layer">
     <img src="assets/img/contatti-bg.jpg" alt="PadaniaTuning" />
     <div class="pt-bg-gradient"></div>
@@ -81,7 +80,7 @@
 
   <div class="pt-main">
     <div class="pt-hdr">
-      <div class="pt-brand">PadaniaTuning</div>
+      <div class="pt-brand">Scrivici quando vuoi</div>
       <h1 class="pt-h1">CONTATTACI</h1>
     </div>
 
@@ -90,8 +89,8 @@
         <circle cx="200" cy="200" r="180" fill="none" stroke="rgba(255,255,255,.1)" stroke-width="2"/>
         <g id="ptTicks"></g>
         <circle cx="200" cy="200" r="12" fill="rgba(255,255,255,.1)"/>
-        <line class="pt-needle" x1="200" y1="200" x2="200" y2="60" stroke="#fff" stroke-width="3" stroke-linecap="round"/>
-        <circle class="pt-needle-glow" cx="200" cy="60" r="4" fill="#fff" />
+        <line class="pt-needle" x1="200" y1="200" x2="200" y2="60" stroke="#d9d9de" stroke-width="3" stroke-linecap="round"/>
+        <circle class="pt-needle-glow" cx="200" cy="60" r="5" fill="#d9d9de" />
       </svg>
 
       <a href="https://whatsapp.com/channel/0029VbBnk5ELNSa4XMFhD607" target="_blank" rel="noopener" class="pt-point pt-p-whatsapp" data-contact="whatsapp" onmouseenter="ptHover('whatsapp')" onmouseleave="ptHover(null)">

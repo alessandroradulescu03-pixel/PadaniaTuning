@@ -8,7 +8,7 @@
  */
 
 // ---------- IMPOSTAZIONI ----------
-var EMAIL_STAFF   = 'padaniatuning@gmail.com';   // dove arriva la notifica di ogni iscrizione
+var EMAIL_STAFF   = 'alessandro.radulescu03@gmail.com';   // dove arriva la notifica di ogni iscrizione (e le risposte dei piloti)
 var NOME_MITTENTE = 'Padania Tuning';
 var NOME_FOGLIO   = 'Iscrizioni';               // nome della scheda (in basso) del Foglio
 var NOME_CARTELLA = 'Padania Tuning - Foto iscrizioni';
@@ -126,7 +126,7 @@ function inviaConferma(d) {
     // TITOLO
     '<tr><td style="padding:26px 26px 8px">' +
       '<div style="display:inline-block;padding:5px 12px;border-radius:100px;background:#1f3a29;color:#35e06f;font-size:12px;font-weight:bold">&#10003; Candidatura ricevuta</div>' +
-      '<h1 style="margin:16px 0 0;font-family:Arial Narrow,Arial,sans-serif;font-size:44px;line-height:1;font-style:italic;font-weight:900;color:#ffffff;text-transform:uppercase">Ciao ' + esc(d.nome) + ',<br><span style="color:#ff69b4">ci siamo!</span></h1>' +
+      '<h1 style="margin:16px 0 0;font-family:Arial Narrow,Arial,sans-serif;font-size:44px;line-height:1;font-style:italic;font-weight:900;color:#ffffff;text-transform:uppercase">Ciao ' + esc(d.nome) + ',<br><span style="color:#d9d9de">ci siamo!</span></h1>' +
       '<p style="' + p + ';margin-top:16px">Abbiamo ricevuto la tua candidatura per l\'evento Padania Tuning al <b style="color:#fff">' + EVENTO.luogo + '</b>. Lo staff ha i dati del tuo profilo e del tuo garage. &#127937;</p>' +
     '</td></tr>' +
 
@@ -135,7 +135,7 @@ function inviaConferma(d) {
       '<table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="background:#1b181e;border-radius:16px;border:1px dashed #3a3440">' +
       '<tr>' +
         '<td width="96" valign="middle" style="padding:16px 0 16px 16px">' +
-          '<table role="presentation" cellpadding="0" cellspacing="0" width="80" style="background:#ff69b4;border-radius:12px"><tr><td align="center" style="padding:10px 0;font-family:Arial Narrow,Arial,sans-serif;color:#1a0010;line-height:1">' +
+          '<table role="presentation" cellpadding="0" cellspacing="0" width="80" style="background:#d9d9de;border-radius:12px"><tr><td align="center" style="padding:10px 0;font-family:Arial Narrow,Arial,sans-serif;color:#0a0a0a;line-height:1">' +
             '<div style="font-size:36px;font-weight:900">' + gg + '</div>' +
             '<div style="font-size:15px;font-weight:bold">' + mese + '</div>' +
             '<div style="font-size:12px;opacity:.75;margin-top:2px">' + anno + '</div>' +
@@ -150,7 +150,7 @@ function inviaConferma(d) {
     '</td></tr>' +
 
     // VANTAGGI
-    '<tr><td style="padding:12px 26px 8px;font-size:14px;line-height:2;color:#ffd1e8">' +
+    '<tr><td style="padding:12px 26px 8px;font-size:14px;line-height:2;color:#ececf0">' +
       '&#127359;&#65039; +100 posti auto<br>' +
       '&#127379; Ingresso al raduno totalmente gratuito<br>' +
       '&#127903;&#65039; Con Padania Tuning ingresso omaggio anche in discoteca al ' + EVENTO.luogo +
@@ -201,7 +201,7 @@ function inviaConferma(d) {
 
     // BOTTONI
     '<tr><td style="padding:22px 26px 26px">' +
-      '<a href="' + INSTAGRAM_URL + '" style="display:block;text-align:center;background:#ff69b4;color:#1a0010;text-decoration:none;font-family:Arial Narrow,Arial,sans-serif;font-size:18px;font-weight:900;font-style:italic;padding:15px;border-radius:12px">Seguici su Instagram</a>' +
+      '<a href="' + INSTAGRAM_URL + '" style="display:block;text-align:center;background:#d9d9de;color:#0a0a0a;text-decoration:none;font-family:Arial Narrow,Arial,sans-serif;font-size:18px;font-weight:900;font-style:italic;padding:15px;border-radius:12px">Seguici su Instagram</a>' +
       '<a href="' + SITO_URL + '" style="display:block;text-align:center;margin-top:10px;color:#f4f2f5;text-decoration:none;font-size:14px;font-weight:bold;padding:12px;border-radius:12px;border:1px solid #3a3440">Vai al sito</a>' +
     '</td></tr>' +
 

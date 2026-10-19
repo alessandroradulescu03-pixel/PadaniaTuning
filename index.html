@@ -3,169 +3,234 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Padania Tuning — Official Meeting</title>
+    <title>Padania Tuning — Raduni ed eventi auto</title>
     <meta name="description" content="Padania Tuning: raduni, eventi e community di appassionati di auto.">
     <link rel="icon" href="assets/img/logo.jpg">
     <link rel="stylesheet" href="assets/css/site.css">
 
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&family=Montserrat:wght@700;900&display=swap');
-
-        body { font-family: 'Inter', sans-serif; }
-
-        /* --- SEZIONE HERO --- */
-        .mobile-premium-hero {
-            position: relative; min-height: calc(100vh - 60px); width: 100%; display: flex;
-            align-items: center; justify-content: center; overflow: hidden;
-            text-align: center;
+        /* ---------- HERO ---------- */
+        .hero {
+            position: relative;
+            min-height: calc(100svh - 66px);
+            display: flex;
+            align-items: flex-end;
+            overflow: hidden;
+            isolation: isolate;
         }
-        .hero-content-mobile { position: relative; z-index: 10; width: 100%; padding: 0 20px; }
-        .hero-title { font-family: 'Montserrat', sans-serif; font-size: clamp(32px, 9vw, 64px); font-weight: 900; line-height: 1.1; margin: 15px 0; letter-spacing: -1px; text-transform: uppercase; }
-        .outline-txt { color: transparent; -webkit-text-stroke: 1px #fff; display: inline-block; margin: 5px 0; }
-        .chrome {
-            background: linear-gradient(180deg, #ffffff 0%, #e0e0e0 40%, #888888 50%, #dcdcdc 60%, #f5f5f5 100%);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            font-weight: 800;
-            filter: drop-shadow(0px 2px 3px rgba(0,0,0,0.5));
-            -webkit-text-stroke: 0.5px rgba(0,0,0,0.2);
+        .hero-bg {
+            position: absolute;
+            inset: 0;
+            z-index: -1;
+            background: url('assets/img/storia-hero.jpg') center 40% / cover no-repeat;
+            transform: scale(1.08);
+            animation: heroZoom 9s ease-out forwards;
         }
-        .badge-mini { font-size: 9px; letter-spacing: 3px; border: 1px solid rgba(255,255,255,0.2); padding: 6px 15px; text-transform: uppercase; }
-
-        .scroll-btn {
-            margin-top: 25px; background: #fff; color: #000; padding: 14px 30px;
-            border-radius: 4px; font-weight: 900; font-size: 11px; letter-spacing: 2px;
-            cursor: pointer; display: inline-block; transition: opacity 0.3s; border: none;
-            font-family: 'Inter', sans-serif;
+        .hero-bg::after {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background:
+                linear-gradient(180deg, rgba(10,10,10,0.25) 0%, rgba(10,10,10,0.55) 45%, var(--bg) 100%),
+                linear-gradient(90deg, rgba(10,10,10,0.75) 0%, transparent 70%);
         }
-        .scroll-btn:hover { opacity: 0.9; }
+        @keyframes heroZoom { to { transform: scale(1); } }
 
-        /* --- MODALE --- */
+        .hero-inner { width: 100%; max-width: 1100px; margin: 0 auto; padding: 60px 18px 56px; }
+        .hero .pt-display { font-size: clamp(72px, 19vw, 190px); margin: 18px 0 18px; }
+        .hero .pt-display span { animation: slideIn 0.8s cubic-bezier(0.2, 0.9, 0.3, 1) both; }
+        .hero .pt-display em span { animation-delay: 0.12s; }
+        @keyframes slideIn { from { opacity: 0; transform: translateX(-40px) skewX(-8deg); } to { opacity: 1; transform: none; } }
+        .hero .pt-lead { font-size: 19px; color: #ece6ef; }
+        .hero-actions { display: flex; flex-wrap: wrap; gap: 12px; margin-top: 28px; }
+
+        /* ---------- PROSSIMO EVENTO ---------- */
+        .next-ev { margin-top: 30px; }
+        .sec-head { display: flex; align-items: flex-end; justify-content: space-between; gap: 16px; margin-bottom: 20px; }
+        .sec-head a { color: var(--pink); font-weight: 700; text-decoration: none; white-space: nowrap; }
+        .sec-head a:hover { text-decoration: underline; }
+
+        .ev-grid { display: grid; grid-template-columns: 1.15fr 1fr; }
+        .ev-left { padding: 28px; display: grid; grid-template-columns: auto 1fr; gap: 20px; align-items: center; align-content: center; }
+        .ev-left .pt-perks { grid-column: 1 / -1; }
+        .ev-right {
+            padding: 28px;
+            border-left: 2px dashed rgba(255, 255, 255, 0.12);
+            background: linear-gradient(160deg, rgba(220, 220, 228, 0.08), transparent 60%);
+            display: flex; flex-direction: column; justify-content: center; gap: 16px;
+        }
+        .ev-right p { margin: 0; color: var(--soft); font-size: 15px; }
+        .ev-right .pt-btn { width: 100%; }
+
+        /* ---------- ESPLORA ---------- */
+        .explore { margin-top: 70px; }
+        .tiles { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; }
+        .tile {
+            position: relative;
+            min-height: 280px;
+            border-radius: 22px;
+            overflow: hidden;
+            display: flex;
+            align-items: flex-end;
+            padding: 22px;
+            text-decoration: none;
+            color: var(--text);
+            border: 1px solid var(--line);
+            isolation: isolate;
+        }
+        .tile::before {
+            content: '';
+            position: absolute; inset: 0; z-index: -1;
+            background: var(--img) center / cover no-repeat;
+            transition: transform 0.6s ease;
+        }
+        .tile::after {
+            content: '';
+            position: absolute; inset: 0; z-index: -1;
+            background: linear-gradient(180deg, transparent 30%, rgba(10,10,10,0.92) 100%);
+        }
+        .tile:hover::before { transform: scale(1.06); }
+        .tile b { display: block; font-family: var(--cond); font-style: italic; font-weight: 900; font-size: 38px; line-height: 0.95; text-transform: uppercase; }
+        .tile span { display: block; color: var(--soft); font-size: 15px; margin-top: 6px; }
+        .tile i { position: absolute; top: 18px; right: 18px; width: 42px; height: 42px; border-radius: 50%; background: var(--pink); color: var(--ink); display: flex; align-items: center; justify-content: center; font-style: normal; font-weight: 900; font-size: 20px; transform: rotate(-45deg); transition: transform 0.3s; }
+        .tile:hover i { transform: rotate(0); }
+
+        /* ---------- MODALE ---------- */
         .premium-modal {
-            display: none; position: fixed; z-index: 9999; left: 0; top: 0; width: 100%; height: 100%;
-            background: rgba(0,0,0,0.95); backdrop-filter: blur(15px); align-items: center; justify-content: center;
+            display: none; position: fixed; z-index: 9999; inset: 0;
+            background: rgba(0,0,0,0.85); backdrop-filter: blur(14px); -webkit-backdrop-filter: blur(14px);
+            align-items: center; justify-content: center; padding: 16px;
         }
+        .premium-modal.open { display: flex; animation: fadeIn 0.25s ease; }
+        @keyframes fadeIn { from { opacity: 0; } }
         .modal-content {
-            background: #0d0d0d; border: 1px solid rgba(255,255,255,0.1); padding: 35px 25px;
-            width: 90%; max-width: 380px; border-radius: 28px; position: relative;
-            box-shadow: 0 25px 60px rgba(0,0,0,0.9); max-height: 90vh; overflow-y: auto;
+            background: var(--panel); border: 1px solid var(--line); padding: 30px 24px 24px;
+            width: 100%; max-width: 420px; border-radius: 24px; position: relative;
+            box-shadow: 0 30px 70px rgba(0,0,0,0.8); max-height: 90vh; overflow-y: auto;
         }
-        .modal-header-section { text-align: center; margin-bottom: 30px; }
-        .modal-main-title { font-family: 'Montserrat', sans-serif; font-weight: 900; font-size: 18px; letter-spacing: 2px; color: #fff; margin: 0; }
-        .modal-subtitle { font-size: 10px; color: #666; text-transform: uppercase; margin-top: 5px; letter-spacing: 1px; }
+        .modal-title { font-family: var(--cond); font-style: italic; font-weight: 900; font-size: 34px; text-transform: uppercase; margin: 0 0 4px; line-height: 1; }
+        .modal-sub { color: var(--muted); font-size: 14px; margin: 0 0 24px; }
+        .info-block { display: flex; gap: 14px; padding: 16px 0; border-top: 1px solid var(--line); }
+        .info-icon { background: var(--panel-2); width: 42px; height: 42px; border-radius: 12px; display: flex; align-items: center; justify-content: center; font-size: 19px; flex-shrink: 0; border: 1px solid var(--line); }
+        .info-text label { color: var(--pink); font-size: 13px; font-weight: 700; display: block; margin-bottom: 4px; }
+        .main-txt { color: #fff; font-size: 17px; font-weight: 700; display: block; }
+        .sub-info { color: var(--soft); font-size: 14px; display: block; margin-top: 2px; line-height: 1.45; }
+        .rules { color: var(--soft); font-size: 14px; margin: 0; padding-left: 18px; line-height: 1.7; }
+        .modal-actions { display: grid; gap: 10px; margin-top: 18px; }
+        .modal-actions .pt-btn { width: 100%; height: 52px; font-size: 19px; }
+        .close-modal { position: absolute; right: 14px; top: 14px; width: 40px; height: 40px; border-radius: 50%; color: var(--soft); font-size: 22px; cursor: pointer; background: var(--panel-2); border: 1px solid var(--line); }
 
-        .info-grid { display: flex; flex-direction: column; gap: 22px; text-align: left; }
-        .info-block { display: flex; gap: 15px; }
-        .modal-sep { border: 0; border-top: 1px solid #222; margin: 5px 0; }
-
-        .info-icon {
-            background: #161616; width: 40px; height: 40px; border-radius: 12px;
-            display: flex; align-items: center; justify-content: center; font-size: 18px; flex-shrink: 0; border: 1px solid #222;
+        @media (max-width: 860px) {
+            .ev-grid { grid-template-columns: 1fr; }
+            .ev-right { border-left: 0; border-top: 2px dashed rgba(255, 255, 255, 0.12); }
+            .tiles { grid-template-columns: 1fr; }
+            .tile { min-height: 200px; }
         }
-
-        .info-text label { color: #ff3e3e; font-size: 10px; font-weight: 800; text-transform: uppercase; display: block; margin-bottom: 4px; }
-        .clean-p { color: #999; font-size: 12px; margin: 0; line-height: 1.7; }
-        .main-txt { color: #fff; font-size: 15px; font-weight: 700; display: block; }
-        .sub-info { color: #bbb; font-size: 13px; display: block; margin-top: 2px; }
-
-        .price-tags { display: flex; gap: 8px; margin: 10px 0; }
-        .tag { background: #1a1a1a; color: #fff; font-size: 11px; padding: 6px 12px; border-radius: 8px; border: 1px solid #333; line-height: 1.5; }
-
-        .registration-box { margin-top: 30px; padding: 15px; background: #111; border-radius: 18px; border: 1px solid #222; text-align: center; }
-        .registration-box p { color: #888; font-size: 11px; margin: 0 0 12px; line-height: 1.4; }
-        .registration-box a { display: inline-block; color: #fff; font-weight: 800; font-size: 11px; letter-spacing: 1.5px; text-transform: uppercase; text-decoration: none; border: 1px solid #fff; border-radius: 10px; padding: 10px 18px; }
-
-        .modal-footer-btn {
-            background: #fff; color: #000; padding: 16px; border-radius: 15px;
-            font-weight: 800; font-size: 13px; text-align: center; margin-top: 20px;
-            cursor: pointer; transition: opacity 0.3s; text-transform: uppercase;
+        @media (max-width: 520px) {
+            .ev-left, .ev-right { padding: 22px 18px; }
+            .hero-actions .pt-btn { flex: 1 1 100%; }
+            .sec-head { flex-direction: column; align-items: flex-start; gap: 6px; }
         }
-        .modal-footer-btn:hover { opacity: 0.9; }
-
-        .close-modal { position: absolute; right: 20px; top: 20px; color: #444; font-size: 24px; cursor: pointer; background: none; border: none; }
     </style>
 </head>
 <body>
 
-<div class="mobile-premium-hero">
-    <div class="hero-content-mobile">
-        <span class="badge-mini">Official Meeting</span>
-        <h1 class="hero-title">
-            <span class="chrome">EVENTO</span><br>
-            <span class="outline-txt">PADANIA</span><br>
-            <span class="chrome">TUNING</span>
-        </h1>
-        <button class="scroll-btn" type="button" onclick="openModal()">SCOPRI DI PIÙ</button>
+<section class="hero">
+    <div class="hero-bg"></div>
+    <div class="hero-inner">
+        <span class="pt-pill"><i></i> Official Meeting · iscrizioni aperte</span>
+        <h1 class="pt-display"><span>Padania</span><em><span>Tuning</span></em></h1>
+        <p class="pt-lead">Raduni, eventi e una community di appassionati che vivono di motori. Porta la tua auto, noi pensiamo al resto.</p>
+        <div class="hero-actions">
+            <a href="qi.html" class="pt-btn pt-btn-main">Iscrivi la tua auto</a>
+            <button type="button" class="pt-btn pt-btn-ghost" onclick="openModal()">Dettagli e regolamento</button>
+        </div>
     </div>
-</div>
+</section>
 
-<div id="infoModal" class="premium-modal">
+<section class="pt-wrap next-ev">
+    <div class="sec-head">
+        <h2 class="pt-h2">Prossimo evento</h2>
+        <a href="eventi.html">Tutti gli eventi →</a>
+    </div>
+    <div class="pt-pass">
+        <div class="ev-grid">
+            <div class="ev-left">
+                <div class="pt-date" id="evDate"></div>
+                <div class="pt-where" id="evWhere"></div>
+                <ul class="pt-perks" id="evPerks"></ul>
+            </div>
+            <div class="ev-right">
+                <p>Le iscrizioni per esporre l'auto chiudono tra</p>
+                <div class="pt-count" id="evCount"></div>
+                <a href="qi.html" class="pt-btn pt-btn-main">Candida la tua auto</a>
+            </div>
+        </div>
+    </div>
+</section>
+
+<section class="pt-wrap explore">
+    <div class="sec-head">
+        <h2 class="pt-h2">Entra nel mondo Padania</h2>
+    </div>
+    <div class="tiles">
+        <a class="tile" href="storia.html" style="--img:url('assets/img/storia-raduno.jpg')"><i>→</i><div><b>La nostra storia</b><span>Chi siamo e chi ci supporta</span></div></a>
+        <a class="tile" href="galleria.html" style="--img:url('assets/img/form-bg.jpg')"><i>→</i><div><b>Galleria</b><span>Le foto di tutti i nostri eventi</span></div></a>
+        <a class="tile" href="shop.html" style="--img:url('assets/img/storia-cta.jpg')"><i>→</i><div><b>Shop</b><span>Magliette, felpe e accessori</span></div></a>
+    </div>
+</section>
+
+<div id="infoModal" class="premium-modal" role="dialog" aria-modal="true" aria-labelledby="modalTitle">
     <div class="modal-content">
         <button class="close-modal" type="button" onclick="closeModal()" aria-label="Chiudi">×</button>
+        <h3 class="modal-title" id="modalTitle">Dettagli evento</h3>
+        <p class="modal-sub">Padania Tuning Official Meeting</p>
 
-        <div class="modal-body">
-            <div class="modal-header-section">
-                <h3 class="modal-main-title">DETTAGLI EVENTO</h3>
-                <p class="modal-subtitle">Padania Tuning Official Meeting</p>
+        <div class="info-block">
+            <span class="info-icon">📍</span>
+            <div class="info-text">
+                <label>Dove e quando</label>
+                <span class="main-txt" id="mLuogo"></span>
+                <span class="sub-info" id="mIndirizzo"></span>
+                <span class="sub-info" id="mData"></span>
             </div>
+        </div>
 
-            <div class="info-grid">
-
-                <hr class="modal-sep">
-
-                <div class="info-block">
-                    <span class="info-icon">📍</span>
-                    <div class="info-text">
-                        <label>Dove e quando</label>
-                        <span class="main-txt" id="mLuogo"></span>
-                        <span class="sub-info" id="mIndirizzo"></span>
-                        <span class="sub-info" id="mData"></span>
-                    </div>
-                </div>
-
-                <div class="info-block">
-                    <span class="info-icon">🕘</span>
-                    <div class="info-text">
-                        <label>Orari</label>
-                        <span class="sub-info" id="mRaduno"></span>
-                        <span class="sub-info" id="mSerata"></span>
-                    </div>
-                </div>
-
-                <div class="info-block">
-                    <span class="info-icon">🎟️</span>
-                    <div class="info-text">
-                        <label>Ingresso</label>
-                        <div class="price-tags">
-                            <span class="tag" id="mVantaggi"></span>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="info-block">
-                    <span class="info-icon">⚠️</span>
-                    <div class="info-text">
-                        <label>Regolamento Rapido</label>
-                        <p class="clean-p">
-                            Rispetto totale per le vetture esposte.<br>
-                            No comportamenti pericolosi nel complesso.<br>
-                            Seguire sempre le indicazioni dello staff.<br>
-                            Velocità moderata all'interno del raduno.<br>
-                            Massima attenzione ai pedoni presenti.<br>
-                            Vietato sgommare, fare burnout o limitatore.
-                        </p>
-                    </div>
-                </div>
+        <div class="info-block">
+            <span class="info-icon">🕘</span>
+            <div class="info-text">
+                <label>Orari</label>
+                <span class="sub-info" id="mRaduno"></span>
+                <span class="sub-info" id="mSerata"></span>
             </div>
+        </div>
 
-            <div class="registration-box">
-                <p>Vuoi esporre la tua auto?</p>
-                <a href="eventi.html">Vai agli eventi →</a>
+        <div class="info-block">
+            <span class="info-icon">🎟️</span>
+            <div class="info-text">
+                <label>Ingresso</label>
+                <span class="sub-info" id="mVantaggi"></span>
             </div>
+        </div>
 
-            <div class="modal-footer-btn" onclick="closeModal()">
-                HO CAPITO, GRAZIE
+        <div class="info-block">
+            <span class="info-icon">⚠️</span>
+            <div class="info-text">
+                <label>Regolamento rapido</label>
+                <ul class="rules">
+                    <li>Rispetto totale per le vetture esposte</li>
+                    <li>No comportamenti pericolosi</li>
+                    <li>Segui sempre le indicazioni dello staff</li>
+                    <li>Velocità moderata all'interno del raduno</li>
+                    <li>Massima attenzione ai pedoni</li>
+                    <li>Vietato sgommare, fare burnout o limitatore</li>
+                </ul>
             </div>
+        </div>
+
+        <div class="modal-actions">
+            <a href="qi.html" class="pt-btn pt-btn-main">Iscrivi la tua auto</a>
+            <button type="button" class="pt-btn pt-btn-ghost" onclick="closeModal()">Ho capito</button>
         </div>
     </div>
 </div>
@@ -173,8 +238,15 @@
 <script src="assets/js/config.js"></script>
 <script src="assets/js/site.js"></script>
 <script>
-    // Info evento prese da assets/js/config.js
-    var EV = window.PT_CONFIG.EVENTO;
+    var CFG = window.PT_CONFIG, EV = CFG.EVENTO;
+
+    // Prossimo evento
+    document.getElementById('evDate').innerHTML = PT.dateBox(EV.data);
+    document.getElementById('evWhere').innerHTML = PT.where(EV);
+    document.getElementById('evPerks').innerHTML = EV.vantaggi.map(function (v) { return '<li>' + v + '</li>'; }).join('');
+    PT.countdown(document.getElementById('evCount'), CFG.CHIUSURA_ISCRIZIONI);
+
+    // Modale
     document.getElementById('mLuogo').textContent = EV.luogo;
     document.getElementById('mIndirizzo').textContent = EV.indirizzo;
     document.getElementById('mData').textContent = EV.data;
@@ -182,27 +254,16 @@
     document.getElementById('mSerata').textContent = 'Serata al ' + EV.luogo + ' ' + EV.orarioSerata;
     document.getElementById('mVantaggi').innerHTML = EV.vantaggi.join('<br>');
 
-    function openModal() {
-        var modal = document.getElementById("infoModal");
-        modal.style.display = "flex";
-        document.body.style.overflow = "hidden";
-    }
+    var modal = document.getElementById('infoModal');
+    function openModal() { modal.classList.add('open'); document.body.style.overflow = 'hidden'; }
+    function closeModal() { modal.classList.remove('open'); document.body.style.overflow = ''; }
+    modal.addEventListener('click', function (e) { if (e.target === modal) closeModal(); });
+    document.addEventListener('keydown', function (e) { if (e.key === 'Escape') closeModal(); });
 
-    function closeModal() {
-        var modal = document.getElementById("infoModal");
-        modal.style.display = "none";
-        document.body.style.overflow = "auto";
-    }
-
-    document.getElementById("infoModal").addEventListener('click', function (event) {
-        if (event.target === this) closeModal();
-    });
-
-    // Apertura automatica con index.html?openmodal=1 (usato dal link "Regole ufficiali")
-    var urlParams = new URLSearchParams(window.location.search);
-    if (urlParams.get('openmodal') === '1') {
+    // Apertura automatica con index.html?openmodal=1 (link "regolamento")
+    if (new URLSearchParams(location.search).get('openmodal') === '1') {
         openModal();
-        window.history.replaceState({}, document.title, window.location.pathname);
+        history.replaceState({}, document.title, location.pathname);
     }
 </script>
 
