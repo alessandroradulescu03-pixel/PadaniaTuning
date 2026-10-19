@@ -215,7 +215,7 @@
 .rules { text-align: center; margin-top: 16px; font-size: 13px; color: var(--muted); }
 .rules a { color: var(--pink); font-weight: 700; }
 
-/* coriandoli: un solo lancio all'apertura */
+/* coriandoli: cadono sempre */
 .confetti {
   position: fixed;
   top: -12px;
@@ -297,20 +297,26 @@
     '<span>' + EV.indirizzo + '</span>' +
     '<span class="times">' + giorno + ' · raduno ' + EV.orarioRaduno + ', serata ' + EV.orarioSerata + '</span>';
 
-  // Un solo lancio di coriandoli
+  // Coriandoli che cadono sempre
   if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
-  var colori = ['#d9d9de', '#ffffff', '#9a9aa3', '#35e06f'];
-  for (var i = 0; i < 46; i++) {
+  var colori = ['#ffffff', '#d9d9de', '#9a9aa3', '#35e06f', '#e6e6eb'];
+  var i = 0;
+  function coriandolo(ritardo) {
     var c = document.createElement('div');
     c.className = 'confetti';
     c.style.left = Math.random() * 100 + 'vw';
-    c.style.background = colori[i % colori.length];
-    c.style.animationDuration = (Math.random() * 2 + 2.2) + 's';
-    c.style.animationDelay = (Math.random() * 0.8) + 's';
+    c.style.background = colori[i++ % colori.length];
+    c.style.width = (Math.random() * 5 + 6) + 'px';
+    c.style.height = (Math.random() * 6 + 8) + 'px';
+    c.style.animationDuration = (Math.random() * 2.5 + 3.5) + 's';
+    c.style.animationDelay = (ritardo || 0) + 's';
     c.style.borderRadius = Math.random() > 0.5 ? '50%' : '2px';
     document.body.appendChild(c);
     c.addEventListener('animationend', function () { this.remove(); });
   }
+  // primo lancio più fitto, poi una pioggia continua e leggera
+  for (var k = 0; k < 40; k++) coriandolo(Math.random() * 0.8);
+  setInterval(function () { if (!document.hidden) coriandolo(0); }, 180);
 })();
 </script>
 </body>

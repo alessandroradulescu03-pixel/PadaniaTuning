@@ -17,7 +17,7 @@ var EVENTO = {
   nome: 'Padania Tuning al Qi Clubbing',
   luogo: 'Qi Clubbing',
   indirizzo: "Via dell'Industria, 83, 25030 Erbusco (BS)",
-  data: 'Domenica 7 Novembre 2027',
+  data: 'Sabato 7 Novembre 2026',
   orarioRaduno: 'dalle ore 21:00',
   orarioSerata: 'dalle ore 23:30'
 };
@@ -93,128 +93,154 @@ function inviaConferma(d) {
   var targa = (d.veicoli[0] && d.veicoli[0].targa) || '';
   var qr = 'https://api.qrserver.com/v1/create-qr-code/?size=360x360&margin=0&data=' + encodeURIComponent(targa);
 
-  // Data per il riquadro rosa (es. "Domenica 7 Novembre 2027" -> 07 / NOV / 2027)
+  // Data per il riquadro argento (es. "Sabato 7 Novembre 2026" -> 07 / NOV / 2026)
   var m = EVENTO.data.match(/(\d{1,2})\s+(\w+)\s+(\d{4})/);
   var gg = m ? ('0' + m[1]).slice(-2) : '';
   var mese = m ? m[2].slice(0, 3).toUpperCase() : '';
   var anno = m ? m[3] : '';
   var giorno = EVENTO.data.split(' ')[0];
 
+  /* La mail è chiara di base: nel tema scuro le app di posta la scuriscono
+     da sole (Gmail) oppure usano gli stili "dark" qui sotto (Apple Mail, Outlook).
+     Così segue sempre il tema del telefono. */
+  var C = {
+    bg: '#f1f1f4', card: '#ffffff', line: '#e5e5ea', text: '#111114', soft: '#4a4a52', muted: '#7a7a84',
+    silver: '#e6e6eb', dark: '#111114'
+  };
+  var F = "font-family:'Barlow Condensed','Arial Narrow',Arial,sans-serif;";
+  var p = 'margin:0 0 14px;font-size:15px;line-height:1.6;color:' + C.soft;
+  var h = 'margin:0 0 12px;' + F + 'font-size:22px;font-style:italic;font-weight:900;color:' + C.text + ';text-transform:uppercase';
+  var td = 'padding:11px 0;border-bottom:1px solid ' + C.line + ';';
+
   var auto = d.veicoli.map(function (v, i) {
-    return '<tr><td style="padding:10px 0;border-bottom:1px solid #2a262d;font-size:14px;color:#9a94a0;width:90px">Veicolo ' + (i + 1) + '</td>' +
-      '<td style="padding:10px 0;border-bottom:1px solid #2a262d;font-size:15px;color:#f4f2f5;font-weight:bold">' + esc(v.marca + ' ' + v.modello) +
-      ' <span style="display:inline-block;margin-left:6px;padding:2px 8px;border-radius:4px;background:#f5f5f2;color:#111;font-size:12px;letter-spacing:1px;border-left:6px solid #003399">' + esc(v.targa) + '</span></td></tr>';
+    return '<tr><td class="em-muted em-line" style="' + td + 'font-size:14px;color:' + C.muted + ';width:90px">Veicolo ' + (i + 1) + '</td>' +
+      '<td class="em-text em-line" style="' + td + 'font-size:15px;color:' + C.text + ';font-weight:bold">' + esc(v.marca + ' ' + v.modello) +
+      ' <span style="display:inline-block;margin-left:6px;padding:2px 8px;border-radius:4px;background:#ffffff;color:#111;font-size:12px;letter-spacing:1px;border:1px solid #222;border-left:6px solid #003399">' + esc(v.targa) + '</span></td></tr>';
   }).join('');
 
-  var p = 'margin:0 0 14px;font-size:15px;line-height:1.6;color:#d6d0da';
-  var h = 'margin:0 0 12px;font-family:Arial Narrow,Arial,sans-serif;font-size:20px;font-style:italic;font-weight:900;color:#ffffff;text-transform:uppercase;letter-spacing:.5px';
-
   var html =
-  '<div style="margin:0;padding:0;background:#0a0a0a">' +
-  '<table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="background:#0a0a0a;padding:24px 10px;font-family:Arial,Helvetica,sans-serif">' +
+  '<!DOCTYPE html><html><head><meta charset="utf-8">' +
+  '<meta name="viewport" content="width=device-width,initial-scale=1">' +
+  '<meta name="color-scheme" content="light dark"><meta name="supported-color-schemes" content="light dark">' +
+  '<style>' +
+    ':root{color-scheme:light dark;supported-color-schemes:light dark}' +
+    '@media (prefers-color-scheme: dark){' +
+      '.em-bg{background:#0a0a0a !important}' +
+      '.em-card{background:#141216 !important;border-color:#2a262d !important}' +
+      '.em-box{background:#1b181e !important;border-color:#2a262d !important}' +
+      '.em-text,.em-text b{color:#f4f2f5 !important}' +
+      '.em-soft{color:#d6d0da !important}' +
+      '.em-muted{color:#9a94a0 !important}' +
+      '.em-line{border-color:#2a262d !important}' +
+      '.em-green{color:#35e06f !important}' +
+      '.em-btn{background:#e6e6eb !important;color:#0a0a0a !important}' +
+      '.em-btn2{color:#f4f2f5 !important;border-color:#3a3440 !important}' +
+    '}' +
+    '[data-ogsc] .em-text{color:#f4f2f5 !important}[data-ogsc] .em-soft{color:#d6d0da !important}' +
+  '</style></head>' +
+  '<body class="em-bg" style="margin:0;padding:0;background:' + C.bg + '">' +
+  '<table role="presentation" width="100%" cellpadding="0" cellspacing="0" class="em-bg" style="background:' + C.bg + ';padding:24px 10px;font-family:Arial,Helvetica,sans-serif">' +
   '<tr><td align="center">' +
-  '<table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="max-width:560px;background:#141216;border-radius:20px;overflow:hidden;border:1px solid #2a262d">' +
+  '<table role="presentation" width="100%" cellpadding="0" cellspacing="0" class="em-card" style="max-width:560px;background:' + C.card + ';border-radius:20px;border:1px solid ' + C.line + '">' +
 
     // INTESTAZIONE
     '<tr><td style="padding:22px 26px 0">' +
       '<table role="presentation" cellpadding="0" cellspacing="0"><tr>' +
-        '<td><img src="' + LOGO_URL + '" width="44" height="44" alt="Padania Tuning" style="display:block;border-radius:50%;border:1px solid #333"></td>' +
-        '<td style="padding-left:12px;font-size:13px;font-weight:bold;letter-spacing:2px;color:#ffffff">PADANIA TUNING</td>' +
+        '<td><img src="' + LOGO_URL + '" width="44" height="44" alt="Padania Tuning" style="display:block;border-radius:50%"></td>' +
+        '<td class="em-text" style="padding-left:12px;' + F + 'font-size:20px;font-style:italic;font-weight:900;color:' + C.text + ';text-transform:uppercase">Padania Tuning</td>' +
       '</tr></table>' +
     '</td></tr>' +
 
     // TITOLO
-    '<tr><td style="padding:26px 26px 8px">' +
-      '<div style="display:inline-block;padding:5px 12px;border-radius:100px;background:#1f3a29;color:#35e06f;font-size:12px;font-weight:bold">&#10003; Candidatura ricevuta</div>' +
-      '<h1 style="margin:16px 0 0;font-family:Arial Narrow,Arial,sans-serif;font-size:44px;line-height:1;font-style:italic;font-weight:900;color:#ffffff;text-transform:uppercase">Ciao ' + esc(d.nome) + ',<br><span style="color:#d9d9de">ci siamo!</span></h1>' +
-      '<p style="' + p + ';margin-top:16px">Abbiamo ricevuto la tua candidatura per l\'evento Padania Tuning al <b style="color:#fff">' + EVENTO.luogo + '</b>. Lo staff ha i dati del tuo profilo e del tuo garage. &#127937;</p>' +
+    '<tr><td style="padding:24px 26px 6px">' +
+      '<div style="display:inline-block;padding:5px 12px;border-radius:100px;background:#e3f6ea;color:#127a3a;font-size:12px;font-weight:bold">&#10003; Candidatura ricevuta</div>' +
+      '<h1 class="em-text" style="margin:16px 0 0;' + F + 'font-size:42px;line-height:1;font-style:italic;font-weight:900;color:' + C.text + ';text-transform:uppercase">Ciao ' + esc(d.nome) + ',<br>ci siamo!</h1>' +
+      '<p class="em-soft" style="' + p + ';margin-top:16px">Abbiamo ricevuto la tua candidatura per l\'evento Padania Tuning al <b class="em-text" style="color:' + C.text + '">' + EVENTO.luogo + '</b>. Lo staff ha i dati del tuo profilo e del tuo garage. &#127937;</p>' +
     '</td></tr>' +
 
     // BIGLIETTO EVENTO
-    '<tr><td style="padding:10px 26px 6px">' +
-      '<table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="background:#1b181e;border-radius:16px;border:1px dashed #3a3440">' +
+    '<tr><td style="padding:8px 26px 6px">' +
+      '<table role="presentation" width="100%" cellpadding="0" cellspacing="0" class="em-box" style="background:#f6f6f8;border-radius:16px;border:1px dashed #c9c9d1">' +
       '<tr>' +
         '<td width="96" valign="middle" style="padding:16px 0 16px 16px">' +
-          '<table role="presentation" cellpadding="0" cellspacing="0" width="80" style="background:#d9d9de;border-radius:12px"><tr><td align="center" style="padding:10px 0;font-family:Arial Narrow,Arial,sans-serif;color:#0a0a0a;line-height:1">' +
-            '<div style="font-size:36px;font-weight:900">' + gg + '</div>' +
-            '<div style="font-size:15px;font-weight:bold">' + mese + '</div>' +
-            '<div style="font-size:12px;opacity:.75;margin-top:2px">' + anno + '</div>' +
+          '<table role="presentation" cellpadding="0" cellspacing="0" width="80" style="background:' + C.silver + ';background-image:linear-gradient(180deg,#ffffff 0%,#e6e6ea 45%,#b9b9c1 55%,#ececf0 100%);border-radius:12px;border:1px solid #c9c9d1"><tr><td align="center" style="padding:10px 0;' + F + 'color:#0a0a0a;line-height:1">' +
+            '<div style="font-size:36px;font-weight:900;color:#0a0a0a">' + gg + '</div>' +
+            '<div style="font-size:15px;font-weight:bold;color:#0a0a0a">' + mese + '</div>' +
+            '<div style="font-size:12px;color:#44444c;margin-top:2px">' + anno + '</div>' +
           '</td></tr></table>' +
         '</td>' +
         '<td valign="middle" style="padding:16px">' +
-          '<div style="font-size:20px;font-weight:bold;color:#ffffff">' + EVENTO.luogo + '</div>' +
-          '<div style="font-size:13px;color:#9a94a0;margin-top:3px">' + EVENTO.indirizzo + '</div>' +
-          '<div style="font-size:14px;color:#f4f2f5;font-weight:bold;margin-top:8px">' + giorno + ' &middot; raduno ' + EVENTO.orarioRaduno + '<br>serata al ' + EVENTO.luogo + ' ' + EVENTO.orarioSerata + '</div>' +
+          '<div class="em-text" style="' + F + 'font-size:22px;font-weight:800;color:' + C.text + '">' + EVENTO.luogo + '</div>' +
+          '<div class="em-muted" style="font-size:13px;color:' + C.muted + ';margin-top:3px">' + EVENTO.indirizzo + '</div>' +
+          '<div class="em-text" style="font-size:14px;color:' + C.text + ';font-weight:bold;margin-top:8px">' + giorno + ' &middot; raduno ' + EVENTO.orarioRaduno + '<br>serata al ' + EVENTO.luogo + ' ' + EVENTO.orarioSerata + '</div>' +
         '</td>' +
       '</tr></table>' +
     '</td></tr>' +
 
     // VANTAGGI
-    '<tr><td style="padding:12px 26px 8px;font-size:14px;line-height:2;color:#ececf0">' +
+    '<tr><td class="em-soft" style="padding:12px 26px 6px;font-size:14px;line-height:2;color:' + C.soft + '">' +
       '&#127359;&#65039; +100 posti auto<br>' +
       '&#127379; Ingresso al raduno totalmente gratuito<br>' +
       '&#127903;&#65039; Con Padania Tuning ingresso omaggio anche in discoteca al ' + EVENTO.luogo +
     '</td></tr>' +
 
-    // SEPARATORE
-    '<tr><td style="padding:14px 26px"><div style="border-top:1px solid #2a262d"></div></td></tr>' +
+    '<tr><td style="padding:14px 26px"><div class="em-line" style="border-top:1px solid ' + C.line + '"></div></td></tr>' +
 
     // SELEZIONE
     '<tr><td style="padding:0 26px">' +
-      '<h2 style="' + h + '">Cosa succede ora</h2>' +
-      '<p style="' + p + '">Questa mail conferma solo che la candidatura è arrivata: <b style="color:#fff">non è ancora una conferma di partecipazione</b>. Lo staff valuterà ogni auto candidata e ti scriverà l\'esito a questo indirizzo.</p>' +
-      '<table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="margin:4px 0 8px">' +
-        '<tr><td valign="top" width="50%" style="padding:14px;background:#17241c;border-radius:12px;font-size:14px;line-height:1.5;color:#cfe9d8">' +
-          '<b style="color:#35e06f">&#9989; Se vieni selezionato</b><br>Accedi all\'area espositiva e ricevi le indicazioni per ingresso e posizionamento.' +
+      '<h2 class="em-text" style="' + h + '">Cosa succede ora</h2>' +
+      '<p class="em-soft" style="' + p + '">Questa mail conferma solo che la candidatura è arrivata: <b class="em-text" style="color:' + C.text + '">non è ancora una conferma di partecipazione</b>. Lo staff valuterà ogni auto candidata e ti scriverà l\'esito a questo indirizzo.</p>' +
+      '<table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="margin:4px 0 8px"><tr>' +
+        '<td valign="top" width="50%" class="em-box" style="padding:14px;background:#eef8f1;border-radius:12px;border:1px solid #d3eedb;font-size:14px;line-height:1.5;color:' + C.soft + '">' +
+          '<b class="em-green" style="color:#127a3a">&#9989; Se vieni selezionato</b><br><span class="em-soft">Accedi all\'area espositiva e ricevi le indicazioni per ingresso e posizionamento.</span>' +
         '</td><td width="10"></td>' +
-        '<td valign="top" width="50%" style="padding:14px;background:#1b181e;border-radius:12px;font-size:14px;line-height:1.5;color:#d6d0da">' +
-          '<b style="color:#fff">&#127937; Se non vieni selezionato</b><br>Puoi comunque venire come visitatore e vivere la serata con noi.' +
-        '</td></tr>' +
-      '</table>' +
+        '<td valign="top" width="50%" class="em-box" style="padding:14px;background:#f6f6f8;border-radius:12px;border:1px solid ' + C.line + ';font-size:14px;line-height:1.5;color:' + C.soft + '">' +
+          '<b class="em-text" style="color:' + C.text + '">&#127937; Se non vieni selezionato</b><br><span class="em-soft">Puoi comunque venire come visitatore e vivere la serata con noi.</span>' +
+        '</td>' +
+      '</tr></table>' +
     '</td></tr>' +
 
     // QR
     '<tr><td align="center" style="padding:24px 26px 6px">' +
-      '<h2 style="' + h + ';text-align:center">Il tuo QR d\'ingresso</h2>' +
-      '<table role="presentation" cellpadding="0" cellspacing="0" style="background:#ffffff;border-radius:16px"><tr><td align="center" style="padding:16px">' +
+      '<h2 class="em-text" style="' + h + ';text-align:center">Il tuo QR d\'ingresso</h2>' +
+      '<table role="presentation" cellpadding="0" cellspacing="0" style="background:#ffffff;border-radius:16px;border:1px solid #d9d9df"><tr><td align="center" style="padding:16px">' +
         '<img src="' + qr + '" width="180" height="180" alt="QR Code ' + esc(targa) + '" style="display:block">' +
-        '<div style="margin-top:12px;display:inline-block;padding:6px 14px;border:2px solid #222;border-left:14px solid #003399;border-right:14px solid #003399;border-radius:6px;font-family:Arial Narrow,Arial,sans-serif;font-size:22px;font-weight:bold;letter-spacing:3px;color:#111">' + esc(targa) + '</div>' +
+        '<div style="margin-top:12px;display:inline-block;padding:6px 14px;background:#ffffff;border:2px solid #222;border-left:14px solid #003399;border-right:14px solid #003399;border-radius:6px;' + F + 'font-size:22px;font-weight:bold;letter-spacing:3px;color:#111">' + esc(targa) + '</div>' +
       '</td></tr></table>' +
-      '<p style="' + p + ';font-size:13px;color:#9a94a0;margin-top:12px;text-align:center">Valido per l\'area espositiva solo in caso di selezione. Tienilo a portata di mano.</p>' +
+      '<p class="em-muted" style="' + p + ';font-size:13px;color:' + C.muted + ';margin-top:12px;text-align:center">Valido per l\'area espositiva solo in caso di selezione. Tienilo a portata di mano.</p>' +
     '</td></tr>' +
 
     // RIEPILOGO
     '<tr><td style="padding:18px 26px 4px">' +
-      '<h2 style="' + h + '">Riepilogo</h2>' +
+      '<h2 class="em-text" style="' + h + '">Riepilogo</h2>' +
       '<table role="presentation" width="100%" cellpadding="0" cellspacing="0">' +
-        '<tr><td style="padding:10px 0;border-bottom:1px solid #2a262d;font-size:14px;color:#9a94a0;width:90px">Pilota</td><td style="padding:10px 0;border-bottom:1px solid #2a262d;font-size:15px;color:#f4f2f5;font-weight:bold">' + esc(d.nome) + ' ' + esc(d.cognome) + '</td></tr>' +
-        (d.instagram ? '<tr><td style="padding:10px 0;border-bottom:1px solid #2a262d;font-size:14px;color:#9a94a0">Instagram</td><td style="padding:10px 0;border-bottom:1px solid #2a262d;font-size:15px;color:#f4f2f5;font-weight:bold">@' + esc(d.instagram) + '</td></tr>' : '') +
+        '<tr><td class="em-muted em-line" style="' + td + 'font-size:14px;color:' + C.muted + ';width:90px">Pilota</td><td class="em-text em-line" style="' + td + 'font-size:15px;color:' + C.text + ';font-weight:bold">' + esc(d.nome) + ' ' + esc(d.cognome) + '</td></tr>' +
+        (d.instagram ? '<tr><td class="em-muted em-line" style="' + td + 'font-size:14px;color:' + C.muted + '">Instagram</td><td class="em-text em-line" style="' + td + 'font-size:15px;color:' + C.text + ';font-weight:bold">@' + esc(d.instagram) + '</td></tr>' : '') +
         auto +
       '</table>' +
     '</td></tr>' +
 
     // CHIUSURA
     '<tr><td style="padding:22px 26px 6px">' +
-      '<p style="' + p + '">Grazie per la passione che condividi con noi. In bocca al lupo per la selezione! &#127808;&#128293;</p>' +
-      '<p style="' + p + ';margin:0">Team Padania Tuning &#127937;</p>' +
+      '<p class="em-soft" style="' + p + '">Grazie per la passione che condividi con noi. In bocca al lupo per la selezione! &#127808;&#128293;</p>' +
+      '<p class="em-text" style="' + p + ';margin:0;color:' + C.text + '">Team Padania Tuning &#127937;</p>' +
     '</td></tr>' +
 
     // BOTTONI
     '<tr><td style="padding:22px 26px 26px">' +
-      '<a href="' + INSTAGRAM_URL + '" style="display:block;text-align:center;background:#d9d9de;color:#0a0a0a;text-decoration:none;font-family:Arial Narrow,Arial,sans-serif;font-size:18px;font-weight:900;font-style:italic;padding:15px;border-radius:12px">Seguici su Instagram</a>' +
-      '<a href="' + SITO_URL + '" style="display:block;text-align:center;margin-top:10px;color:#f4f2f5;text-decoration:none;font-size:14px;font-weight:bold;padding:12px;border-radius:12px;border:1px solid #3a3440">Vai al sito</a>' +
+      '<a href="' + INSTAGRAM_URL + '" class="em-btn" style="display:block;text-align:center;background:' + C.dark + ';color:#ffffff;text-decoration:none;' + F + 'font-size:19px;font-weight:900;font-style:italic;padding:15px;border-radius:12px">Seguici su Instagram</a>' +
+      '<a href="' + SITO_URL + '" class="em-btn2" style="display:block;text-align:center;margin-top:10px;color:' + C.text + ';text-decoration:none;font-size:14px;font-weight:bold;padding:12px;border-radius:12px;border:1px solid #cfcfd6">Vai al sito</a>' +
     '</td></tr>' +
 
   '</table>' +
 
-  // NOTE LEGALI
-  '<table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="max-width:560px"><tr><td style="padding:18px 20px;font-size:11px;line-height:1.6;color:#6f6975;text-align:center">' +
+  '<table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="max-width:560px"><tr><td class="em-muted" style="padding:18px 20px;font-size:11px;line-height:1.6;color:' + C.muted + ';text-align:center">' +
     'Conferma automatica di ricezione della candidatura inviata tramite il sito Padania Tuning.<br>' +
     'Non costituisce conferma di selezione o partecipazione all\'evento.<br>' +
     'Se non hai compilato tu il modulo, ignora questo messaggio.' +
   '</td></tr></table>' +
 
-  '</td></tr></table></div>';
+  '</td></tr></table></body></html>';
 
   MailApp.sendEmail({
     to: d.email,

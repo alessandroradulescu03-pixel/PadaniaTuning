@@ -69,7 +69,7 @@
 
     // --- FUNZIONI COMUNI (usate da Home, Eventi, Form, Conferma) ---
     window.PT = {
-        // Riquadro rosa con la data: "Domenica 7 Novembre 2027" -> 07 / NOV / 2027
+        // Riquadro argento con la data: "Sabato 7 Novembre 2026" -> 07 / NOV / 2026
         dateBox: function (testo) {
             var m = testo.match(/(\d{1,2})\s+(\w+)\s+(\d{4})/);
             return m

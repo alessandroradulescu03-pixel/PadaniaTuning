@@ -2,176 +2,170 @@
 <html lang="it">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
 <title>Contatti — Padania Tuning</title>
 <link rel="icon" href="assets/img/logo.jpg">
 <link rel="stylesheet" href="assets/css/site.css">
 <style>
+  .page-head { padding: 48px 0 26px; }
+  .page-head .pt-display { margin-bottom: 16px; }
 
-.ct-wrap{position:relative;min-height:calc(100vh - 60px);background:#0a0a0a;overflow:hidden;font-family:var(--body);margin:0;padding:0;box-sizing:border-box; display: flex; flex-direction: column;}
-.ct-wrap *{box-sizing:border-box;margin:0;padding:0}
+  /* ---------- INSTAGRAM IN EVIDENZA ---------- */
+  .ig {
+    position: relative;
+    display: block;
+    overflow: hidden;
+    isolation: isolate;
+    border-radius: 24px;
+    border: 1px solid var(--line);
+    padding: 26px 24px 24px;
+    min-height: 300px;
+    text-decoration: none;
+    color: var(--text);
+  }
+  .ig::before {
+    content: '';
+    position: absolute; inset: 0; z-index: -2;
+    background: url('assets/img/contatti-bg.jpg') center 30% / cover no-repeat;
+    transition: transform 0.6s ease;
+  }
+  .ig::after {
+    content: '';
+    position: absolute; inset: 0; z-index: -1;
+    background: linear-gradient(180deg, rgba(10,10,10,0.15) 0%, rgba(10,10,10,0.6) 45%, rgba(10,10,10,0.95) 100%);
+  }
+  .ig:hover::before { transform: scale(1.04); }
+  .ig-top { display: flex; align-items: center; justify-content: space-between; gap: 12px; }
+  .ig-badge { font-size: 13px; font-weight: 700; padding: 6px 12px; border-radius: 100px; background: rgba(0,0,0,0.55); border: 1px solid rgba(255,255,255,0.18); backdrop-filter: blur(6px); }
+  .ig-body { margin-top: 110px; }
+  .ig-handle { font-family: var(--cond); font-style: italic; font-weight: 900; font-size: clamp(40px, 11vw, 64px); line-height: 0.9; text-transform: uppercase; }
+  .ig-text { color: var(--soft); font-size: 16px; line-height: 1.5; margin: 10px 0 20px; max-width: 420px; }
+  .ig .pt-btn { width: 100%; max-width: 360px; }
 
-/* Background con immagine verticale richiesta */
-.pt-bg-layer{position:absolute;inset:0;z-index:0}
-.pt-bg-layer img{width:100%;height:100%;object-fit:cover;opacity:.35;filter:saturate(.4)}
-.pt-bg-gradient{position:absolute;inset:0;background:linear-gradient(to bottom, rgba(10,10,10,0.85), rgba(10,10,10,0.4) 50%, rgba(10,10,10,0.95))}
+  /* ---------- ALTRI CANALI ---------- */
+  .channels { display: grid; gap: 12px; margin-top: 12px; }
+  .ch {
+    display: grid;
+    grid-template-columns: 56px 1fr 40px;
+    align-items: center;
+    gap: 16px;
+    min-height: 84px;
+    padding: 14px 16px;
+    text-decoration: none;
+    color: var(--text);
+    transition: border-color 0.2s, transform 0.15s, background 0.2s;
+  }
+  .ch:hover { border-color: rgba(255,255,255,0.28); }
+  .ch:active { transform: scale(0.985); background: var(--panel-2); }
+  .ch-ico {
+    width: 56px; height: 56px; border-radius: 16px;
+    display: flex; align-items: center; justify-content: center;
+    background: var(--panel-2); border: 1px solid var(--line);
+  }
+  .ch-ico svg { width: 26px; height: 26px; stroke: #e6e6eb; fill: none; stroke-width: 1.8; stroke-linecap: round; stroke-linejoin: round; }
+  .ch b { display: block; font-family: var(--cond); font-style: italic; font-weight: 800; font-size: 25px; line-height: 1; }
+  .ch > div span { display: block; color: var(--muted); font-size: 14px; line-height: 1.35; margin-top: 4px; overflow-wrap: anywhere; }
+  .ch i {
+    width: 40px; height: 40px; border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    border: 1px solid rgba(255,255,255,0.18); font-style: normal; font-size: 18px;
+    transition: background 0.2s, color 0.2s;
+  }
+  .ch:hover i { background: var(--chrome-btn); color: #0a0a0a; border-color: transparent; }
 
-/* Layout */
-.pt-main{position:relative;z-index:10;display:flex;flex-direction:column;align-items:center;justify-content:center;flex-grow: 1;padding:2rem 1rem; width: 100%;}
+  /* ---------- SPONSOR ---------- */
+  .partner {
+    margin-top: 36px;
+    padding: 26px 24px;
+    display: grid;
+    grid-template-columns: 1fr auto;
+    gap: 20px;
+    align-items: center;
+    background: linear-gradient(140deg, #1d1b20 0%, var(--panel) 60%);
+  }
+  .partner h2 { font-family: var(--cond); font-style: italic; font-weight: 800; font-size: 32px; line-height: 1; margin: 0 0 8px; }
+  .partner p { margin: 0; color: var(--soft); font-size: 15px; line-height: 1.5; max-width: 480px; }
 
-/* Header */
-.pt-hdr{text-align:center;margin-bottom:1rem;animation:ptFadeIn .7s ease-out}
-.pt-brand{font-family:var(--body);font-size:15px;font-weight:600;color:#d9d9de;margin-bottom:.4rem}
-.pt-h1{font-family:var(--cond);font-style:italic;font-size:clamp(3.4rem,13vw,6.5rem);font-weight:900;color:#f4f2f5;letter-spacing:-1px;line-height:.9;text-transform:uppercase}
+  .reply { text-align: center; color: var(--muted); font-size: 14px; margin: 28px 0 0; }
+  .reply b { color: var(--soft); }
 
-/* Gauge Container */
-.pt-gauge{position:relative;width:290px;height:290px;margin:1.5rem auto 2.5rem auto;animation:ptScaleIn .8s ease-out .2s backwards}
-@media(min-width:768px){.pt-gauge{width:420px;height:420px}}
+  @media (min-width: 860px) {
+    .layout { display: grid; grid-template-columns: 1.05fr 1fr; gap: 16px; align-items: stretch; }
+    .ig { min-height: 100%; display: flex; flex-direction: column; justify-content: space-between; }
+    .ig-body { margin-top: 0; }
+    .channels { margin-top: 0; }
+  }
 
-/* Needle animation */
-.pt-needle,.pt-needle-glow{transform-origin:200px 200px;transition:transform .7s cubic-bezier(.16,1,.3,1)}
-.ct-wrap[data-active="whatsapp"] .pt-needle,.ct-wrap[data-active="whatsapp"] .pt-needle-glow{transform:rotate(-60deg)}
-.ct-wrap[data-active="email"] .pt-needle,.ct-wrap[data-active="email"] .pt-needle-glow{transform:rotate(-20deg)}
-.ct-wrap[data-active="tiktok"] .pt-needle,.ct-wrap[data-active="tiktok"] .pt-needle-glow{transform:rotate(20deg)}
-.ct-wrap[data-active="instagram"] .pt-needle,.ct-wrap[data-active="instagram"] .pt-needle-glow{transform:rotate(60deg)}
-
-/* Contact points */
-.pt-point{position:absolute;transform:translate(-50%,-50%);text-decoration:none;display:flex;flex-direction:column;align-items:center;gap:4px;transition:all .3s ease; z-index: 20;}
-.pt-point-circle{width:48px;height:48px;border-radius:50%;border:1px solid rgba(255,255,255,0.2);background:rgba(255,255,255,0.05);backdrop-filter:blur(10px);display:flex;align-items:center;justify-content:center;transition:all .35s ease}
-@media(min-width:768px){.pt-point-circle{width:62px;height:62px}}
-
-.pt-point-circle svg{width:20px;height:20px;stroke:rgba(255,255,255,.7);fill:none;stroke-width:1.8;transition:stroke .3s}
-@media(min-width:768px){.pt-point-circle svg{width:26px;height:26px}}
-
-.pt-point-label{font-family:var(--cond);font-size:14px;color:rgba(255,255,255,0.7);transition:color .3s; font-weight: 700;}
-
-/* Positions Mobile e Desktop */
-.pt-p-whatsapp{left:5%;top:30%}
-.pt-p-email{left:28%;top:5%}
-.pt-p-tiktok{right:28%;top:5%;left:auto;transform:translate(50%,-50%)}
-.pt-p-instagram{right:5%;top:30%;left:auto;transform:translate(50%,-50%)}
-
-/* Active state colors */
-.pt-point:hover .pt-point-circle,.pt-point.active .pt-point-circle{transform:scale(1.1); background: rgba(255,255,255,0.1); border-color: #fff;}
-.ct-wrap[data-active="whatsapp"] .active .pt-point-circle { box-shadow: 0 0 20px rgba(37, 211, 102, 0.4); border-color: #25D366; }
-.ct-wrap[data-active="instagram"] .active .pt-point-circle { box-shadow: 0 0 20px rgba(193, 53, 132, 0.4); border-color: #C13584; }
-.ct-wrap[data-active="tiktok"] .active .pt-point-circle { box-shadow: 0 0 20px rgba(255, 255, 255, 0.4); border-color: #fff; }
-.ct-wrap[data-active="email"] .active .pt-point-circle { box-shadow: 0 0 20px rgba(0, 102, 255, 0.4); border-color: #0066ff; }
-
-/* Info panel */
-.pt-info{min-height:5rem;display:flex;align-items:center;justify-content:center;text-align:center;margin-top:0.5rem; width: 100%;}
-.pt-info-text{font-size:1.05rem;color:rgba(255,255,255,0.9);max-width:280px;line-height:1.4;display:none;animation:ptFadeIn .3s ease; font-weight: 400;}
-.pt-info-text.visible{display:block}
-.pt-info-hint{font-size:.95rem;color:rgba(255,255,255,0.45);}
-
-/* Footer */
-.pt-foot{font-family:var(--cond);font-style:italic;font-size:16px;font-weight:700;color:rgba(255,255,255,.3);text-align:center;padding:2rem 0; animation:ptFadeIn 1s ease-out 1.2s backwards}
-
-@keyframes ptFadeIn{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:translateY(0)}}
-@keyframes ptScaleIn{from{opacity:0;transform:scale(.9)}to{opacity:1;transform:scale(1)}}
+  @media (max-width: 520px) {
+    .page-head { padding: 32px 0 20px; }
+    .ig { padding: 20px 18px 20px; min-height: 340px; border-radius: 20px; }
+    .ig-body { margin-top: 140px; }
+    .ig .pt-btn { max-width: none; }
+    .ch { grid-template-columns: 52px 1fr 36px; gap: 14px; padding: 12px 14px; min-height: 78px; }
+    .ch-ico { width: 52px; height: 52px; border-radius: 14px; }
+    .ch b { font-size: 23px; }
+    .ch i { width: 36px; height: 36px; }
+    .partner { grid-template-columns: 1fr; padding: 22px 18px; }
+    .partner .pt-btn { width: 100%; }
+  }
 </style>
 </head>
-<body data-no-footer>
-<div class="ct-wrap" id="ptWrap">
-  <div class="pt-bg-layer">
-    <img src="assets/img/contatti-bg.jpg" alt="PadaniaTuning" />
-    <div class="pt-bg-gradient"></div>
-  </div>
+<body>
 
-  <div class="pt-main">
-    <div class="pt-hdr">
-      <div class="pt-brand">Scrivici quando vuoi</div>
-      <h1 class="pt-h1">CONTATTACI</h1>
-    </div>
+<main class="pt-wrap">
+  <header class="page-head">
+    <h1 class="pt-display"><span>Contatti</span><em><span>&amp; social</span></em></h1>
+    <p class="pt-lead">Info sugli eventi, iscrizioni, merch o solo due chiacchiere di motori: scegli il canale che preferisci.</p>
+  </header>
 
-    <div class="pt-gauge">
-      <svg viewBox="0 0 400 400" style="width:100%;height:100%">
-        <circle cx="200" cy="200" r="180" fill="none" stroke="rgba(255,255,255,.1)" stroke-width="2"/>
-        <g id="ptTicks"></g>
-        <circle cx="200" cy="200" r="12" fill="rgba(255,255,255,.1)"/>
-        <line class="pt-needle" x1="200" y1="200" x2="200" y2="60" stroke="#d9d9de" stroke-width="3" stroke-linecap="round"/>
-        <circle class="pt-needle-glow" cx="200" cy="60" r="5" fill="#d9d9de" />
-      </svg>
+  <div class="layout">
+    <a class="ig" href="https://ig.me/m/padaniatuning" target="_blank" rel="noopener">
+      <div class="ig-top">
+        <span class="ig-badge">Il modo più veloce</span>
+        <span class="pt-pill"><i></i> Rispondiamo qui</span>
+      </div>
+      <div class="ig-body">
+        <div class="ig-handle">@padania<br>tuning</div>
+        <p class="ig-text">Scrivici in direct su Instagram: è il canale che controlliamo di più.</p>
+        <span class="pt-btn pt-btn-main">Scrivici su Instagram</span>
+      </div>
+    </a>
 
-      <a href="https://whatsapp.com/channel/0029VbBnk5ELNSa4XMFhD607" target="_blank" rel="noopener" class="pt-point pt-p-whatsapp" data-contact="whatsapp" onmouseenter="ptHover('whatsapp')" onmouseleave="ptHover(null)">
-        <div class="pt-point-circle">
-          <svg viewBox="0 0 24 24"><path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"/></svg>
-        </div>
-        <span class="pt-point-label">WhatsApp</span>
+    <div class="channels">
+      <a class="pt-card ch" href="https://whatsapp.com/channel/0029VbBnk5ELNSa4XMFhD607" target="_blank" rel="noopener">
+        <span class="ch-ico"><svg viewBox="0 0 24 24"><path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"/></svg></span>
+        <div><b>WhatsApp</b><span>Canale ufficiale: date e novità per primi</span></div>
+        <i>→</i>
       </a>
-
-      <a href="mailto:padaniatuning@gmail.com" class="pt-point pt-p-email" data-contact="email" onmouseenter="ptHover('email')" onmouseleave="ptHover(null)">
-        <div class="pt-point-circle">
-          <svg viewBox="0 0 24 24"><rect x="2" y="4" width="20" height="16" rx="2"/><path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7"/></svg>
-        </div>
-        <span class="pt-point-label">Email</span>
+      <a class="pt-card ch" href="https://www.tiktok.com/@padania.tuning" target="_blank" rel="noopener">
+        <span class="ch-ico"><svg viewBox="0 0 24 24"><path d="M9 12a4 4 0 1 0 4 4V4a5 5 0 0 0 5 5"/></svg></span>
+        <div><b>TikTok</b><span>@padania.tuning · i video dei raduni</span></div>
+        <i>→</i>
       </a>
-
-      <a href="https://www.tiktok.com/@padania.tuning?_r=1&_t=ZN-925bd6mtUFq" target="_blank" rel="noopener" class="pt-point pt-p-tiktok" data-contact="tiktok" onmouseenter="ptHover('tiktok')" onmouseleave="ptHover(null)">
-        <div class="pt-point-circle">
-          <svg viewBox="0 0 24 24"><path d="M9 12a4 4 0 1 0 4 4V4a5 5 0 0 0 5 5"/></svg>
-        </div>
-        <span class="pt-point-label">TikTok</span>
+      <a class="pt-card ch" href="https://www.instagram.com/padaniatuning/" target="_blank" rel="noopener">
+        <span class="ch-ico"><svg viewBox="0 0 24 24"><rect x="2.5" y="2.5" width="19" height="19" rx="5"/><circle cx="12" cy="12" r="4.5"/><circle cx="17.5" cy="6.5" r="0.6"/></svg></span>
+        <div><b>Instagram</b><span>Foto, storie e annunci degli eventi</span></div>
+        <i>→</i>
       </a>
-
-      <a href="https://www.instagram.com/padaniatuning?igsh=NGl4dWkzbTNjdWVo" target="_blank" rel="noopener" class="pt-point pt-p-instagram" data-contact="instagram" onmouseenter="ptHover('instagram')" onmouseleave="ptHover(null)">
-        <div class="pt-point-circle">
-          <svg viewBox="0 0 24 24"><rect x="2" y="2" width="20" height="20" rx="5"/><circle cx="12" cy="12" r="5"/></svg>
-        </div>
-        <span class="pt-point-label">Instagram</span>
+      <a class="pt-card ch" href="mailto:padaniatuning@gmail.com">
+        <span class="ch-ico"><svg viewBox="0 0 24 24"><rect x="2" y="4" width="20" height="16" rx="2"/><path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7"/></svg></span>
+        <div><b>Email</b><span>padaniatuning@gmail.com</span></div>
+        <i>→</i>
       </a>
-    </div>
-
-    <div class="pt-info">
-      <p class="pt-info-hint" id="ptHint">Seleziona un canale per connetterti</p>
-      <p class="pt-info-text" id="ptInfoWhatsapp">Entra nel nostro canale WhatsApp ufficiale</p>
-      <p class="pt-info-text" id="ptInfoEmail">Contattaci via mail per info e proposte</p>
-      <p class="pt-info-text" id="ptInfoTiktok">Segui i nostri video virali su TikTok</p>
-      <p class="pt-info-text" id="ptInfoInstagram">Guarda i nostri ultimi lavori su Instagram</p>
     </div>
   </div>
 
-  <p class="pt-foot">@PADANIATUNING — Built for passion.</p>
-</div>
+  <section class="pt-card partner">
+    <div>
+      <h2>Sponsor e collaborazioni</h2>
+      <p>Hai un'attività, un club o un evento e vuoi lavorare con noi? Raccontaci la tua idea.</p>
+    </div>
+    <a class="pt-btn pt-btn-ghost" href="mailto:padaniatuning@gmail.com?subject=Proposta%20di%20collaborazione%20Padania%20Tuning">Proponi una collaborazione</a>
+  </section>
+
+  <p class="reply">Per le iscrizioni agli eventi usa il <b>form dedicato</b>: trovi tutto nella sezione <a href="eventi.html" style="color:#e6e6eb">Eventi</a>.</p>
+</main>
 
 <script src="assets/js/site.js"></script>
-<script>
-(function(){
-  var g=document.getElementById('ptTicks');
-  for(var i=0;i<40;i++){
-    var a=-120+(i*240)/39;
-    var r=a*Math.PI/180;
-    var maj=i%10===0;
-    var r1=maj?155:165, r2=175;
-    var l=document.createElementNS('http://www.w3.org/2000/svg','line');
-    l.setAttribute('x1',200+r1*Math.cos(r-Math.PI/2));
-    l.setAttribute('y1',200+r1*Math.sin(r-Math.PI/2));
-    l.setAttribute('x2',200+r2*Math.cos(r-Math.PI/2));
-    l.setAttribute('y2',200+r2*Math.sin(r-Math.PI/2));
-    l.setAttribute('stroke',maj?'rgba(255,255,255,0.4)':'rgba(255,255,255,0.15)');
-    l.setAttribute('stroke-width',maj?'2':'1');
-    g.appendChild(l);
-  }
-})();
-
-var descs={whatsapp:'ptInfoWhatsapp',email:'ptInfoEmail',tiktok:'ptInfoTiktok',instagram:'ptInfoInstagram'};
-function ptHover(id){
-  var w=document.getElementById('ptWrap');
-  var hint=document.getElementById('ptHint');
-  
-  Object.values(descs).forEach(function(d){document.getElementById(d).classList.remove('visible')});
-  document.querySelectorAll('.pt-point').forEach(function(p){p.classList.remove('active')});
-  
-  if(id){
-    w.setAttribute('data-active',id);
-    hint.style.display='none';
-    document.getElementById(descs[id]).classList.add('visible');
-    document.querySelector('[data-contact="'+id+'"]').classList.add('active');
-  }else{
-    w.removeAttribute('data-active');
-    hint.style.display='block';
-  }
-}
-</script>
 </body>
 </html>

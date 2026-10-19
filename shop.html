@@ -180,6 +180,31 @@
     margin-bottom: 6px;
 }
 .howto-step span { color: #aaa; font-size: 13px; line-height: 1.5; }
+
+/* --- TELEFONO: due prodotti per riga, filtri scorrevoli --- */
+@media (max-width: 520px) {
+    .shop-page { padding: 34px 18px 10px; }
+    .shop-filters {
+        flex-wrap: nowrap;
+        overflow-x: auto;
+        margin: 0 -18px 22px;
+        padding: 0 18px 4px;
+        scrollbar-width: none;
+    }
+    .shop-filters::-webkit-scrollbar { display: none; }
+    .shop-filter { flex: 0 0 auto; }
+    .products { grid-template-columns: 1fr 1fr; gap: 10px; }
+    .product-card { border-radius: 16px; }
+    .product-badge { top: 8px; left: 8px; font-size: 9px; padding: 4px 8px; }
+    .product-info { padding: 12px 12px 12px; }
+    .product-info h3 { font-size: 19px; margin-bottom: 6px; }
+    .product-desc { display: none; }
+    .product-bottom { flex-direction: column; align-items: stretch; gap: 8px; margin-top: auto; }
+    .price { font-size: 24px; }
+    .btn-order { justify-content: center; padding: 10px 8px; font-size: 17px; }
+    .shop-howto { margin-top: 34px; gap: 10px; }
+    .howto-step { padding: 14px 16px; }
+}
 </style>
 </head>
 <body>

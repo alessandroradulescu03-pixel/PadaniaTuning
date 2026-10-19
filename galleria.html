@@ -81,8 +81,24 @@
 
   @media (max-width: 520px) {
     .page-head { padding: 36px 0 22px; }
-    .albums { grid-template-columns: 1fr; }
+    .albums { grid-template-columns: 1fr; gap: 12px; }
+    .album { min-height: 0; padding: 18px; }
+    .album h2 { font-size: 32px; margin: 14px 0 16px; }
+    .album-num { font-size: 130px; bottom: -20px; }
   }
+  @media (max-width: 520px) {
+    .filters {
+      flex-wrap: nowrap;
+      overflow-x: auto;
+      margin-left: -18px; margin-right: -18px;
+      padding: 0 18px 4px;
+      scrollbar-width: none;
+      -webkit-overflow-scrolling: touch;
+    }
+    .filters::-webkit-scrollbar { display: none; }
+    .filters > * { flex: 0 0 auto; }
+  }
+
 </style>
 </head>
 <body>
