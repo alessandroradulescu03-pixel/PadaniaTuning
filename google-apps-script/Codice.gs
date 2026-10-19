@@ -91,7 +91,6 @@ var INSTAGRAM_URL = 'https://www.instagram.com/padaniatuning/';
 
 function inviaConferma(d) {
   var targa = (d.veicoli[0] && d.veicoli[0].targa) || '';
-  var qr = 'https://api.qrserver.com/v1/create-qr-code/?size=360x360&margin=0&data=' + encodeURIComponent(targa);
 
   // Data per il riquadro argento (es. "Sabato 7 Novembre 2026" -> 07 / NOV / 2026)
   var m = EVENTO.data.match(/(\d{1,2})\s+(\w+)\s+(\d{4})/);
@@ -200,14 +199,18 @@ function inviaConferma(d) {
       '</tr></table>' +
     '</td></tr>' +
 
-    // QR
+    // QR: uno per ogni auto candidata (ogni QR contiene la targa di quell'auto)
     '<tr><td align="center" style="padding:24px 26px 6px">' +
-      '<h2 class="em-text" style="' + h + ';text-align:center">Il tuo QR d\'ingresso</h2>' +
-      '<table role="presentation" cellpadding="0" cellspacing="0" style="background:#ffffff;border-radius:16px;border:1px solid #d9d9df"><tr><td align="center" style="padding:16px">' +
-        '<img src="' + qr + '" width="180" height="180" alt="QR Code ' + esc(targa) + '" style="display:block">' +
-        '<div style="margin-top:12px;display:inline-block;padding:6px 14px;background:#ffffff;border:2px solid #222;border-left:14px solid #003399;border-right:14px solid #003399;border-radius:6px;' + F + 'font-size:22px;font-weight:bold;letter-spacing:3px;color:#111">' + esc(targa) + '</div>' +
-      '</td></tr></table>' +
-      '<p class="em-muted" style="' + p + ';font-size:13px;color:' + C.muted + ';margin-top:12px;text-align:center">Valido per l\'area espositiva solo in caso di selezione. Tienilo a portata di mano.</p>' +
+      '<h2 class="em-text" style="' + h + ';text-align:center">' + (d.veicoli.length > 1 ? 'I tuoi QR d\'ingresso' : 'Il tuo QR d\'ingresso') + '</h2>' +
+      (d.veicoli.length > 1 ? '<p class="em-soft" style="' + p + ';text-align:center;margin-top:-4px">Un QR per ogni auto: all\'ingresso mostra quello dell\'auto con cui stai entrando.</p>' : '') +
+      d.veicoli.map(function (v, i) {
+        var qrAuto = 'https://api.qrserver.com/v1/create-qr-code/?size=360x360&margin=0&data=' + encodeURIComponent(v.targa || '');
+        return '<table role="presentation" cellpadding="0" cellspacing="0" style="margin:0 auto 14px;background:#ffffff;border-radius:16px;border:1px solid #d9d9df"><tr><td align="center" style="padding:16px">' +
+          '<img src="' + qrAuto + '" width="180" height="180" alt="QR Code veicolo ' + (i + 1) + '" style="display:block">' +
+          (d.veicoli.length > 1 ? '<div style="margin-top:10px;' + F + 'font-size:18px;font-weight:800;font-style:italic;color:#111">Veicolo ' + (i + 1) + ' &middot; ' + esc(v.marca + ' ' + v.modello) + '</div>' : '') +
+        '</td></tr></table>';
+      }).join('') +
+      '<p class="em-muted" style="' + p + ';font-size:13px;color:' + C.muted + ';margin-top:2px;text-align:center">Valido per l\'area espositiva solo in caso di selezione. Tienilo a portata di mano.</p>' +
     '</td></tr>' +
 
     // RIEPILOGO
