@@ -6,408 +6,594 @@
 <title>Iscrizione evento Qi Clubbing — Padania Tuning</title>
 <link rel="icon" href="assets/img/logo.jpg">
 <link rel="stylesheet" href="assets/css/site.css">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:ital,wght@0,600;0,700;0,800;1,800;1,900&family=Barlow:wght@400;500;600;700&display=swap" rel="stylesheet">
 <style>
-@import url('https://fonts.googleapis.com/css2?family=Barlow:ital,wght@0,400;0,700;1,900&display=swap');
+/* =========================================================
+   FORM ISCRIZIONE — stile "pass d'ingresso"
+   ========================================================= */
+.qi {
+  --pink: #ff69b4;
+  --pink-soft: rgba(255, 105, 180, 0.14);
+  --panel: #141216;
+  --panel-2: #1b181e;
+  --line: rgba(255, 255, 255, 0.09);
+  --text: #f4f2f5;
+  --muted: #9a94a0;
+  --error: #ff5a5a;
+  --plate: #f5f5f2;
+  --eu: #003399;
+  --cond: 'Barlow Condensed', 'Arial Narrow', sans-serif;
+  --body: 'Barlow', Arial, sans-serif;
 
-/* --- FIX UNIVERSALE MOBILE --- */
-.qi-event-container * {
-  box-sizing: border-box;
-  -webkit-tap-highlight-color: transparent;
+  max-width: 620px;
+  margin: 0 auto;
+  padding: 34px 16px 10px;
+  font-family: var(--body);
+  color: var(--text);
+}
+.qi *, .qi *::before, .qi *::after { box-sizing: border-box; }
+
+/* ---------- PASS D'INGRESSO ---------- */
+.pass {
+  position: relative;
+  border-radius: 22px;
+  overflow: hidden;
+  background: var(--panel);
+  border: 1px solid var(--line);
+  box-shadow: 0 30px 60px -20px rgba(255, 105, 180, 0.25);
 }
 
-.qi-event-container {
-  --neon-green: #ff69b4;
-  font-family: 'Barlow', sans-serif;
-  max-width: 650px;
-  margin: 40px auto !important;
-  padding: 0 20px;
-  color: #fff;
+.pass-top {
+  position: relative;
+  padding: 26px 24px 30px;
+  background:
+    linear-gradient(180deg, rgba(10, 8, 12, 0.35) 0%, rgba(20, 18, 22, 0.92) 78%, var(--panel) 100%),
+    url('assets/img/form-bg.jpg') center 35% / cover no-repeat;
 }
 
-/* Logo in alto */
-.qi-logo {
-  display: block;
-  width: 110px;
-  height: 110px;
-  object-fit: cover;
-  border-radius: 50%;
-  margin: 0 auto 10px;
-  border: 1px solid rgba(255,255,255,0.15);
-}
-
-/* Visibilità Step */
-.form-step-hidden { display: none !important; }
-.form-step-active { display: block !important; animation: fadeIn 0.4s ease-out; }
-
-@keyframes fadeIn {
-  from { opacity: 0; }
-  to { opacity: 1; }
-}
-
-/* --- HEADER & TITOLI --- */
-.header-club { text-align: center; margin-bottom: 25px; }
-
-.header-club h1 {
-  font-size: clamp(32px, 8vw, 44px);
-  font-weight: 900;
-  font-style: italic;
-  margin: 10px 0;
-  line-height: 1.1;
-  letter-spacing: -0.5px;
-}
-
-.neon-green-text {
-  color: var(--neon-green);
-  text-shadow: 0 0 10px rgba(255, 105, 180, 0.4);
-}
-
-.live-indicator {
-  font-size: 11px;
-  letter-spacing: 2px;
-  font-weight: 700;
+.pass-live {
   display: inline-flex;
   align-items: center;
-  gap: 6px;
-  background: rgba(255,255,255,0.07);
-  padding: 4px 10px;
-  border-radius: 20px;
-  margin-bottom: 5px;
+  gap: 7px;
+  font-size: 12px;
+  font-weight: 600;
+  color: #e9e6ea;
+  background: rgba(0, 0, 0, 0.5);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  padding: 5px 11px;
+  border-radius: 100px;
+  backdrop-filter: blur(6px);
 }
+.pass-live i {
+  width: 7px; height: 7px; border-radius: 50%;
+  background: #35e06f; box-shadow: 0 0 8px #35e06f;
+  animation: blink 2s ease-in-out infinite;
+}
+@keyframes blink { 50% { opacity: 0.35; } }
 
-.live-indicator .dot {
-  width: 8px;
-  height: 8px;
-  background: #00ff00;
+.pass-title {
+  font-family: var(--cond);
+  font-style: italic;
+  font-weight: 900;
+  font-size: clamp(54px, 15vw, 84px);
+  line-height: 0.86;
+  letter-spacing: -1px;
+  text-transform: uppercase;
+  margin: 18px 0 6px;
+}
+.pass-title span { display: block; }
+.pass-title .stroke { color: transparent; -webkit-text-stroke: 1.5px var(--pink); }
+
+.pass-sub { margin: 0; color: #cfc9d3; font-size: 15px; }
+
+/* striscia perforata */
+.pass-tear {
+  position: relative;
+  height: 0;
+  border-top: 2px dashed rgba(255, 255, 255, 0.14);
+  margin: 0 22px;
+}
+.pass-tear::before, .pass-tear::after {
+  content: '';
+  position: absolute;
+  top: -15px;
+  width: 28px; height: 28px;
   border-radius: 50%;
-  box-shadow: 0 0 8px #00ff00;
+  background: #0a0a0a;
+  border: 1px solid var(--line);
 }
+.pass-tear::before { left: -38px; }
+.pass-tear::after { right: -38px; }
 
-.status-badge {
-  font-size: 11px;
-  letter-spacing: 2px;
-  font-weight: 700;
-  color: var(--neon-green);
-}
-
-.event-detail {
-  font-size: 14px;
-  line-height: 1.5;
-  opacity: 0.85;
-  margin-top: 10px;
-}
-
-/* --- PANNELLO PRINCIPALE --- */
-.step-panel-bg {
-  padding: 25px;
-  border-radius: 20px;
-  background-image:
-    linear-gradient(rgba(0,0,0,0.72), rgba(0,0,0,0.88)),
-    url('assets/img/form-bg.jpg');
-  background-size: cover;
-  background-position: center;
-  background-repeat: no-repeat;
-  border: 1px solid rgba(255, 105, 180, 0.25);
-  box-shadow: 0 15px 35px rgba(0,0,0,0.5);
-}
-
-/* --- GRIGLIE DI INPUT --- */
-.input-grid-main,
-.v-grid {
+.pass-info {
   display: grid;
-  grid-template-columns: repeat(2, 1fr);
-  gap: 15px;
+  grid-template-columns: auto 1fr;
+  gap: 18px;
+  align-items: center;
+  padding: 22px 24px 24px;
+}
+.pass-date {
+  text-align: center;
+  font-family: var(--cond);
+  line-height: 0.9;
+  padding: 10px 14px 9px;
+  border-radius: 14px;
+  background: var(--pink);
+  color: #1a0010;
+  min-width: 82px;
+}
+.pass-date b { display: block; font-size: 44px; font-weight: 800; }
+.pass-date small { display: block; font-size: 17px; font-weight: 700; text-transform: uppercase; }
+.pass-date em { display: block; font-style: normal; font-size: 13px; font-weight: 600; opacity: 0.75; margin-top: 3px; }
+
+.pass-where b { display: block; font-family: var(--cond); font-size: 24px; font-weight: 700; line-height: 1.05; }
+.pass-where span { display: block; color: var(--muted); font-size: 14px; margin-top: 3px; }
+.pass-where .times { color: var(--text); font-weight: 600; margin-top: 8px; }
+
+.pass-perks {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  padding: 0 24px 24px;
+  margin: 0;
+  list-style: none;
+}
+.pass-perks li {
+  font-size: 13px;
+  font-weight: 600;
+  padding: 7px 12px;
+  border-radius: 100px;
+  background: var(--pink-soft);
+  color: #ffd1e8;
+  border: 1px solid rgba(255, 105, 180, 0.25);
 }
 
-.v-grid { grid-template-columns: repeat(3, 1fr); }
+/* ---------- AVANZAMENTO ---------- */
+.steps {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+  margin: 28px 0 18px;
+  padding: 0;
+  list-style: none;
+}
+.steps li {
+  font-family: var(--cond);
+  font-size: 17px;
+  font-weight: 700;
+  color: var(--muted);
+  padding-top: 10px;
+  border-top: 3px solid rgba(255, 255, 255, 0.12);
+  transition: color 0.3s, border-color 0.3s;
+}
+.steps li b { font-weight: 800; margin-right: 6px; }
+.steps li.on { color: var(--text); border-color: var(--pink); }
+.steps li.done { color: #d9d4dc; border-color: rgba(255, 105, 180, 0.5); }
 
-.full-row { grid-column: 1 / -1; }
+/* ---------- PANNELLO ---------- */
+.panel {
+  background: var(--panel);
+  border: 1px solid var(--line);
+  border-radius: 22px;
+  padding: 24px;
+}
+.panel h2 {
+  font-family: var(--cond);
+  font-size: 30px;
+  font-weight: 800;
+  font-style: italic;
+  margin: 0 0 4px;
+  line-height: 1;
+}
+.panel-intro { color: var(--muted); font-size: 14px; margin: 0 0 22px; }
 
-/* --- CAMPI INPUT --- */
-.qi-event-container input:not([type="checkbox"]):not([type="file"]),
-.qi-event-container textarea,
-.qi-event-container select {
-  background: rgba(0,0,0,0.6);
-  border: 1px solid rgba(255,255,255,0.12);
-  color: #fff;
-  border-radius: 10px;
-  padding: 14px 12px;
+.form-step { display: none; }
+.form-step.active { display: block; animation: stepIn 0.35s ease-out; }
+@keyframes stepIn { from { opacity: 0; transform: translateX(14px); } to { opacity: 1; transform: none; } }
+
+.grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+.full { grid-column: 1 / -1; }
+
+/* ---------- CAMPI ---------- */
+.fld { display: block; }
+.fld > span {
+  display: block;
+  font-size: 13px;
+  font-weight: 600;
+  color: #cfc9d3;
+  margin-bottom: 7px;
+}
+.fld > span em { font-style: normal; color: var(--pink); margin-left: 2px; }
+.fld > span small { font-weight: 400; color: var(--muted); }
+
+.qi input[type="text"],
+.qi input[type="tel"],
+.qi input[type="email"],
+.qi textarea,
+.qi select {
   width: 100%;
   margin: 0;
+  font-family: var(--body);
   font-size: 16px;
-  font-family: 'Barlow', sans-serif;
-  transition: border-color 0.2s, box-shadow 0.2s;
+  color: var(--text);
+  background: var(--panel-2);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 12px;
+  padding: 13px 14px;
+  transition: border-color 0.2s, box-shadow 0.2s, background 0.2s;
+  -webkit-appearance: none;
+  appearance: none;
 }
-
-.qi-event-container select option { background: #111; color: #fff; }
-
-.qi-event-container input:focus,
-.qi-event-container textarea:focus,
-.qi-event-container select:focus {
-  border-color: rgba(255, 105, 180, 0.5);
-  box-shadow: 0 0 10px rgba(255, 105, 180, 0.15);
+.qi input::placeholder, .qi textarea::placeholder { color: #6f6975; }
+.qi input:focus, .qi textarea:focus, .qi select:focus {
   outline: none;
+  border-color: var(--pink);
+  background: #201c23;
+  box-shadow: 0 0 0 4px rgba(255, 105, 180, 0.15);
 }
-
-.qi-event-container .field-invalid { border-color: #ff4d4d !important; box-shadow: 0 0 10px rgba(255,77,77,0.25) !important; }
-
-.field-item { display: block; width: 100%; }
-.field-item + .field-item.full-row { margin-top: 15px; }
-
-textarea { resize: vertical; min-height: 90px; }
-
-/* --- CARTE VEICOLI (STEP 2) --- */
-.v-card {
-  background: rgba(255, 255, 255, 0.03);
-  border: 1px solid rgba(255, 255, 255, 0.05);
-  padding: 18px;
-  border-radius: 14px;
-  margin-top: 20px;
+.qi textarea { resize: vertical; min-height: 96px; line-height: 1.45; }
+.qi select {
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='14' height='14' viewBox='0 0 24 24' fill='none' stroke='%23ff69b4' stroke-width='3' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 14px center;
+  padding-right: 40px;
 }
+.qi select option { background: #1b181e; }
 
-.v-tag {
-  font-size: 11px;
-  font-weight: 900;
-  letter-spacing: 1.5px;
-  background: rgba(255, 105, 180, 0.15);
-  color: var(--neon-green);
-  display: inline-block;
-  padding: 3px 10px;
-  border-radius: 6px;
-  margin-bottom: 15px;
-}
+.qi .field-invalid,
+.qi .field-invalid:focus { border-color: var(--error) !important; box-shadow: 0 0 0 4px rgba(255, 90, 90, 0.14) !important; }
 
-.v-upload { margin-top: 12px; }
-
-.v-upload label {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  cursor: pointer;
-  font-size: 14px;
-  color: #ccc;
-  border: 1px dashed rgba(255,255,255,0.2);
-  border-radius: 10px;
-  padding: 12px;
-}
-
-.v-upload label:hover { border-color: rgba(255,105,180,0.5); }
-.v-upload input[type="file"] { position: absolute; width: 1px; height: 1px; opacity: 0; }
-.v-upload .file-name { color: var(--neon-green); font-weight: 700; word-break: break-all; }
-
-/* --- LABEL NEON --- */
-.label-neon {
-  display: block;
-  margin: 15px 0 10px 0;
-  font-size: 12px;
+.ig-wrap { position: relative; }
+.ig-wrap::before {
+  content: '@';
+  position: absolute;
+  left: 14px; top: 50%;
+  transform: translateY(-50%);
+  color: var(--pink);
   font-weight: 700;
-  color: var(--neon-green);
-  text-transform: uppercase;
-  letter-spacing: 1px;
 }
+.ig-wrap input { padding-left: 32px !important; }
 
-/* --- PRIVACY --- */
-.privacy-row {
-  display: flex;
-  gap: 10px;
-  align-items: flex-start;
-  margin-top: 18px;
-  font-size: 13px;
-  color: #bbb;
-  line-height: 1.45;
+/* ---------- NUMERO VEICOLI ---------- */
+.count {
+  display: grid;
+  grid-template-columns: repeat(6, 1fr);
+  gap: 8px;
+  margin-bottom: 6px;
 }
-.privacy-row input { margin-top: 3px; width: 18px; height: 18px; accent-color: var(--neon-green); flex-shrink: 0; }
-
-/* --- NAVIGATION & BOTTONI --- */
-.footer-nav {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  margin-top: 25px;
-  gap: 12px;
-}
-
-.btn-next-link,
-.btn-submit {
+.count input { position: absolute; opacity: 0; pointer-events: none; }
+.count label {
   display: flex;
   align-items: center;
   justify-content: center;
-  width: 100%;
-  max-width: 320px;
-  height: 52px;
-  background: var(--neon-green);
-  color: #000;
-  font-family: 'Barlow', sans-serif;
-  font-weight: 900;
-  text-transform: uppercase;
+  height: 50px;
   border-radius: 12px;
-  font-size: 15px;
-  letter-spacing: 1px;
-  text-decoration: none;
-  border: none;
+  background: var(--panel-2);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  font-family: var(--cond);
+  font-size: 24px;
+  font-weight: 800;
+  color: var(--muted);
   cursor: pointer;
-  transition: transform 0.1s ease, filter 0.2s, opacity 0.2s;
-  box-shadow: 0 4px 15px rgba(255, 105, 180, 0.3);
+  transition: all 0.2s;
 }
+.count label:hover { color: var(--text); border-color: rgba(255, 255, 255, 0.25); }
+.count input:checked + label { background: var(--pink); border-color: var(--pink); color: #1a0010; }
+.count input:focus-visible + label { box-shadow: 0 0 0 4px rgba(255, 105, 180, 0.3); }
 
-.btn-next-link:active,
-.btn-submit:active { transform: scale(0.97); }
-.btn-submit[disabled] { opacity: 0.6; cursor: wait; }
+/* ---------- SCHEDA VEICOLO ---------- */
+.car {
+  margin-top: 16px;
+  padding: 18px;
+  border-radius: 18px;
+  background: linear-gradient(160deg, #1d1a20 0%, #151317 100%);
+  border: 1px solid var(--line);
+}
+.car-head {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  margin-bottom: 14px;
+}
+.car-head b { font-family: var(--cond); font-size: 22px; font-weight: 800; font-style: italic; }
+.car-head span { font-size: 12px; color: var(--muted); }
 
-.btn-back {
-  color: #aaa;
-  font-size: 12px;
+.car-row { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+
+/* Targa italiana */
+.plate {
+  display: flex;
+  align-items: stretch;
+  height: 58px;
+  margin-top: 14px;
+  border-radius: 9px;
+  overflow: hidden;
+  background: var(--plate);
+  border: 2px solid #222;
+  box-shadow: inset 0 0 0 2px #fff, 0 6px 16px rgba(0, 0, 0, 0.4);
+}
+.plate-eu, .plate-side {
+  flex: 0 0 38px;
+  background: var(--eu);
+  color: #fff;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-end;
+  padding-bottom: 6px;
+  font-family: var(--cond);
   font-weight: 700;
+  font-size: 18px;
+  line-height: 1;
+}
+.plate-eu::before {
+  content: '';
+  width: 18px; height: 18px;
+  margin-bottom: 6px;
+  border-radius: 50%;
+  background:
+    radial-gradient(circle, transparent 54%, #ffcc00 56%, #ffcc00 70%, transparent 72%);
+  opacity: 0.95;
+}
+.plate-side { justify-content: center; padding: 0; font-size: 11px; }
+.plate input[type="text"] {
+  flex: 1;
+  min-width: 0;
+  height: 100%;
+  border: 0 !important;
+  border-radius: 0 !important;
+  background: transparent !important;
+  box-shadow: none !important;
+  text-align: center;
+  font-family: var(--cond);
+  font-size: 30px;
+  font-weight: 700;
+  letter-spacing: 3px;
+  text-transform: uppercase;
+  color: #111 !important;
+  padding: 0 6px !important;
+}
+.plate input::placeholder { color: #b9b9b5; letter-spacing: 3px; }
+.plate:focus-within { box-shadow: inset 0 0 0 2px #fff, 0 0 0 4px rgba(255, 105, 180, 0.45); }
+.plate.field-invalid { border-color: var(--error) !important; box-shadow: inset 0 0 0 2px #fff, 0 0 0 4px rgba(255, 90, 90, 0.3) !important; }
+.plate-hint { display: block; text-align: center; font-size: 12px; color: var(--muted); margin-top: 7px; }
+
+/* Foto */
+.photo {
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  margin-top: 14px;
+  padding: 12px;
+  border-radius: 14px;
+  border: 1.5px dashed rgba(255, 255, 255, 0.18);
+  cursor: pointer;
+  transition: border-color 0.2s, background 0.2s;
+}
+.photo:hover, .photo:focus-within { border-color: var(--pink); background: rgba(255, 105, 180, 0.05); }
+.photo input { position: absolute; inset: 0; opacity: 0; cursor: pointer; width: 100%; }
+.photo-thumb {
+  flex: 0 0 64px;
+  height: 64px;
+  border-radius: 10px;
+  background: var(--panel-2) center / cover no-repeat;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 24px;
+}
+.photo.has-file .photo-thumb { font-size: 0; }
+.photo-text b { display: block; font-size: 15px; font-weight: 600; }
+.photo-text span { display: block; font-size: 13px; color: var(--muted); margin-top: 2px; word-break: break-all; }
+.photo.has-file { border-style: solid; border-color: rgba(255, 105, 180, 0.5); }
+.photo.has-file .photo-text span { color: var(--pink); }
+.photo.field-invalid { border-color: var(--error); }
+
+/* ---------- ALTRI CAMPI ---------- */
+.extra { display: grid; gap: 16px; margin-top: 24px; }
+
+.privacy {
+  display: flex;
+  gap: 12px;
+  align-items: flex-start;
+  margin-top: 22px;
+  padding: 14px;
+  border-radius: 14px;
+  background: var(--panel-2);
+  border: 1px solid transparent;
+  font-size: 14px;
+  color: #cfc9d3;
+  line-height: 1.45;
+  cursor: pointer;
+}
+.privacy input { width: 20px; height: 20px; margin: 1px 0 0; accent-color: var(--pink); flex-shrink: 0; }
+.privacy.field-invalid { border-color: var(--error); }
+
+/* ---------- BOTTONI ---------- */
+.actions { display: flex; flex-direction: column; align-items: center; gap: 6px; margin-top: 24px; }
+
+.btn-main {
+  position: relative;
+  overflow: hidden;
+  width: 100%;
+  height: 58px;
+  border: 0;
+  border-radius: 14px;
+  background: var(--pink);
+  color: #1a0010;
+  font-family: var(--cond);
+  font-size: 22px;
+  font-weight: 800;
+  font-style: italic;
   letter-spacing: 0.5px;
   cursor: pointer;
-  text-decoration: underline;
-  padding: 10px;
-  order: 2;
-  background: none;
-  border: none;
-  font-family: 'Barlow', sans-serif;
+  box-shadow: 0 12px 30px -8px rgba(255, 105, 180, 0.6);
+  transition: transform 0.12s, filter 0.2s;
 }
+.btn-main:hover { filter: brightness(1.06); }
+.btn-main:active { transform: scale(0.98); }
+.btn-main:focus-visible { outline: 3px solid #fff; outline-offset: 3px; }
+.btn-main::after {
+  content: '';
+  position: absolute;
+  top: -50%; left: -60%;
+  width: 18%; height: 200%;
+  background: rgba(255, 255, 255, 0.35);
+  transform: rotate(25deg);
+  animation: shine 4.5s ease-in-out infinite;
+}
+@keyframes shine { 0% { left: -60%; } 22%, 100% { left: 130%; } }
+.btn-main[disabled] { opacity: 0.65; cursor: wait; }
+.btn-main[disabled]::after { display: none; }
+
+.btn-back {
+  background: none;
+  border: 0;
+  color: var(--muted);
+  font-family: var(--body);
+  font-size: 14px;
+  font-weight: 600;
+  padding: 10px;
+  cursor: pointer;
+}
+.btn-back:hover { color: var(--text); }
 
 .form-msg {
   display: none;
-  margin-top: 14px;
+  margin-top: 16px;
   padding: 12px 14px;
-  border-radius: 10px;
+  border-radius: 12px;
   font-size: 14px;
-  line-height: 1.4;
-  text-align: center;
-  background: rgba(255, 77, 77, 0.12);
-  border: 1px solid rgba(255, 77, 77, 0.4);
-  color: #ffb3b3;
+  line-height: 1.45;
+  background: rgba(255, 90, 90, 0.1);
+  border: 1px solid rgba(255, 90, 90, 0.35);
+  color: #ffc2c2;
 }
 .form-msg.show { display: block; }
 
-.closed-box {
+.closed {
   text-align: center;
-  padding: 30px 10px;
+  padding: 26px 8px;
   font-size: 16px;
   line-height: 1.5;
 }
+.closed b { display: block; font-family: var(--cond); font-size: 30px; font-style: italic; margin-bottom: 6px; }
 
-/* --- SHINE EFFECT --- */
-.shine-effect { position: relative; overflow: hidden; }
-
-.shine-effect::after {
-  content: '';
-  position: absolute;
-  top: -50%;
-  left: -60%;
-  width: 20%;
-  height: 200%;
-  background: rgba(255,255,255,0.25);
-  transform: rotate(30deg);
-  animation: shine 4s infinite;
-}
-
-@keyframes shine {
-  0% { left: -60%; }
-  20%, 100% { left: 120%; }
-}
-
-/* Campo anti-spam: invisibile alle persone */
 .hp-field { position: absolute; left: -9999px; width: 1px; height: 1px; overflow: hidden; }
 
-/* --- SMARTPHONE --- */
-@media (max-width: 500px) {
-  .qi-event-container { margin: 15px auto !important; padding: 0 10px; }
-  .step-panel-bg { padding: 18px 14px; border-radius: 16px; }
-  .input-grid-main, .v-grid { grid-template-columns: 1fr; gap: 12px; }
-  .btn-next-link, .btn-submit { max-width: 100%; }
-  .event-detail { font-size: 13px; }
+@media (max-width: 520px) {
+  .qi { padding-top: 18px; }
+  .pass-top { padding: 22px 18px 26px; }
+  .pass-info { padding: 20px 18px 22px; gap: 14px; }
+  .pass-perks { padding: 0 18px 20px; }
+  .pass-tear { margin: 0 16px; }
+  .pass-tear::before { left: -32px; } .pass-tear::after { right: -32px; }
+  .panel { padding: 20px 16px; border-radius: 18px; }
+  .grid-2 { grid-template-columns: 1fr; }
+  .car { padding: 16px 14px; }
+  .count { gap: 6px; }
+  .count label { height: 46px; font-size: 22px; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .qi *, .qi *::before, .qi *::after { animation: none !important; transition: none !important; }
 }
 </style>
 </head>
 <body>
 
-<div class="qi-event-container">
-  <form id="qiForm" class="form-content-wrapper" novalidate>
+<div class="qi">
+
+  <!-- PASS D'INGRESSO -->
+  <section class="pass" aria-label="Dettagli evento">
+    <div class="pass-top">
+      <span class="pass-live"><i></i> Selezione auto aperta</span>
+      <h1 class="pass-title"><span>Entry</span><span class="stroke">List</span></h1>
+      <p class="pass-sub">Candida la tua auto per l'area espositiva Padania Tuning.</p>
+    </div>
+    <div class="pass-tear"></div>
+    <div class="pass-info">
+      <div class="pass-date" id="passDate"></div>
+      <div class="pass-where" id="passWhere"></div>
+    </div>
+    <ul class="pass-perks" id="passPerks"></ul>
+  </section>
+
+  <ol class="steps" id="steps">
+    <li class="on"><b>1</b>Il pilota</li>
+    <li><b>2</b>Il garage</li>
+  </ol>
+
+  <form id="qiForm" class="panel" novalidate>
 
     <div class="hp-field" aria-hidden="true">
       <label>Non compilare <input type="text" name="sito_web" tabindex="-1" autocomplete="off"></label>
     </div>
 
-    <!-- STEP 1: PROFILO -->
-    <div id="step-1" class="form-step-active">
-      <div class="header-club">
-        <img src="assets/img/logo.jpg" alt="Padania Tuning" class="qi-logo">
-        <div class="live-indicator"><span class="dot"></span> LIVE SELECTION</div>
-        <h1>
-          <span style="color: #ffffff;">ENTRY</span> <span class="neon-green-text">LIST</span>
-        </h1>
+    <!-- STEP 1 -->
+    <div id="step-1" class="form-step active">
+      <h2>Chi sei?</h2>
+      <p class="panel-intro">Ti scriveremo qui l'esito della selezione.</p>
 
-        <p class="event-detail" id="eventDetail"></p>
+      <div class="grid-2">
+        <label class="fld"><span>Nome<em>*</em></span><input type="text" name="nome" required autocomplete="given-name"></label>
+        <label class="fld"><span>Cognome<em>*</em></span><input type="text" name="cognome" required autocomplete="family-name"></label>
+        <label class="fld"><span>Telefono<em>*</em></span><input type="tel" name="telefono" required autocomplete="tel" inputmode="tel"></label>
+        <label class="fld"><span>Email<em>*</em></span><input type="email" name="email" required autocomplete="email" inputmode="email"></label>
+        <label class="fld full"><span>Instagram <small>(facoltativo)</small></span><div class="ig-wrap"><input type="text" name="instagram" placeholder="tuoprofilo" autocapitalize="off"></div></label>
       </div>
 
-      <div class="step-panel-bg shadow-pulse">
-        <div class="input-grid-main">
-          <div class="field-item"><input type="text" name="nome" placeholder="Nome" required autocomplete="given-name"></div>
-          <div class="field-item"><input type="text" name="cognome" placeholder="Cognome" required autocomplete="family-name"></div>
-          <div class="field-item"><input type="tel" name="telefono" placeholder="Telefono" required autocomplete="tel"></div>
-          <div class="field-item"><input type="email" name="email" placeholder="Indirizzo Email" required autocomplete="email"></div>
-          <div class="field-item full-row"><input type="text" name="instagram" placeholder="Instagram"></div>
-        </div>
-        <div class="form-msg" id="msg-1"></div>
-        <div class="footer-nav">
-          <button type="button" class="btn-next-link shine-effect" onclick="nextStep(2)"> PASSA AL VEICOLO → </button>
-        </div>
+      <div class="form-msg" id="msg-1" role="alert"></div>
+
+      <div class="actions">
+        <button type="button" class="btn-main" onclick="nextStep(2)">Passa al garage</button>
       </div>
     </div>
 
-    <!-- STEP 2: GARAGE -->
-    <div id="step-2" class="form-step-hidden">
-      <div class="header-club">
-        <div class="status-badge">RESERVED AREA</div>
-        <h1>
-          <span style="color: #ffffff;">IL TUO</span> <span class="neon-green-text">GARAGE</span>
-        </h1>
+    <!-- STEP 2 -->
+    <div id="step-2" class="form-step">
+      <h2>Il tuo garage</h2>
+      <p class="panel-intro">Quante auto vuoi candidare?</p>
+
+      <div class="count" role="radiogroup" aria-label="Numero di veicoli">
+        <input type="radio" name="numero_veicoli" id="nv1" value="1" checked><label for="nv1">1</label>
+        <input type="radio" name="numero_veicoli" id="nv2" value="2"><label for="nv2">2</label>
+        <input type="radio" name="numero_veicoli" id="nv3" value="3"><label for="nv3">3</label>
+        <input type="radio" name="numero_veicoli" id="nv4" value="4"><label for="nv4">4</label>
+        <input type="radio" name="numero_veicoli" id="nv5" value="5"><label for="nv5">5</label>
+        <input type="radio" name="numero_veicoli" id="nv6" value="6"><label for="nv6">6</label>
       </div>
 
-      <div class="step-panel-bg shadow-pulse">
-        <div class="selection-box">
-          <label class="label-neon" for="num-veicoli">QUANTI MEZZI VUOI ESPORRE?</label>
-          <select name="numero_veicoli" id="num-veicoli">
-            <option>1</option><option>2</option><option>3</option>
-            <option>4</option><option>5</option><option>6</option>
-          </select>
-        </div>
+      <div id="vehicle-list"></div>
 
-        <div id="vehicle-list"></div>
-
-        <div class="field-item full-row" style="margin-top:15px;">
-          <textarea name="modifiche" placeholder="Descrizione estetica e modifiche principali"></textarea>
-        </div>
-        <div class="field-item full-row" style="margin-top:15px;">
-          <textarea name="club" placeholder="Fai parte di un club oppure sei indipendente? Scrivi il nome del club oppure 'indipendente'"></textarea>
-        </div>
-        <div class="field-item full-row">
-          <label class="label-neon" for="conoscenza"> COME HAI CONOSCIUTO PADANIA TUNING? </label>
+      <div class="extra">
+        <label class="fld"><span>Modifiche ed estetica</span><textarea name="modifiche" placeholder="Assetto, cerchi, scarico, wrap…"></textarea></label>
+        <label class="fld"><span>Fai parte di un club?</span><input type="text" name="club" placeholder="Nome del club, oppure “indipendente”"></label>
+        <label class="fld"><span>Come hai conosciuto Padania Tuning?</span>
           <select name="conoscenza" id="conoscenza">
-            <option value="">Seleziona un'opzione</option>
+            <option value="">Scegli un'opzione</option>
             <option>Social</option>
             <option>Passaparola</option>
             <option>Locandina</option>
             <option>Altro</option>
           </select>
-          <div id="altro-conoscenza-box" style="display:none; margin-top:10px;">
-            <input type="text" name="altro_conoscenza" placeholder="Scrivi dove ci hai conosciuto">
-          </div>
-        </div>
-
-        <label class="privacy-row">
-          <input type="checkbox" name="privacy" required>
-          <span>Acconsento al trattamento dei miei dati da parte di Padania Tuning per la gestione della candidatura all'evento.</span>
         </label>
+        <label class="fld" id="altro-conoscenza-box" style="display:none"><span>Dove ci hai conosciuto?</span><input type="text" name="altro_conoscenza"></label>
+      </div>
 
-        <div class="form-msg" id="msg-2"></div>
+      <label class="privacy">
+        <input type="checkbox" name="privacy" required>
+        <span>Acconsento al trattamento dei miei dati da parte di Padania Tuning per gestire la candidatura all'evento.</span>
+      </label>
 
-        <div class="footer-nav">
-          <button type="button" class="btn-back" onclick="nextStep(1)"> ← TORNA AL PROFILO </button>
-          <button type="submit" id="submit-btn" class="btn-submit shine-effect">CI SONO!</button>
-        </div>
+      <div class="form-msg" id="msg-2" role="alert"></div>
+
+      <div class="actions">
+        <button type="submit" id="submit-btn" class="btn-main">Invia la candidatura</button>
+        <button type="button" class="btn-back" onclick="nextStep(1)">← Torna ai tuoi dati</button>
       </div>
     </div>
 
@@ -423,65 +609,98 @@ textarea { resize: vertical; min-height: 90px; }
   var form = document.getElementById('qiForm');
   var MAX_VEICOLI = 6;
 
-  // --- Dettagli evento (da config.js) ---
-  document.getElementById('eventDetail').innerHTML =
-    '<strong>' + EV.luogo + ' — ' + EV.indirizzo + '</strong><br>' +
-    EV.data + '<br>' +
-    'Raduno ' + EV.orarioRaduno + ' · ' + EV.orarioSerata + ' inizia la serata al ' + EV.luogo;
+  // --- Pass d'ingresso (dati da config.js) ---
+  var MESI = ['gen', 'feb', 'mar', 'apr', 'mag', 'giu', 'lug', 'ago', 'set', 'ott', 'nov', 'dic'];
+  var m = EV.data.match(/(\d{1,2})\s+(\w+)\s+(\d{4})/);
+  var giorno = EV.data.split(' ')[0];
+  document.getElementById('passDate').innerHTML = m
+    ? '<b>' + ('0' + m[1]).slice(-2) + '</b><small>' + m[2].slice(0, 3) + '</small><em>' + m[3] + '</em>'
+    : '<b>' + EV.data + '</b>';
+  document.getElementById('passWhere').innerHTML =
+    '<b>' + EV.luogo + '</b>' +
+    '<span>' + EV.indirizzo + '</span>' +
+    '<span class="times">' + giorno + ' · raduno ' + EV.orarioRaduno + ', serata ' + EV.orarioSerata + '</span>';
+  document.getElementById('passPerks').innerHTML = EV.vantaggi.map(function (v) {
+    return '<li>' + v + '</li>';
+  }).join('');
 
   // --- Iscrizioni chiuse? ---
   if (new Date() > new Date(CFG.CHIUSURA_ISCRIZIONI)) {
-    document.querySelector('#step-1 .step-panel-bg').innerHTML =
-      '<div class="closed-box">🏁 <strong>Iscrizioni chiuse.</strong><br>Seguici su Instagram per i prossimi eventi!</div>';
+    form.innerHTML = '<div class="closed"><b>Iscrizioni chiuse</b>Seguici su Instagram per i prossimi eventi.</div>';
+    document.getElementById('steps').style.display = 'none';
     return;
   }
 
-  // --- Card veicoli ---
+  // --- Schede veicolo ---
   var list = document.getElementById('vehicle-list');
   var html = '';
   for (var i = 1; i <= MAX_VEICOLI; i++) {
     html +=
-      '<div id="v-' + i + '" class="v-card"' + (i > 1 ? ' style="display:none;"' : '') + '>' +
-        '<div class="v-tag">VEICOLO ' + i + '</div>' +
-        '<div class="v-grid">' +
-          '<input type="text" name="marca_' + i + '" placeholder="Marca">' +
-          '<input type="text" name="modello_' + i + '" placeholder="Modello">' +
-          '<input type="text" name="targa_' + i + '" placeholder="Targa" style="text-transform:uppercase">' +
+      '<div id="v-' + i + '" class="car"' + (i > 1 ? ' style="display:none"' : '') + '>' +
+        '<div class="car-head"><b>Veicolo ' + i + '</b>' + (i === 1 ? '<span>foto obbligatoria</span>' : '') + '</div>' +
+        '<div class="car-row">' +
+          '<label class="fld"><span>Marca<em>*</em></span><input type="text" name="marca_' + i + '" placeholder="es. BMW"></label>' +
+          '<label class="fld"><span>Modello<em>*</em></span><input type="text" name="modello_' + i + '" placeholder="es. M3 E46"></label>' +
         '</div>' +
-        '<div class="v-upload">' +
-          '<label>📸 <span class="file-name" data-default="Carica una foto del veicolo' + (i === 1 ? ' (obbligatoria)' : '') + '">Carica una foto del veicolo' + (i === 1 ? ' (obbligatoria)' : '') + '</span>' +
-          '<input type="file" name="foto_' + i + '" accept="image/*"></label>' +
-        '</div>' +
+        '<div class="plate"><span class="plate-eu">I</span>' +
+          '<input type="text" name="targa_' + i + '" placeholder="AB 123 CD" maxlength="10" autocapitalize="characters" aria-label="Targa veicolo ' + i + '">' +
+          '<span class="plate-side"></span></div>' +
+        '<span class="plate-hint">Targa<em style="color:var(--pink);font-style:normal">*</em> · serve anche per il tuo QR d\'ingresso</span>' +
+        '<label class="photo">' +
+          '<span class="photo-thumb">📸</span>' +
+          '<span class="photo-text"><b>' + (i === 1 ? 'Carica la foto dell\'auto' : 'Aggiungi una foto') + '</b><span>JPG o PNG, anche dal telefono</span></span>' +
+          '<input type="file" name="foto_' + i + '" accept="image/*">' +
+        '</label>' +
       '</div>';
   }
   list.innerHTML = html;
 
+  // Anteprima foto
   list.addEventListener('change', function (e) {
-    if (e.target.type === 'file') {
-      var span = e.target.parentNode.querySelector('.file-name');
-      span.textContent = e.target.files[0] ? '✓ ' + e.target.files[0].name : span.dataset.default;
-      e.target.parentNode.classList.remove('field-invalid');
+    if (e.target.type !== 'file') return;
+    var box = e.target.closest('.photo');
+    var file = e.target.files[0];
+    box.classList.toggle('has-file', !!file);
+    box.classList.remove('field-invalid');
+    box.querySelector('.photo-text span').textContent = file ? file.name : 'JPG o PNG, anche dal telefono';
+    box.querySelector('.photo-text b').textContent = file ? 'Foto caricata' : 'Carica la foto dell\'auto';
+    box.querySelector('.photo-thumb').style.backgroundImage = file ? 'url(' + URL.createObjectURL(file) + ')' : '';
+  });
+
+  // Targa sempre maiuscola
+  list.addEventListener('input', function (e) {
+    if (e.target.name && e.target.name.indexOf('targa_') === 0) {
+      e.target.value = e.target.value.toUpperCase();
+      e.target.closest('.plate').classList.remove('field-invalid');
     }
   });
 
-  function numVeicoli() { return parseInt(document.getElementById('num-veicoli').value, 10); }
+  function numVeicoli() { return parseInt(form.querySelector('[name="numero_veicoli"]:checked').value, 10); }
 
-  document.getElementById('num-veicoli').addEventListener('change', function () {
-    var val = numVeicoli();
-    for (var i = 1; i <= MAX_VEICOLI; i++) {
-      document.getElementById('v-' + i).style.display = (i <= val) ? 'block' : 'none';
-    }
+  form.querySelectorAll('[name="numero_veicoli"]').forEach(function (r) {
+    r.addEventListener('change', function () {
+      var val = numVeicoli();
+      for (var i = 1; i <= MAX_VEICOLI; i++) {
+        document.getElementById('v-' + i).style.display = (i <= val) ? 'block' : 'none';
+      }
+    });
   });
 
   document.getElementById('conoscenza').addEventListener('change', function () {
     document.getElementById('altro-conoscenza-box').style.display = (this.value === 'Altro') ? 'block' : 'none';
   });
 
+  // Toglie il rosso appena si corregge un campo
+  form.addEventListener('input', function (e) { e.target.classList.remove('field-invalid'); });
+  form.addEventListener('change', function (e) {
+    if (e.target.name === 'privacy') e.target.parentNode.classList.remove('field-invalid');
+  });
+
   // --- Validazione ---
   function showMsg(step, text) {
-    var m = document.getElementById('msg-' + step);
-    m.textContent = text || '';
-    m.classList.toggle('show', !!text);
+    var el = document.getElementById('msg-' + step);
+    el.textContent = text || '';
+    el.classList.toggle('show', !!text);
   }
 
   function check(el, ok) {
@@ -492,40 +711,40 @@ textarea { resize: vertical; min-height: 90px; }
   function validaStep1() {
     var ok = true;
     ['nome', 'cognome', 'telefono'].forEach(function (n) {
-      var el = form.elements[n];
-      ok = check(el, el.value.trim() !== '') && ok;
+      ok = check(form.elements[n], form.elements[n].value.trim() !== '') && ok;
     });
     var email = form.elements.email;
     ok = check(email, /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email.value.trim())) && ok;
-    showMsg(1, ok ? '' : 'Compila tutti i campi obbligatori con dati validi.');
+    showMsg(1, ok ? '' : 'Mancano dei dati: compila nome, cognome, telefono e un\'email valida.');
     return ok;
   }
 
   function validaStep2() {
     var ok = true;
     for (var i = 1; i <= numVeicoli(); i++) {
-      ['marca_', 'modello_', 'targa_'].forEach(function (n) {
-        var el = form.elements[n + i];
-        ok = check(el, el.value.trim() !== '') && ok;
-      });
+      ok = check(form.elements['marca_' + i], form.elements['marca_' + i].value.trim() !== '') && ok;
+      ok = check(form.elements['modello_' + i], form.elements['modello_' + i].value.trim() !== '') && ok;
+      var t = form.elements['targa_' + i];
+      ok = check(t.closest('.plate'), t.value.trim() !== '') && ok;
     }
     var foto1 = form.elements.foto_1;
-    ok = check(foto1.parentNode, foto1.files.length > 0) && ok;
+    ok = check(foto1.closest('.photo'), foto1.files.length > 0) && ok;
     var privacy = form.elements.privacy;
     ok = check(privacy.parentNode, privacy.checked) && ok;
-    showMsg(2, ok ? '' : 'Completa marca, modello e targa di ogni veicolo, carica la foto del veicolo 1 e accetta il trattamento dati.');
+    showMsg(2, ok ? '' : 'Completa marca, modello e targa di ogni auto, carica la foto del veicolo 1 e accetta il trattamento dei dati.');
     return ok;
   }
 
   // --- Cambio step ---
+  var steps = document.querySelectorAll('#steps li');
   window.nextStep = function (step) {
     if (step === 2 && !validaStep1()) return;
-    var s1 = document.getElementById('step-1');
-    var s2 = document.getElementById('step-2');
-    s1.className = step === 2 ? 'form-step-hidden' : 'form-step-active';
-    s2.className = step === 2 ? 'form-step-active' : 'form-step-hidden';
-    var container = document.querySelector('.qi-event-container');
-    window.scrollTo({ top: container.offsetTop - 80, behavior: 'smooth' });
+    document.getElementById('step-1').classList.toggle('active', step === 1);
+    document.getElementById('step-2').classList.toggle('active', step === 2);
+    steps[0].className = step === 2 ? 'done' : 'on';
+    steps[1].className = step === 2 ? 'on' : '';
+    var top = document.getElementById('steps').getBoundingClientRect().top + window.scrollY - 80;
+    window.scrollTo({ top: top, behavior: 'smooth' });
   };
 
   // --- Riduce la foto prima dell'invio (max 1600px, JPEG) ---
@@ -555,17 +774,16 @@ textarea { resize: vertical; min-height: 90px; }
   form.addEventListener('submit', function (e) {
     e.preventDefault();
     if (!validaStep2()) return;
-
     if (form.elements.sito_web.value) return; // spam
 
     if (!CFG.SCRIPT_URL || CFG.SCRIPT_URL.indexOf('INCOLLA') === 0) {
-      showMsg(2, 'Il modulo non è ancora collegato (manca SCRIPT_URL in assets/js/config.js).');
+      showMsg(2, 'Il modulo non è ancora collegato: manca SCRIPT_URL in assets/js/config.js.');
       return;
     }
 
     var btn = document.getElementById('submit-btn');
     btn.disabled = true;
-    btn.textContent = 'INVIO IN CORSO…';
+    btn.textContent = 'Invio in corso…';
     showMsg(2, '');
 
     var n = numVeicoli();
@@ -574,7 +792,7 @@ textarea { resize: vertical; min-height: 90px; }
       cognome: form.elements.cognome.value.trim(),
       telefono: form.elements.telefono.value.trim(),
       email: form.elements.email.value.trim(),
-      instagram: form.elements.instagram.value.trim(),
+      instagram: form.elements.instagram.value.trim().replace(/^@/, ''),
       numero_veicoli: n,
       veicoli: [],
       modifiche: form.elements.modifiche.value.trim(),
@@ -595,9 +813,7 @@ textarea { resize: vertical; min-height: 90px; }
         };
         dati.veicoli.push(v);
         var file = form.elements['foto_' + i].files[0];
-        if (file) {
-          promesse.push(comprimiFoto(file).then(function (b64) { v.foto = b64; }));
-        }
+        if (file) promesse.push(comprimiFoto(file).then(function (b64) { v.foto = b64; }));
       })(i);
     }
 
@@ -617,8 +833,8 @@ textarea { resize: vertical; min-height: 90px; }
       .catch(function (err) {
         console.error(err);
         btn.disabled = false;
-        btn.textContent = 'CI SONO!';
-        showMsg(2, 'Invio non riuscito, riprova tra poco. Se il problema continua scrivici su Instagram.');
+        btn.textContent = 'Invia la candidatura';
+        showMsg(2, 'La candidatura non è partita. Controlla la connessione e riprova; se non funziona ancora scrivici su Instagram.');
       });
   });
 })();

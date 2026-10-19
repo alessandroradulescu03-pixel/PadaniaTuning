@@ -7,7 +7,7 @@ window.PT_CONFIG = {
 
     // Indirizzo dello script Google che salva le iscrizioni e manda le mail.
     // Lo ottieni seguendo il file google-apps-script/ISTRUZIONI.md
-    SCRIPT_URL: 'INCOLLA_QUI_URL_APPS_SCRIPT',
+    SCRIPT_URL: 'https://script.google.com/macros/s/AKfycbweHwQuH_P4cblhQDbDnI6Ri86qSEqwWyMSCgTRZJ3yFjr5KV_0Q8NpHRUUOVoqZTrjug/exec',
 
     // Chiusura iscrizioni (formato AAAA-MM-GGTHH:MM:SS, ora italiana)
     CHIUSURA_ISCRIZIONI: '2027-11-06T23:59:00',

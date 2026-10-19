@@ -65,6 +65,8 @@
 
         .info-text label { color: #ff3e3e; font-size: 10px; font-weight: 800; text-transform: uppercase; display: block; margin-bottom: 4px; }
         .clean-p { color: #999; font-size: 12px; margin: 0; line-height: 1.7; }
+        .main-txt { color: #fff; font-size: 15px; font-weight: 700; display: block; }
+        .sub-info { color: #bbb; font-size: 13px; display: block; margin-top: 2px; }
 
         .price-tags { display: flex; gap: 8px; margin: 10px 0; }
         .tag { background: #1a1a1a; color: #fff; font-size: 11px; padding: 6px 12px; border-radius: 8px; border: 1px solid #333; line-height: 1.5; }
@@ -112,11 +114,30 @@
                 <hr class="modal-sep">
 
                 <div class="info-block">
+                    <span class="info-icon">📍</span>
+                    <div class="info-text">
+                        <label>Dove e quando</label>
+                        <span class="main-txt" id="mLuogo"></span>
+                        <span class="sub-info" id="mIndirizzo"></span>
+                        <span class="sub-info" id="mData"></span>
+                    </div>
+                </div>
+
+                <div class="info-block">
+                    <span class="info-icon">🕘</span>
+                    <div class="info-text">
+                        <label>Orari</label>
+                        <span class="sub-info" id="mRaduno"></span>
+                        <span class="sub-info" id="mSerata"></span>
+                    </div>
+                </div>
+
+                <div class="info-block">
                     <span class="info-icon">🎟️</span>
                     <div class="info-text">
                         <label>Ingresso</label>
                         <div class="price-tags">
-                            <span class="tag">Ingresso consentito ai veicoli dalle ore 11:00 alle 18:00. Costo ingresso: 10€.<br> Ingresso a piedi GRATUITO.</span>
+                            <span class="tag" id="mVantaggi"></span>
                         </div>
                     </div>
                 </div>
@@ -149,8 +170,18 @@
     </div>
 </div>
 
+<script src="assets/js/config.js"></script>
 <script src="assets/js/site.js"></script>
 <script>
+    // Info evento prese da assets/js/config.js
+    var EV = window.PT_CONFIG.EVENTO;
+    document.getElementById('mLuogo').textContent = EV.luogo;
+    document.getElementById('mIndirizzo').textContent = EV.indirizzo;
+    document.getElementById('mData').textContent = EV.data;
+    document.getElementById('mRaduno').textContent = 'Raduno ' + EV.orarioRaduno;
+    document.getElementById('mSerata').textContent = 'Serata al ' + EV.luogo + ' ' + EV.orarioSerata;
+    document.getElementById('mVantaggi').innerHTML = EV.vantaggi.join('<br>');
+
     function openModal() {
         var modal = document.getElementById("infoModal");
         modal.style.display = "flex";
