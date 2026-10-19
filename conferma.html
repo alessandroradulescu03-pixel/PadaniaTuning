@@ -1,0 +1,448 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Candidatura Ricevuta — Padania Tuning</title>
+    <meta name="robots" content="noindex">
+    <link rel="icon" href="assets/img/logo.jpg">
+    <link rel="stylesheet" href="assets/css/site.css">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Barlow:ital,wght@0,400;0,700;1,900&display=swap');
+
+        :root {
+            --neon-green: #ff4fd8;
+            --neon-glow: rgba(255, 79, 216, 0.35);
+        }
+
+
+        .club-confirmation-wrapper {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-family: 'Barlow', sans-serif;
+            color: #fff;
+            padding: 40px 20px;
+            position: relative;
+            min-height: calc(100vh - 60px);
+            box-sizing: border-box;
+            background: radial-gradient(circle at 50% 50%, #2a1d05 0%, #050505 100%);
+            overflow-x: hidden;
+        }
+
+        .disco-light {
+            position: fixed;
+            top: -25%;
+            left: -25%;
+            width: 150%;
+            height: 150%;
+            background: conic-gradient(
+                from 0deg,
+                transparent,
+                var(--neon-glow),
+                transparent,
+                var(--neon-glow),
+                transparent
+            );
+            animation: rotateLight 15s linear infinite;
+            opacity: 0.1;
+            z-index: 0;
+            pointer-events: none;
+        }
+
+        @keyframes rotateLight {
+            from {
+                transform: rotate(0deg);
+            }
+
+            to {
+                transform: rotate(360deg);
+            }
+        }
+
+        .report-container {
+            background: rgba(0, 0, 0, 0.85);
+            width: 100%;
+            max-width: 450px;
+            border: 2px solid var(--neon-green);
+            position: relative;
+            z-index: 2;
+            padding: 40px;
+
+            box-shadow:
+                0 0 30px var(--neon-glow),
+                inset 0 0 15px var(--neon-glow);
+
+            border-radius: 20px;
+
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+
+            text-align: center;
+        }
+
+        .report-badge {
+            background: var(--neon-green);
+            color: #000;
+            display: inline-block;
+            font-weight: 900;
+            font-size: 11px;
+            padding: 4px 12px;
+            letter-spacing: 2px;
+            margin-bottom: 15px;
+            text-transform: uppercase;
+            border-radius: 50px;
+            box-shadow: 0 0 10px var(--neon-green);
+        }
+
+        .report-title {
+            font-size: 28px;
+            font-weight: 900;
+            font-style: italic;
+            margin: 0;
+            line-height: 1;
+            text-transform: uppercase;
+            color: #ffffff;
+            text-shadow: 0 0 10px var(--neon-green);
+        }
+
+        .report-divider {
+            height: 4px;
+
+            background: linear-gradient(
+                90deg,
+                transparent,
+                var(--neon-green),
+                transparent
+            );
+
+            width: 100%;
+            margin: 25px 0;
+        }
+
+        .status-box {
+            background: rgba(255, 79, 216, 0.05);
+            border: 1px solid var(--neon-green);
+            padding: 20px;
+            border-radius: 15px;
+            margin-bottom: 20px;
+        }
+
+        .status-text h2 {
+            font-size: 18px;
+            color: #fff;
+            margin: 0 0 8px 0;
+            letter-spacing: 1px;
+            font-weight: 900;
+        }
+
+        .status-text p {
+            font-size: 14px;
+            color: #ddd;
+            margin: 0;
+            line-height: 1.4;
+        }
+
+        .email-alert {
+            font-size: 13px;
+            color: #bbb;
+            margin-bottom: 25px;
+            line-height: 1.6;
+            background: rgba(255, 255, 255, 0.05);
+            padding: 15px;
+            border-radius: 12px;
+            border-left: 3px solid var(--neon-green);
+            text-align: left;
+        }
+
+        .technical-table {
+            margin-bottom: 25px;
+        }
+
+        .table-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 15px;
+            margin-bottom: 10px;
+            font-size: 13px;
+            border-bottom: 1px solid rgba(255,255,255,0.05);
+            padding-bottom: 8px;
+        }
+
+        .table-row .label {
+            color: #888;
+            font-weight: 700;
+            text-transform: uppercase;
+            flex-shrink: 0;
+        }
+
+        .table-row .value {
+            color: #fff;
+            font-weight: 900;
+            text-align: right;
+            font-size: 12px;
+            line-height: 1.3;
+        }
+
+        .rules-link {
+            color: var(--neon-green) !important;
+            font-weight: 900;
+            text-decoration: underline;
+        }
+
+        .btn-home-club {
+            display: block;
+            background: #fff;
+            color: #000;
+            text-align: center;
+            text-decoration: none;
+            padding: 18px;
+            font-weight: 900;
+            font-size: 14px;
+            border-radius: 12px;
+            transition: 0.3s;
+            text-transform: uppercase;
+            box-shadow: 0 5px 15px rgba(255,255,255,0.2);
+        }
+
+        .btn-home-club:hover {
+            transform: scale(1.03);
+            background: var(--neon-green);
+            color: #000;
+        }
+
+        .confetti {
+            position: fixed;
+            width: 8px;
+            height: 8px;
+            z-index: 1;
+            top: -10px;
+            animation: fall linear infinite;
+            pointer-events: none;
+        }
+
+        @keyframes fall {
+            to {
+                transform: translateY(110vh) rotate(360deg);
+            }
+        }
+
+        @media (max-width: 480px) {
+
+            .report-container {
+                padding: 25px;
+            }
+
+            .report-title {
+                font-size: 24px;
+            }
+
+            .table-row {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+
+            .table-row .value {
+                text-align: left;
+                font-size: 11px;
+            }
+
+        }
+    </style>
+</head>
+<body data-no-footer>
+<div class="club-confirmation-wrapper">
+
+    <div class="disco-light"></div>
+
+    <div id="confetti-wrapper"></div>
+
+    <div class="report-container">
+
+        <div class="report-badge">
+            SUCCESS!
+        </div>
+
+        <h1 class="report-title">
+            CANDIDATURA <br>
+            <span style="color:var(--neon-green)">
+                RICEVUTA
+            </span>
+        </h1>
+
+        <div class="report-divider"></div>
+
+
+        <div class="status-box">
+
+            <div class="status-text">
+
+                <h2>
+                    PROCEDURA AVVIATA
+                </h2>
+
+                <p>
+                    La tua candidatura è stata ricevuta
+                    correttamente e verrà analizzata
+                    dallo <strong>STAFF PADANIA TUNING</strong>.
+                    <br><br>
+                    In caso di esito positivo, riceverai una
+                    <strong>mail ufficiale di conferma</strong>.
+                </p>
+
+            </div>
+
+        </div>
+
+
+        <div class="email-alert">
+
+            ⚠️ <strong>ATTENZIONE:</strong>
+
+            Controlla regolarmente la tua casella email
+            (anche la cartella
+            <strong>SPAM / Posta Indesiderata</strong>).
+
+            Riceverai tramite email tutte le informazioni
+            e le istruzioni necessarie in caso di selezione.
+
+        </div>
+
+
+        <div class="technical-table">
+
+
+            <div class="table-row">
+
+                <span class="label">
+                    LOCATION
+                </span>
+
+                <span class="value" id="cLuogo"></span>
+
+            </div>
+
+
+            <div class="table-row">
+
+                <span class="label">
+                    DATA EVENTO
+                </span>
+
+                <span class="value" id="cData"></span>
+
+            </div>
+
+
+            <div class="table-row">
+
+                <span class="label">
+                    ORARIO
+                </span>
+
+                <span class="value" id="cOrario"></span>
+
+            </div>
+
+
+            <div class="table-row">
+
+                <span class="label">
+                    INGRESSO
+                </span>
+
+                <span class="value" id="cIngresso"></span>
+
+            </div>
+
+
+            <div class="table-row">
+
+                <span class="label">
+                    CANDIDATURA
+                </span>
+
+                <span class="value" style="color:var(--neon-green)">
+                    IN FASE DI ANALISI
+                </span>
+
+            </div>
+
+        </div>
+
+
+        <p style="
+            font-size: 12px;
+            color: #888;
+            margin-bottom: 25px;
+            line-height: 1.5;
+        ">
+
+            Per dubbi consulta le
+
+            <a href="index.html?openmodal=1" class="rules-link">
+                REGOLE UFFICIALI
+            </a>.
+
+        </p>
+
+
+        <a href="index.html" class="btn-home-club">
+            TORNA ALLA HOME
+        </a>
+
+    </div>
+
+</div>
+
+<script src="assets/js/config.js"></script>
+<script src="assets/js/site.js"></script>
+<script>
+    var EV = window.PT_CONFIG.EVENTO;
+    document.getElementById('cLuogo').innerHTML = EV.luogo + '<br>' + EV.indirizzo.replace(', 25', '<br>25');
+    document.getElementById('cData').textContent = EV.data;
+    document.getElementById('cOrario').innerHTML = 'Raduno ' + EV.orarioRaduno + '<br>Serata ' + EV.luogo + ' ' + EV.orarioSerata;
+    document.getElementById('cIngresso').innerHTML = 'Raduno gratuito · +100 posti auto<br>Omaggio in discoteca con Padania Tuning';
+</script>
+<script>
+
+    const wrapper =
+        document.getElementById('confetti-wrapper');
+
+    const colors = [
+        '#ff4fd8',
+        '#ffffff',
+        '#ff8fe6',
+        '#c218a6'
+    ];
+
+    for (let i = 0; i < 40; i++) {
+
+        const confetti =
+            document.createElement('div');
+
+        confetti.className = 'confetti';
+
+        confetti.style.left =
+            Math.random() * 100 + 'vw';
+
+        confetti.style.backgroundColor =
+            colors[
+                Math.floor(
+                    Math.random() * colors.length
+                )
+            ];
+
+        confetti.style.animationDuration =
+            (Math.random() * 3 + 3) + 's';
+
+        confetti.style.animationDelay =
+            (Math.random() * 5) + 's';
+
+        wrapper.appendChild(confetti);
+    }
+
+</script>
+</body>
+</html>

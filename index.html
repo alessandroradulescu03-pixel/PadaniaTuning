@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Padania Tuning — Official Meeting</title>
+    <meta name="description" content="Padania Tuning: raduni, eventi e community di appassionati di auto.">
+    <link rel="icon" href="assets/img/logo.jpg">
+    <link rel="stylesheet" href="assets/css/site.css">
+
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&family=Montserrat:wght@700;900&display=swap');
+
+        body { font-family: 'Inter', sans-serif; }
+
+        /* --- SEZIONE HERO --- */
+        .mobile-premium-hero {
+            position: relative; min-height: calc(100vh - 60px); width: 100%; display: flex;
+            align-items: center; justify-content: center; overflow: hidden;
+            text-align: center;
+        }
+        .hero-content-mobile { position: relative; z-index: 10; width: 100%; padding: 0 20px; }
+        .hero-title { font-family: 'Montserrat', sans-serif; font-size: clamp(32px, 9vw, 64px); font-weight: 900; line-height: 1.1; margin: 15px 0; letter-spacing: -1px; text-transform: uppercase; }
+        .outline-txt { color: transparent; -webkit-text-stroke: 1px #fff; display: inline-block; margin: 5px 0; }
+        .chrome {
+            background: linear-gradient(180deg, #ffffff 0%, #e0e0e0 40%, #888888 50%, #dcdcdc 60%, #f5f5f5 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            font-weight: 800;
+            filter: drop-shadow(0px 2px 3px rgba(0,0,0,0.5));
+            -webkit-text-stroke: 0.5px rgba(0,0,0,0.2);
+        }
+        .badge-mini { font-size: 9px; letter-spacing: 3px; border: 1px solid rgba(255,255,255,0.2); padding: 6px 15px; text-transform: uppercase; }
+
+        .scroll-btn {
+            margin-top: 25px; background: #fff; color: #000; padding: 14px 30px;
+            border-radius: 4px; font-weight: 900; font-size: 11px; letter-spacing: 2px;
+            cursor: pointer; display: inline-block; transition: opacity 0.3s; border: none;
+            font-family: 'Inter', sans-serif;
+        }
+        .scroll-btn:hover { opacity: 0.9; }
+
+        /* --- MODALE --- */
+        .premium-modal {
+            display: none; position: fixed; z-index: 9999; left: 0; top: 0; width: 100%; height: 100%;
+            background: rgba(0,0,0,0.95); backdrop-filter: blur(15px); align-items: center; justify-content: center;
+        }
+        .modal-content {
+            background: #0d0d0d; border: 1px solid rgba(255,255,255,0.1); padding: 35px 25px;
+            width: 90%; max-width: 380px; border-radius: 28px; position: relative;
+            box-shadow: 0 25px 60px rgba(0,0,0,0.9); max-height: 90vh; overflow-y: auto;
+        }
+        .modal-header-section { text-align: center; margin-bottom: 30px; }
+        .modal-main-title { font-family: 'Montserrat', sans-serif; font-weight: 900; font-size: 18px; letter-spacing: 2px; color: #fff; margin: 0; }
+        .modal-subtitle { font-size: 10px; color: #666; text-transform: uppercase; margin-top: 5px; letter-spacing: 1px; }
+
+        .info-grid { display: flex; flex-direction: column; gap: 22px; text-align: left; }
+        .info-block { display: flex; gap: 15px; }
+        .modal-sep { border: 0; border-top: 1px solid #222; margin: 5px 0; }
+
+        .info-icon {
+            background: #161616; width: 40px; height: 40px; border-radius: 12px;
+            display: flex; align-items: center; justify-content: center; font-size: 18px; flex-shrink: 0; border: 1px solid #222;
+        }
+
+        .info-text label { color: #ff3e3e; font-size: 10px; font-weight: 800; text-transform: uppercase; display: block; margin-bottom: 4px; }
+        .clean-p { color: #999; font-size: 12px; margin: 0; line-height: 1.7; }
+
+        .price-tags { display: flex; gap: 8px; margin: 10px 0; }
+        .tag { background: #1a1a1a; color: #fff; font-size: 11px; padding: 6px 12px; border-radius: 8px; border: 1px solid #333; line-height: 1.5; }
+
+        .registration-box { margin-top: 30px; padding: 15px; background: #111; border-radius: 18px; border: 1px solid #222; text-align: center; }
+        .registration-box p { color: #888; font-size: 11px; margin: 0 0 12px; line-height: 1.4; }
+        .registration-box a { display: inline-block; color: #fff; font-weight: 800; font-size: 11px; letter-spacing: 1.5px; text-transform: uppercase; text-decoration: none; border: 1px solid #fff; border-radius: 10px; padding: 10px 18px; }
+
+        .modal-footer-btn {
+            background: #fff; color: #000; padding: 16px; border-radius: 15px;
+            font-weight: 800; font-size: 13px; text-align: center; margin-top: 20px;
+            cursor: pointer; transition: opacity 0.3s; text-transform: uppercase;
+        }
+        .modal-footer-btn:hover { opacity: 0.9; }
+
+        .close-modal { position: absolute; right: 20px; top: 20px; color: #444; font-size: 24px; cursor: pointer; background: none; border: none; }
+    </style>
+</head>
+<body>
+
+<div class="mobile-premium-hero">
+    <div class="hero-content-mobile">
+        <span class="badge-mini">Official Meeting</span>
+        <h1 class="hero-title">
+            <span class="chrome">EVENTO</span><br>
+            <span class="outline-txt">PADANIA</span><br>
+            <span class="chrome">TUNING</span>
+        </h1>
+        <button class="scroll-btn" type="button" onclick="openModal()">SCOPRI DI PIÙ</button>
+    </div>
+</div>
+
+<div id="infoModal" class="premium-modal">
+    <div class="modal-content">
+        <button class="close-modal" type="button" onclick="closeModal()" aria-label="Chiudi">×</button>
+
+        <div class="modal-body">
+            <div class="modal-header-section">
+                <h3 class="modal-main-title">DETTAGLI EVENTO</h3>
+                <p class="modal-subtitle">Padania Tuning Official Meeting</p>
+            </div>
+
+            <div class="info-grid">
+
+                <hr class="modal-sep">
+
+                <div class="info-block">
+                    <span class="info-icon">🎟️</span>
+                    <div class="info-text">
+                        <label>Ingresso</label>
+                        <div class="price-tags">
+                            <span class="tag">Ingresso consentito ai veicoli dalle ore 11:00 alle 18:00. Costo ingresso: 10€.<br> Ingresso a piedi GRATUITO.</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="info-block">
+                    <span class="info-icon">⚠️</span>
+                    <div class="info-text">
+                        <label>Regolamento Rapido</label>
+                        <p class="clean-p">
+                            Rispetto totale per le vetture esposte.<br>
+                            No comportamenti pericolosi nel complesso.<br>
+                            Seguire sempre le indicazioni dello staff.<br>
+                            Velocità moderata all'interno del raduno.<br>
+                            Massima attenzione ai pedoni presenti.<br>
+                            Vietato sgommare, fare burnout o limitatore.
+                        </p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="registration-box">
+                <p>Vuoi esporre la tua auto?</p>
+                <a href="eventi.html">Vai agli eventi →</a>
+            </div>
+
+            <div class="modal-footer-btn" onclick="closeModal()">
+                HO CAPITO, GRAZIE
+            </div>
+        </div>
+    </div>
+</div>
+
+<script src="assets/js/site.js"></script>
+<script>
+    function openModal() {
+        var modal = document.getElementById("infoModal");
+        modal.style.display = "flex";
+        document.body.style.overflow = "hidden";
+    }
+
+    function closeModal() {
+        var modal = document.getElementById("infoModal");
+        modal.style.display = "none";
+        document.body.style.overflow = "auto";
+    }
+
+    document.getElementById("infoModal").addEventListener('click', function (event) {
+        if (event.target === this) closeModal();
+    });
+
+    // Apertura automatica con index.html?openmodal=1 (usato dal link "Regole ufficiali")
+    var urlParams = new URLSearchParams(window.location.search);
+    if (urlParams.get('openmodal') === '1') {
+        openModal();
+        window.history.replaceState({}, document.title, window.location.pathname);
+    }
+</script>
+
+</body>
+</html>

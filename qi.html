@@ -1,0 +1,627 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Iscrizione evento Qi Clubbing — Padania Tuning</title>
+<link rel="icon" href="assets/img/logo.jpg">
+<link rel="stylesheet" href="assets/css/site.css">
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Barlow:ital,wght@0,400;0,700;1,900&display=swap');
+
+/* --- FIX UNIVERSALE MOBILE --- */
+.qi-event-container * {
+  box-sizing: border-box;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.qi-event-container {
+  --neon-green: #ff69b4;
+  font-family: 'Barlow', sans-serif;
+  max-width: 650px;
+  margin: 40px auto !important;
+  padding: 0 20px;
+  color: #fff;
+}
+
+/* Logo in alto */
+.qi-logo {
+  display: block;
+  width: 110px;
+  height: 110px;
+  object-fit: cover;
+  border-radius: 50%;
+  margin: 0 auto 10px;
+  border: 1px solid rgba(255,255,255,0.15);
+}
+
+/* Visibilità Step */
+.form-step-hidden { display: none !important; }
+.form-step-active { display: block !important; animation: fadeIn 0.4s ease-out; }
+
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+/* --- HEADER & TITOLI --- */
+.header-club { text-align: center; margin-bottom: 25px; }
+
+.header-club h1 {
+  font-size: clamp(32px, 8vw, 44px);
+  font-weight: 900;
+  font-style: italic;
+  margin: 10px 0;
+  line-height: 1.1;
+  letter-spacing: -0.5px;
+}
+
+.neon-green-text {
+  color: var(--neon-green);
+  text-shadow: 0 0 10px rgba(255, 105, 180, 0.4);
+}
+
+.live-indicator {
+  font-size: 11px;
+  letter-spacing: 2px;
+  font-weight: 700;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  background: rgba(255,255,255,0.07);
+  padding: 4px 10px;
+  border-radius: 20px;
+  margin-bottom: 5px;
+}
+
+.live-indicator .dot {
+  width: 8px;
+  height: 8px;
+  background: #00ff00;
+  border-radius: 50%;
+  box-shadow: 0 0 8px #00ff00;
+}
+
+.status-badge {
+  font-size: 11px;
+  letter-spacing: 2px;
+  font-weight: 700;
+  color: var(--neon-green);
+}
+
+.event-detail {
+  font-size: 14px;
+  line-height: 1.5;
+  opacity: 0.85;
+  margin-top: 10px;
+}
+
+/* --- PANNELLO PRINCIPALE --- */
+.step-panel-bg {
+  padding: 25px;
+  border-radius: 20px;
+  background-image:
+    linear-gradient(rgba(0,0,0,0.72), rgba(0,0,0,0.88)),
+    url('assets/img/form-bg.jpg');
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  border: 1px solid rgba(255, 105, 180, 0.25);
+  box-shadow: 0 15px 35px rgba(0,0,0,0.5);
+}
+
+/* --- GRIGLIE DI INPUT --- */
+.input-grid-main,
+.v-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 15px;
+}
+
+.v-grid { grid-template-columns: repeat(3, 1fr); }
+
+.full-row { grid-column: 1 / -1; }
+
+/* --- CAMPI INPUT --- */
+.qi-event-container input:not([type="checkbox"]):not([type="file"]),
+.qi-event-container textarea,
+.qi-event-container select {
+  background: rgba(0,0,0,0.6);
+  border: 1px solid rgba(255,255,255,0.12);
+  color: #fff;
+  border-radius: 10px;
+  padding: 14px 12px;
+  width: 100%;
+  margin: 0;
+  font-size: 16px;
+  font-family: 'Barlow', sans-serif;
+  transition: border-color 0.2s, box-shadow 0.2s;
+}
+
+.qi-event-container select option { background: #111; color: #fff; }
+
+.qi-event-container input:focus,
+.qi-event-container textarea:focus,
+.qi-event-container select:focus {
+  border-color: rgba(255, 105, 180, 0.5);
+  box-shadow: 0 0 10px rgba(255, 105, 180, 0.15);
+  outline: none;
+}
+
+.qi-event-container .field-invalid { border-color: #ff4d4d !important; box-shadow: 0 0 10px rgba(255,77,77,0.25) !important; }
+
+.field-item { display: block; width: 100%; }
+.field-item + .field-item.full-row { margin-top: 15px; }
+
+textarea { resize: vertical; min-height: 90px; }
+
+/* --- CARTE VEICOLI (STEP 2) --- */
+.v-card {
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid rgba(255, 255, 255, 0.05);
+  padding: 18px;
+  border-radius: 14px;
+  margin-top: 20px;
+}
+
+.v-tag {
+  font-size: 11px;
+  font-weight: 900;
+  letter-spacing: 1.5px;
+  background: rgba(255, 105, 180, 0.15);
+  color: var(--neon-green);
+  display: inline-block;
+  padding: 3px 10px;
+  border-radius: 6px;
+  margin-bottom: 15px;
+}
+
+.v-upload { margin-top: 12px; }
+
+.v-upload label {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  cursor: pointer;
+  font-size: 14px;
+  color: #ccc;
+  border: 1px dashed rgba(255,255,255,0.2);
+  border-radius: 10px;
+  padding: 12px;
+}
+
+.v-upload label:hover { border-color: rgba(255,105,180,0.5); }
+.v-upload input[type="file"] { position: absolute; width: 1px; height: 1px; opacity: 0; }
+.v-upload .file-name { color: var(--neon-green); font-weight: 700; word-break: break-all; }
+
+/* --- LABEL NEON --- */
+.label-neon {
+  display: block;
+  margin: 15px 0 10px 0;
+  font-size: 12px;
+  font-weight: 700;
+  color: var(--neon-green);
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+
+/* --- PRIVACY --- */
+.privacy-row {
+  display: flex;
+  gap: 10px;
+  align-items: flex-start;
+  margin-top: 18px;
+  font-size: 13px;
+  color: #bbb;
+  line-height: 1.45;
+}
+.privacy-row input { margin-top: 3px; width: 18px; height: 18px; accent-color: var(--neon-green); flex-shrink: 0; }
+
+/* --- NAVIGATION & BOTTONI --- */
+.footer-nav {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-top: 25px;
+  gap: 12px;
+}
+
+.btn-next-link,
+.btn-submit {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  max-width: 320px;
+  height: 52px;
+  background: var(--neon-green);
+  color: #000;
+  font-family: 'Barlow', sans-serif;
+  font-weight: 900;
+  text-transform: uppercase;
+  border-radius: 12px;
+  font-size: 15px;
+  letter-spacing: 1px;
+  text-decoration: none;
+  border: none;
+  cursor: pointer;
+  transition: transform 0.1s ease, filter 0.2s, opacity 0.2s;
+  box-shadow: 0 4px 15px rgba(255, 105, 180, 0.3);
+}
+
+.btn-next-link:active,
+.btn-submit:active { transform: scale(0.97); }
+.btn-submit[disabled] { opacity: 0.6; cursor: wait; }
+
+.btn-back {
+  color: #aaa;
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 0.5px;
+  cursor: pointer;
+  text-decoration: underline;
+  padding: 10px;
+  order: 2;
+  background: none;
+  border: none;
+  font-family: 'Barlow', sans-serif;
+}
+
+.form-msg {
+  display: none;
+  margin-top: 14px;
+  padding: 12px 14px;
+  border-radius: 10px;
+  font-size: 14px;
+  line-height: 1.4;
+  text-align: center;
+  background: rgba(255, 77, 77, 0.12);
+  border: 1px solid rgba(255, 77, 77, 0.4);
+  color: #ffb3b3;
+}
+.form-msg.show { display: block; }
+
+.closed-box {
+  text-align: center;
+  padding: 30px 10px;
+  font-size: 16px;
+  line-height: 1.5;
+}
+
+/* --- SHINE EFFECT --- */
+.shine-effect { position: relative; overflow: hidden; }
+
+.shine-effect::after {
+  content: '';
+  position: absolute;
+  top: -50%;
+  left: -60%;
+  width: 20%;
+  height: 200%;
+  background: rgba(255,255,255,0.25);
+  transform: rotate(30deg);
+  animation: shine 4s infinite;
+}
+
+@keyframes shine {
+  0% { left: -60%; }
+  20%, 100% { left: 120%; }
+}
+
+/* Campo anti-spam: invisibile alle persone */
+.hp-field { position: absolute; left: -9999px; width: 1px; height: 1px; overflow: hidden; }
+
+/* --- SMARTPHONE --- */
+@media (max-width: 500px) {
+  .qi-event-container { margin: 15px auto !important; padding: 0 10px; }
+  .step-panel-bg { padding: 18px 14px; border-radius: 16px; }
+  .input-grid-main, .v-grid { grid-template-columns: 1fr; gap: 12px; }
+  .btn-next-link, .btn-submit { max-width: 100%; }
+  .event-detail { font-size: 13px; }
+}
+</style>
+</head>
+<body>
+
+<div class="qi-event-container">
+  <form id="qiForm" class="form-content-wrapper" novalidate>
+
+    <div class="hp-field" aria-hidden="true">
+      <label>Non compilare <input type="text" name="sito_web" tabindex="-1" autocomplete="off"></label>
+    </div>
+
+    <!-- STEP 1: PROFILO -->
+    <div id="step-1" class="form-step-active">
+      <div class="header-club">
+        <img src="assets/img/logo.jpg" alt="Padania Tuning" class="qi-logo">
+        <div class="live-indicator"><span class="dot"></span> LIVE SELECTION</div>
+        <h1>
+          <span style="color: #ffffff;">ENTRY</span> <span class="neon-green-text">LIST</span>
+        </h1>
+
+        <p class="event-detail" id="eventDetail"></p>
+      </div>
+
+      <div class="step-panel-bg shadow-pulse">
+        <div class="input-grid-main">
+          <div class="field-item"><input type="text" name="nome" placeholder="Nome" required autocomplete="given-name"></div>
+          <div class="field-item"><input type="text" name="cognome" placeholder="Cognome" required autocomplete="family-name"></div>
+          <div class="field-item"><input type="tel" name="telefono" placeholder="Telefono" required autocomplete="tel"></div>
+          <div class="field-item"><input type="email" name="email" placeholder="Indirizzo Email" required autocomplete="email"></div>
+          <div class="field-item full-row"><input type="text" name="instagram" placeholder="Instagram"></div>
+        </div>
+        <div class="form-msg" id="msg-1"></div>
+        <div class="footer-nav">
+          <button type="button" class="btn-next-link shine-effect" onclick="nextStep(2)"> PASSA AL VEICOLO → </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- STEP 2: GARAGE -->
+    <div id="step-2" class="form-step-hidden">
+      <div class="header-club">
+        <div class="status-badge">RESERVED AREA</div>
+        <h1>
+          <span style="color: #ffffff;">IL TUO</span> <span class="neon-green-text">GARAGE</span>
+        </h1>
+      </div>
+
+      <div class="step-panel-bg shadow-pulse">
+        <div class="selection-box">
+          <label class="label-neon" for="num-veicoli">QUANTI MEZZI VUOI ESPORRE?</label>
+          <select name="numero_veicoli" id="num-veicoli">
+            <option>1</option><option>2</option><option>3</option>
+            <option>4</option><option>5</option><option>6</option>
+          </select>
+        </div>
+
+        <div id="vehicle-list"></div>
+
+        <div class="field-item full-row" style="margin-top:15px;">
+          <textarea name="modifiche" placeholder="Descrizione estetica e modifiche principali"></textarea>
+        </div>
+        <div class="field-item full-row" style="margin-top:15px;">
+          <textarea name="club" placeholder="Fai parte di un club oppure sei indipendente? Scrivi il nome del club oppure 'indipendente'"></textarea>
+        </div>
+        <div class="field-item full-row">
+          <label class="label-neon" for="conoscenza"> COME HAI CONOSCIUTO PADANIA TUNING? </label>
+          <select name="conoscenza" id="conoscenza">
+            <option value="">Seleziona un'opzione</option>
+            <option>Social</option>
+            <option>Passaparola</option>
+            <option>Locandina</option>
+            <option>Altro</option>
+          </select>
+          <div id="altro-conoscenza-box" style="display:none; margin-top:10px;">
+            <input type="text" name="altro_conoscenza" placeholder="Scrivi dove ci hai conosciuto">
+          </div>
+        </div>
+
+        <label class="privacy-row">
+          <input type="checkbox" name="privacy" required>
+          <span>Acconsento al trattamento dei miei dati da parte di Padania Tuning per la gestione della candidatura all'evento.</span>
+        </label>
+
+        <div class="form-msg" id="msg-2"></div>
+
+        <div class="footer-nav">
+          <button type="button" class="btn-back" onclick="nextStep(1)"> ← TORNA AL PROFILO </button>
+          <button type="submit" id="submit-btn" class="btn-submit shine-effect">CI SONO!</button>
+        </div>
+      </div>
+    </div>
+
+  </form>
+</div>
+
+<script src="assets/js/config.js"></script>
+<script src="assets/js/site.js"></script>
+<script>
+(function () {
+  var CFG = window.PT_CONFIG;
+  var EV = CFG.EVENTO;
+  var form = document.getElementById('qiForm');
+  var MAX_VEICOLI = 6;
+
+  // --- Dettagli evento (da config.js) ---
+  document.getElementById('eventDetail').innerHTML =
+    '<strong>' + EV.luogo + ' — ' + EV.indirizzo + '</strong><br>' +
+    EV.data + '<br>' +
+    'Raduno ' + EV.orarioRaduno + ' · ' + EV.orarioSerata + ' inizia la serata al ' + EV.luogo;
+
+  // --- Iscrizioni chiuse? ---
+  if (new Date() > new Date(CFG.CHIUSURA_ISCRIZIONI)) {
+    document.querySelector('#step-1 .step-panel-bg').innerHTML =
+      '<div class="closed-box">🏁 <strong>Iscrizioni chiuse.</strong><br>Seguici su Instagram per i prossimi eventi!</div>';
+    return;
+  }
+
+  // --- Card veicoli ---
+  var list = document.getElementById('vehicle-list');
+  var html = '';
+  for (var i = 1; i <= MAX_VEICOLI; i++) {
+    html +=
+      '<div id="v-' + i + '" class="v-card"' + (i > 1 ? ' style="display:none;"' : '') + '>' +
+        '<div class="v-tag">VEICOLO ' + i + '</div>' +
+        '<div class="v-grid">' +
+          '<input type="text" name="marca_' + i + '" placeholder="Marca">' +
+          '<input type="text" name="modello_' + i + '" placeholder="Modello">' +
+          '<input type="text" name="targa_' + i + '" placeholder="Targa" style="text-transform:uppercase">' +
+        '</div>' +
+        '<div class="v-upload">' +
+          '<label>📸 <span class="file-name" data-default="Carica una foto del veicolo' + (i === 1 ? ' (obbligatoria)' : '') + '">Carica una foto del veicolo' + (i === 1 ? ' (obbligatoria)' : '') + '</span>' +
+          '<input type="file" name="foto_' + i + '" accept="image/*"></label>' +
+        '</div>' +
+      '</div>';
+  }
+  list.innerHTML = html;
+
+  list.addEventListener('change', function (e) {
+    if (e.target.type === 'file') {
+      var span = e.target.parentNode.querySelector('.file-name');
+      span.textContent = e.target.files[0] ? '✓ ' + e.target.files[0].name : span.dataset.default;
+      e.target.parentNode.classList.remove('field-invalid');
+    }
+  });
+
+  function numVeicoli() { return parseInt(document.getElementById('num-veicoli').value, 10); }
+
+  document.getElementById('num-veicoli').addEventListener('change', function () {
+    var val = numVeicoli();
+    for (var i = 1; i <= MAX_VEICOLI; i++) {
+      document.getElementById('v-' + i).style.display = (i <= val) ? 'block' : 'none';
+    }
+  });
+
+  document.getElementById('conoscenza').addEventListener('change', function () {
+    document.getElementById('altro-conoscenza-box').style.display = (this.value === 'Altro') ? 'block' : 'none';
+  });
+
+  // --- Validazione ---
+  function showMsg(step, text) {
+    var m = document.getElementById('msg-' + step);
+    m.textContent = text || '';
+    m.classList.toggle('show', !!text);
+  }
+
+  function check(el, ok) {
+    el.classList.toggle('field-invalid', !ok);
+    return ok;
+  }
+
+  function validaStep1() {
+    var ok = true;
+    ['nome', 'cognome', 'telefono'].forEach(function (n) {
+      var el = form.elements[n];
+      ok = check(el, el.value.trim() !== '') && ok;
+    });
+    var email = form.elements.email;
+    ok = check(email, /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email.value.trim())) && ok;
+    showMsg(1, ok ? '' : 'Compila tutti i campi obbligatori con dati validi.');
+    return ok;
+  }
+
+  function validaStep2() {
+    var ok = true;
+    for (var i = 1; i <= numVeicoli(); i++) {
+      ['marca_', 'modello_', 'targa_'].forEach(function (n) {
+        var el = form.elements[n + i];
+        ok = check(el, el.value.trim() !== '') && ok;
+      });
+    }
+    var foto1 = form.elements.foto_1;
+    ok = check(foto1.parentNode, foto1.files.length > 0) && ok;
+    var privacy = form.elements.privacy;
+    ok = check(privacy.parentNode, privacy.checked) && ok;
+    showMsg(2, ok ? '' : 'Completa marca, modello e targa di ogni veicolo, carica la foto del veicolo 1 e accetta il trattamento dati.');
+    return ok;
+  }
+
+  // --- Cambio step ---
+  window.nextStep = function (step) {
+    if (step === 2 && !validaStep1()) return;
+    var s1 = document.getElementById('step-1');
+    var s2 = document.getElementById('step-2');
+    s1.className = step === 2 ? 'form-step-hidden' : 'form-step-active';
+    s2.className = step === 2 ? 'form-step-active' : 'form-step-hidden';
+    var container = document.querySelector('.qi-event-container');
+    window.scrollTo({ top: container.offsetTop - 80, behavior: 'smooth' });
+  };
+
+  // --- Riduce la foto prima dell'invio (max 1600px, JPEG) ---
+  function comprimiFoto(file) {
+    return new Promise(function (resolve, reject) {
+      var reader = new FileReader();
+      reader.onerror = reject;
+      reader.onload = function () {
+        var img = new Image();
+        img.onerror = function () { reject(new Error('Formato foto non supportato')); };
+        img.onload = function () {
+          var max = 1600;
+          var scale = Math.min(1, max / Math.max(img.width, img.height));
+          var canvas = document.createElement('canvas');
+          canvas.width = Math.round(img.width * scale);
+          canvas.height = Math.round(img.height * scale);
+          canvas.getContext('2d').drawImage(img, 0, 0, canvas.width, canvas.height);
+          resolve(canvas.toDataURL('image/jpeg', 0.82).split(',')[1]);
+        };
+        img.src = reader.result;
+      };
+      reader.readAsDataURL(file);
+    });
+  }
+
+  // --- Invio ---
+  form.addEventListener('submit', function (e) {
+    e.preventDefault();
+    if (!validaStep2()) return;
+
+    if (form.elements.sito_web.value) return; // spam
+
+    if (!CFG.SCRIPT_URL || CFG.SCRIPT_URL.indexOf('INCOLLA') === 0) {
+      showMsg(2, 'Il modulo non è ancora collegato (manca SCRIPT_URL in assets/js/config.js).');
+      return;
+    }
+
+    var btn = document.getElementById('submit-btn');
+    btn.disabled = true;
+    btn.textContent = 'INVIO IN CORSO…';
+    showMsg(2, '');
+
+    var n = numVeicoli();
+    var dati = {
+      nome: form.elements.nome.value.trim(),
+      cognome: form.elements.cognome.value.trim(),
+      telefono: form.elements.telefono.value.trim(),
+      email: form.elements.email.value.trim(),
+      instagram: form.elements.instagram.value.trim(),
+      numero_veicoli: n,
+      veicoli: [],
+      modifiche: form.elements.modifiche.value.trim(),
+      club: form.elements.club.value.trim(),
+      conoscenza: form.elements.conoscenza.value,
+      altro_conoscenza: form.elements.altro_conoscenza.value.trim(),
+      evento: EV.nome + ' — ' + EV.data
+    };
+
+    var promesse = [];
+    for (var i = 1; i <= n; i++) {
+      (function (i) {
+        var v = {
+          marca: form.elements['marca_' + i].value.trim(),
+          modello: form.elements['modello_' + i].value.trim(),
+          targa: form.elements['targa_' + i].value.trim().toUpperCase(),
+          foto: null
+        };
+        dati.veicoli.push(v);
+        var file = form.elements['foto_' + i].files[0];
+        if (file) {
+          promesse.push(comprimiFoto(file).then(function (b64) { v.foto = b64; }));
+        }
+      })(i);
+    }
+
+    Promise.all(promesse)
+      .then(function () {
+        return fetch(CFG.SCRIPT_URL, {
+          method: 'POST',
+          headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+          body: JSON.stringify(dati)
+        });
+      })
+      .then(function (r) { return r.json(); })
+      .then(function (res) {
+        if (!res || !res.ok) throw new Error(res && res.error ? res.error : 'Errore sconosciuto');
+        location.href = 'conferma.html';
+      })
+      .catch(function (err) {
+        console.error(err);
+        btn.disabled = false;
+        btn.textContent = 'CI SONO!';
+        showMsg(2, 'Invio non riuscito, riprova tra poco. Se il problema continua scrivici su Instagram.');
+      });
+  });
+})();
+</script>
+</body>
+</html>

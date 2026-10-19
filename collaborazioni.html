@@ -1,0 +1,242 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Eventi in collaborazione — Padania Tuning</title>
+<link rel="icon" href="assets/img/logo.jpg">
+<link rel="stylesheet" href="assets/css/site.css">
+<style>
+/* --- SETUP DISTANZE --- */
+.pt-navigation-wrapper {
+  width: 92%;
+  max-width: 400px;
+  margin: 40px auto 30px auto; /* 30px di distacco netto dalla card */
+  display: flex;
+  justify-content: flex-start;
+}
+
+.pt-card-wrapper {
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  margin-bottom: 50px;
+}
+
+/* --- BOTTONE PREMIUM --- */
+.btn-back-premium {
+  display: inline-flex;
+  align-items: center;
+  gap: 12px;
+  padding: 10px 22px;
+  background: rgba(255, 255, 255, 0.05);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 12px;
+  color: #ffffff !important;
+  text-decoration: none;
+  font-family: 'Montserrat', sans-serif;
+  font-size: 11px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 1.5px;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  box-shadow: 0 4px 15px rgba(0,0,0,0.3);
+}
+
+.icon-arrow {
+  display: flex;
+  align-items: center;
+  transition: transform 0.3s ease;
+}
+
+.icon-arrow svg { width: 14px; height: 14px; }
+
+.btn-back-premium:hover {
+  background: rgba(255, 255, 255, 0.12);
+  border-color: rgba(255, 255, 255, 0.3);
+  transform: translateY(-2px);
+}
+
+.btn-back-premium:hover .icon-arrow {
+  transform: translateX(-5px);
+}
+
+/* --- CARD COLLABORAZIONI --- */
+.pt-event-card {
+  text-decoration: none !important;
+  position: relative;
+  display: block;
+  width: 92%;
+  max-width: 400px;
+  padding: 1.5px;
+  border-radius: 20px;
+  background: rgba(255, 255, 255, 0.2);
+  overflow: visible;
+  font-family: 'Montserrat', sans-serif;
+  transition: transform 0.2s ease;
+  animation: border-glow-pulse 3s infinite ease-in-out;
+}
+
+@keyframes border-glow-pulse {
+  0%, 100% { box-shadow: 0 0 5px rgba(255,255,255,0.2); background: rgba(255,255,255,0.15); }
+  50% { box-shadow: 0 0 20px rgba(255,255,255,0.4); background: rgba(255,255,255,0.3); }
+}
+
+.card-content {
+  position: relative;
+  background: #0a0a0a;
+  border-radius: 19px;
+  padding: 22px;
+  z-index: 2;
+}
+
+.card-bg-glow {
+  position: absolute;
+  top: 0; left: 0; width: 100%; height: 100%;
+  background: radial-gradient(circle at top right, rgba(255,255,255,0.05), transparent);
+  pointer-events: none;
+  border-radius: 19px;
+}
+
+.card-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 18px;
+}
+
+.icon-orbit {
+  position: relative;
+  width: 44px;
+  height: 44px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.icon-inner {
+  background: #151515;
+  color: #fff;
+  padding: 8px;
+  border-radius: 12px;
+  border: 1px solid rgba(255,255,255,0.1);
+  z-index: 3;
+}
+
+.icon-inner svg { width: 22px; height: 22px; }
+
+.pulse-ring {
+  position: absolute;
+  width: 100%; height: 100%;
+  border-radius: 12px;
+  border: 1px solid rgba(255,255,255,0.2);
+  animation: pt-pulse 2.5s infinite;
+}
+
+@keyframes pt-pulse {
+  0% { transform: scale(1); opacity: 0.6; }
+  100% { transform: scale(1.4); opacity: 0; }
+}
+
+.status-badge {
+  font-size: 9px;
+  font-weight: 800;
+  color: #aaa;
+  letter-spacing: 1px;
+  background: rgba(255,255,255,0.05);
+  padding: 5px 10px;
+  border-radius: 6px;
+  border: 1px solid rgba(255,255,255,0.05);
+}
+
+.card-body .title {
+  color: #ffffff;
+  font-size: 18px;
+  font-weight: 700;
+  margin: 0 0 8px 0;
+}
+
+.card-body .description {
+  color: #999;
+  font-size: 14px;
+  line-height: 1.5;
+  margin: 0;
+}
+
+.card-body .description span, .card-body .description u {
+  color: #fff;
+  font-weight: 600;
+}
+
+.card-footer {
+  margin-top: 18px;
+  height: 1px;
+  background: rgba(255, 255, 255, 0.1);
+  width: 100%;
+  overflow: hidden;
+}
+
+.progress-line {
+  height: 100%;
+  width: 40%;
+  background: linear-gradient(90deg, transparent, #fff, transparent);
+  animation: slide-line 3s infinite linear;
+}
+
+@keyframes slide-line {
+  0% { transform: translateX(-100%); }
+  100% { transform: translateX(250%); }
+}
+
+.pt-event-card:active { transform: scale(0.97); }
+</style>
+</head>
+<body>
+<div class="pt-navigation-wrapper">
+  <a href="eventi.html" class="btn-back-premium">
+    <span class="icon-arrow">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
+        <line x1="19" y1="12" x2="5" y2="12"></line>
+        <polyline points="12 19 5 12 12 5"></polyline>
+      </svg>
+    </span>
+    <span class="text-label">Torna agli Eventi</span>
+  </a>
+</div>
+
+<div class="pt-card-wrapper">
+  <a href="https://www.instagram.com/padaniatuning?igsh=NGl4dWkzbTNjdWVo" target="_blank" rel="noopener" class="pt-event-card">
+    <div class="card-bg-glow"></div>
+    <div class="card-content">
+      
+      <div class="card-header">
+        <div class="icon-orbit">
+          <div class="icon-inner">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z"></path>
+            </svg>
+          </div>
+          <div class="pulse-ring"></div>
+        </div>
+        <span class="status-badge">INFO EVENTI IN COLLABORAZIONE</span>
+      </div>
+
+      <div class="card-body">
+        <h3 class="title">Nessun evento ufficiale in programma</h3>
+        <p class="description">
+          Al momento non ci sono eventi in collaborazione in programma. Controlla la sezione <span>Eventi</span> oppure seguici sui social <u>(clicca qui)</u> per restare aggiornato.
+        </p>
+      </div>
+
+      <div class="card-footer">
+        <div class="progress-line"></div>
+      </div>
+    </div>
+  </a>
+</div>
+
+<script src="assets/js/site.js"></script>
+</body>
+</html>

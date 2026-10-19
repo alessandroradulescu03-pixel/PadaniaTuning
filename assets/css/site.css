@@ -1,0 +1,177 @@
+/* =========================================================
+   PADANIA TUNING — STILE COMUNE (menu, footer, sfondo)
+   Questo file è caricato da tutte le pagine.
+   ========================================================= */
+@import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700;800;900&display=swap');
+
+html, body {
+    margin: 0;
+    padding: 0;
+    background-color: #0a0a0a;
+    background-image: url('https://www.transparenttextures.com/patterns/asphalt.png');
+    background-attachment: fixed;
+    color: #fff;
+    overflow-x: hidden;
+}
+
+* { box-sizing: border-box; }
+img { max-width: 100%; }
+
+/* ---------- MENU ---------- */
+.pt-nav {
+    position: sticky;
+    top: 0;
+    z-index: 1000;
+    background: rgba(5, 5, 5, 0.82);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.07);
+    font-family: 'Montserrat', sans-serif;
+}
+
+.pt-nav-inner {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 10px 18px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+}
+
+.pt-nav-brand {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    color: #fff;
+    text-decoration: none;
+    font-weight: 900;
+    font-size: 13px;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    white-space: nowrap;
+}
+
+.pt-nav-brand img {
+    width: 38px;
+    height: 38px;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+.pt-nav-links {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    list-style: none;
+    margin: 0;
+    padding: 0;
+}
+
+.pt-nav-links a {
+    display: block;
+    color: rgba(255, 255, 255, 0.75);
+    text-decoration: none;
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    padding: 10px 12px;
+    border-radius: 8px;
+    transition: color 0.2s, background 0.2s;
+}
+
+.pt-nav-links a:hover { color: #fff; background: rgba(255, 255, 255, 0.06); }
+.pt-nav-links a.active { color: #fff; }
+.pt-nav-links a.active::after {
+    content: '';
+    display: block;
+    height: 2px;
+    margin-top: 4px;
+    background: #fff;
+    border-radius: 2px;
+}
+
+.pt-nav-toggle {
+    display: none;
+    background: none;
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    border-radius: 10px;
+    width: 44px;
+    height: 44px;
+    cursor: pointer;
+    padding: 0;
+    align-items: center;
+    justify-content: center;
+}
+
+.pt-nav-toggle span,
+.pt-nav-toggle span::before,
+.pt-nav-toggle span::after {
+    display: block;
+    width: 20px;
+    height: 2px;
+    background: #fff;
+    border-radius: 2px;
+    position: relative;
+    transition: transform 0.25s, background 0.25s;
+}
+.pt-nav-toggle span::before,
+.pt-nav-toggle span::after { content: ''; position: absolute; left: 0; }
+.pt-nav-toggle span::before { top: -6px; }
+.pt-nav-toggle span::after { top: 6px; }
+
+.pt-nav.open .pt-nav-toggle span { background: transparent; }
+.pt-nav.open .pt-nav-toggle span::before { transform: translateY(6px) rotate(45deg); }
+.pt-nav.open .pt-nav-toggle span::after { transform: translateY(-6px) rotate(-45deg); }
+
+@media (max-width: 860px) {
+    .pt-nav-toggle { display: flex; }
+    .pt-nav-links {
+        display: none;
+        position: absolute;
+        top: 100%;
+        left: 0;
+        right: 0;
+        flex-direction: column;
+        align-items: stretch;
+        gap: 0;
+        padding: 10px 18px 20px;
+        background: rgba(5, 5, 5, 0.97);
+        border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+    }
+    .pt-nav.open .pt-nav-links { display: flex; }
+    .pt-nav-links a { padding: 15px 6px; font-size: 13px; border-bottom: 1px solid rgba(255, 255, 255, 0.05); border-radius: 0; }
+    .pt-nav-links a.active::after { display: none; }
+    .pt-nav-links a.active { color: #ff4fd8; }
+}
+
+/* ---------- FOOTER ---------- */
+.pt-footer {
+    font-family: 'Montserrat', sans-serif;
+    text-align: center;
+    padding: 40px 20px 30px;
+    border-top: 1px solid rgba(255, 255, 255, 0.06);
+    margin-top: 40px;
+    color: rgba(255, 255, 255, 0.35);
+    font-size: 10px;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+}
+
+.pt-footer-social {
+    display: flex;
+    justify-content: center;
+    gap: 18px;
+    margin-bottom: 18px;
+}
+
+.pt-footer-social a {
+    color: rgba(255, 255, 255, 0.6);
+    text-decoration: none;
+    font-weight: 700;
+    letter-spacing: 2px;
+    transition: color 0.2s;
+}
+.pt-footer-social a:hover { color: #fff; }
