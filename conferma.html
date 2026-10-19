@@ -1,448 +1,317 @@
 <!DOCTYPE html>
 <html lang="it">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Candidatura Ricevuta — Padania Tuning</title>
-    <meta name="robots" content="noindex">
-    <link rel="icon" href="assets/img/logo.jpg">
-    <link rel="stylesheet" href="assets/css/site.css">
-    <style>
-        @import url('https://fonts.googleapis.com/css2?family=Barlow:ital,wght@0,400;0,700;1,900&display=swap');
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Candidatura ricevuta — Padania Tuning</title>
+<meta name="robots" content="noindex">
+<link rel="icon" href="assets/img/logo.jpg">
+<link rel="stylesheet" href="assets/css/site.css">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:ital,wght@0,600;0,700;0,800;1,800;1,900&family=Barlow:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+/* =========================================================
+   CONFERMA — stesso stile "pass d'ingresso" del form
+   ========================================================= */
+.ok {
+  --pink: #ff69b4;
+  --pink-soft: rgba(255, 105, 180, 0.14);
+  --panel: #141216;
+  --line: rgba(255, 255, 255, 0.09);
+  --text: #f4f2f5;
+  --muted: #9a94a0;
+  --green: #35e06f;
+  --cond: 'Barlow Condensed', 'Arial Narrow', sans-serif;
+  --body: 'Barlow', Arial, sans-serif;
 
-        :root {
-            --neon-green: #ff4fd8;
-            --neon-glow: rgba(255, 79, 216, 0.35);
-        }
+  max-width: 560px;
+  margin: 0 auto;
+  padding: 34px 16px 40px;
+  font-family: var(--body);
+  color: var(--text);
+}
+.ok *, .ok *::before, .ok *::after { box-sizing: border-box; }
 
+/* ---------- PASS ---------- */
+.pass {
+  position: relative;
+  border-radius: 22px;
+  overflow: hidden;
+  background: var(--panel);
+  border: 1px solid var(--line);
+  box-shadow: 0 30px 60px -20px rgba(255, 105, 180, 0.3);
+  animation: passIn 0.7s cubic-bezier(0.2, 0.9, 0.3, 1.2) both;
+}
+@keyframes passIn {
+  from { opacity: 0; transform: translateY(30px) rotate(-2deg) scale(0.96); }
+  to { opacity: 1; transform: none; }
+}
 
-        .club-confirmation-wrapper {
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-family: 'Barlow', sans-serif;
-            color: #fff;
-            padding: 40px 20px;
-            position: relative;
-            min-height: calc(100vh - 60px);
-            box-sizing: border-box;
-            background: radial-gradient(circle at 50% 50%, #2a1d05 0%, #050505 100%);
-            overflow-x: hidden;
-        }
+.pass-top {
+  position: relative;
+  padding: 26px 24px 30px;
+  background:
+    linear-gradient(180deg, rgba(10, 8, 12, 0.4) 0%, rgba(20, 18, 22, 0.94) 80%, var(--panel) 100%),
+    url('assets/img/form-bg.jpg') center 35% / cover no-repeat;
+}
 
-        .disco-light {
-            position: fixed;
-            top: -25%;
-            left: -25%;
-            width: 150%;
-            height: 150%;
-            background: conic-gradient(
-                from 0deg,
-                transparent,
-                var(--neon-glow),
-                transparent,
-                var(--neon-glow),
-                transparent
-            );
-            animation: rotateLight 15s linear infinite;
-            opacity: 0.1;
-            z-index: 0;
-            pointer-events: none;
-        }
+.check {
+  width: 58px; height: 58px;
+  border-radius: 50%;
+  background: var(--pink);
+  display: flex; align-items: center; justify-content: center;
+  box-shadow: 0 0 0 8px rgba(255, 105, 180, 0.18), 0 10px 30px rgba(255, 105, 180, 0.5);
+}
+.check svg { width: 30px; height: 30px; }
+.check path {
+  stroke: #1a0010; stroke-width: 3.5; fill: none; stroke-linecap: round; stroke-linejoin: round;
+  stroke-dasharray: 30; stroke-dashoffset: 30;
+  animation: draw 0.5s 0.5s ease-out forwards;
+}
+@keyframes draw { to { stroke-dashoffset: 0; } }
 
-        @keyframes rotateLight {
-            from {
-                transform: rotate(0deg);
-            }
+.pass-title {
+  font-family: var(--cond);
+  font-style: italic;
+  font-weight: 900;
+  font-size: clamp(38px, 11vw, 70px);
+  line-height: 0.88;
+  letter-spacing: -1px;
+  text-transform: uppercase;
+  margin: 18px 0 10px;
+}
+.pass-title span { display: block; }
+.pass-title .stroke { color: transparent; -webkit-text-stroke: 1.5px var(--pink); }
+.pass-sub { margin: 0; color: #d6d0da; font-size: 15px; line-height: 1.5; max-width: 420px; }
 
-            to {
-                transform: rotate(360deg);
-            }
-        }
+.pass-tear {
+  position: relative;
+  height: 0;
+  border-top: 2px dashed rgba(255, 255, 255, 0.14);
+  margin: 0 22px;
+}
+.pass-tear::before, .pass-tear::after {
+  content: '';
+  position: absolute;
+  top: -15px;
+  width: 28px; height: 28px;
+  border-radius: 50%;
+  background: #0a0a0a;
+  border: 1px solid var(--line);
+}
+.pass-tear::before { left: -38px; }
+.pass-tear::after { right: -38px; }
 
-        .report-container {
-            background: rgba(0, 0, 0, 0.85);
-            width: 100%;
-            max-width: 450px;
-            border: 2px solid var(--neon-green);
-            position: relative;
-            z-index: 2;
-            padding: 40px;
+.pass-info {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  gap: 18px;
+  align-items: center;
+  padding: 22px 24px 24px;
+}
+.pass-date {
+  text-align: center;
+  font-family: var(--cond);
+  line-height: 0.9;
+  padding: 10px 14px 9px;
+  border-radius: 14px;
+  background: var(--pink);
+  color: #1a0010;
+  min-width: 82px;
+}
+.pass-date b { display: block; font-size: 44px; font-weight: 800; }
+.pass-date small { display: block; font-size: 17px; font-weight: 700; text-transform: uppercase; }
+.pass-date em { display: block; font-style: normal; font-size: 13px; font-weight: 600; opacity: 0.75; margin-top: 3px; }
+.pass-where b { display: block; font-family: var(--cond); font-size: 24px; font-weight: 700; line-height: 1.05; }
+.pass-where span { display: block; color: var(--muted); font-size: 14px; margin-top: 3px; }
+.pass-where .times { color: var(--text); font-weight: 600; margin-top: 8px; }
 
-            box-shadow:
-                0 0 30px var(--neon-glow),
-                inset 0 0 15px var(--neon-glow);
+/* ---------- COSA SUCCEDE ORA ---------- */
+.next {
+  margin-top: 22px;
+  background: var(--panel);
+  border: 1px solid var(--line);
+  border-radius: 22px;
+  padding: 22px 24px;
+}
+.next h2 {
+  font-family: var(--cond);
+  font-size: 26px;
+  font-weight: 800;
+  font-style: italic;
+  margin: 0 0 16px;
+}
+.timeline { list-style: none; margin: 0; padding: 0; }
+.timeline li {
+  position: relative;
+  padding: 0 0 20px 38px;
+  font-size: 15px;
+  line-height: 1.45;
+  color: #d6d0da;
+}
+.timeline li:last-child { padding-bottom: 0; }
+.timeline li::before {
+  content: '';
+  position: absolute;
+  left: 8px; top: 22px; bottom: 0;
+  width: 2px;
+  background: rgba(255, 255, 255, 0.12);
+}
+.timeline li:last-child::before { display: none; }
+.timeline .dot {
+  position: absolute;
+  left: 0; top: 2px;
+  width: 18px; height: 18px;
+  border-radius: 50%;
+  border: 2px solid rgba(255, 255, 255, 0.25);
+  background: var(--panel);
+}
+.timeline li.done .dot { background: var(--green); border-color: var(--green); box-shadow: 0 0 10px rgba(53, 224, 111, 0.6); }
+.timeline li.now .dot { border-color: var(--pink); background: var(--pink-soft); animation: pulse 1.8s ease-in-out infinite; }
+@keyframes pulse { 50% { box-shadow: 0 0 0 6px rgba(255, 105, 180, 0.15); } }
+.timeline b { display: block; color: var(--text); font-weight: 700; }
+.timeline span { font-size: 14px; color: var(--muted); }
 
-            border-radius: 20px;
+/* ---------- AVVISO MAIL ---------- */
+.mailnote {
+  display: flex;
+  gap: 14px;
+  align-items: flex-start;
+  margin-top: 22px;
+  padding: 16px 18px;
+  border-radius: 16px;
+  background: var(--pink-soft);
+  border: 1px solid rgba(255, 105, 180, 0.3);
+  font-size: 14px;
+  line-height: 1.5;
+  color: #f0dbe7;
+}
+.mailnote .ico { font-size: 22px; line-height: 1; }
+.mailnote b { color: #fff; }
 
-            backdrop-filter: blur(10px);
-            -webkit-backdrop-filter: blur(10px);
+/* ---------- BOTTONI ---------- */
+.actions { display: grid; gap: 10px; margin-top: 26px; }
+.btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 56px;
+  border-radius: 14px;
+  text-decoration: none;
+  font-family: var(--cond);
+  font-size: 20px;
+  font-weight: 800;
+  font-style: italic;
+  transition: transform 0.12s, filter 0.2s, border-color 0.2s;
+}
+.btn:active { transform: scale(0.98); }
+.btn-main { background: var(--pink); color: #1a0010; box-shadow: 0 12px 30px -8px rgba(255, 105, 180, 0.6); }
+.btn-main:hover { filter: brightness(1.06); }
+.btn-ghost { color: var(--text); border: 1px solid rgba(255, 255, 255, 0.18); }
+.btn-ghost:hover { border-color: rgba(255, 255, 255, 0.4); }
+.btn:focus-visible { outline: 3px solid #fff; outline-offset: 3px; }
 
-            text-align: center;
-        }
+.rules { text-align: center; margin-top: 16px; font-size: 13px; color: var(--muted); }
+.rules a { color: var(--pink); font-weight: 700; }
 
-        .report-badge {
-            background: var(--neon-green);
-            color: #000;
-            display: inline-block;
-            font-weight: 900;
-            font-size: 11px;
-            padding: 4px 12px;
-            letter-spacing: 2px;
-            margin-bottom: 15px;
-            text-transform: uppercase;
-            border-radius: 50px;
-            box-shadow: 0 0 10px var(--neon-green);
-        }
+/* coriandoli: un solo lancio all'apertura */
+.confetti {
+  position: fixed;
+  top: -12px;
+  width: 8px; height: 12px;
+  z-index: 5;
+  pointer-events: none;
+  animation: fall linear forwards;
+}
+@keyframes fall { to { transform: translateY(110vh) rotate(540deg); opacity: 0.6; } }
 
-        .report-title {
-            font-size: 28px;
-            font-weight: 900;
-            font-style: italic;
-            margin: 0;
-            line-height: 1;
-            text-transform: uppercase;
-            color: #ffffff;
-            text-shadow: 0 0 10px var(--neon-green);
-        }
+@media (max-width: 520px) {
+  .ok { padding-top: 18px; }
+  .pass-top { padding: 22px 18px 26px; }
+  .pass-info { padding: 20px 18px 22px; gap: 14px; }
+  .pass-tear { margin: 0 16px; }
+  .pass-tear::before { left: -32px; } .pass-tear::after { right: -32px; }
+  .next { padding: 20px 18px; }
+}
 
-        .report-divider {
-            height: 4px;
-
-            background: linear-gradient(
-                90deg,
-                transparent,
-                var(--neon-green),
-                transparent
-            );
-
-            width: 100%;
-            margin: 25px 0;
-        }
-
-        .status-box {
-            background: rgba(255, 79, 216, 0.05);
-            border: 1px solid var(--neon-green);
-            padding: 20px;
-            border-radius: 15px;
-            margin-bottom: 20px;
-        }
-
-        .status-text h2 {
-            font-size: 18px;
-            color: #fff;
-            margin: 0 0 8px 0;
-            letter-spacing: 1px;
-            font-weight: 900;
-        }
-
-        .status-text p {
-            font-size: 14px;
-            color: #ddd;
-            margin: 0;
-            line-height: 1.4;
-        }
-
-        .email-alert {
-            font-size: 13px;
-            color: #bbb;
-            margin-bottom: 25px;
-            line-height: 1.6;
-            background: rgba(255, 255, 255, 0.05);
-            padding: 15px;
-            border-radius: 12px;
-            border-left: 3px solid var(--neon-green);
-            text-align: left;
-        }
-
-        .technical-table {
-            margin-bottom: 25px;
-        }
-
-        .table-row {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            gap: 15px;
-            margin-bottom: 10px;
-            font-size: 13px;
-            border-bottom: 1px solid rgba(255,255,255,0.05);
-            padding-bottom: 8px;
-        }
-
-        .table-row .label {
-            color: #888;
-            font-weight: 700;
-            text-transform: uppercase;
-            flex-shrink: 0;
-        }
-
-        .table-row .value {
-            color: #fff;
-            font-weight: 900;
-            text-align: right;
-            font-size: 12px;
-            line-height: 1.3;
-        }
-
-        .rules-link {
-            color: var(--neon-green) !important;
-            font-weight: 900;
-            text-decoration: underline;
-        }
-
-        .btn-home-club {
-            display: block;
-            background: #fff;
-            color: #000;
-            text-align: center;
-            text-decoration: none;
-            padding: 18px;
-            font-weight: 900;
-            font-size: 14px;
-            border-radius: 12px;
-            transition: 0.3s;
-            text-transform: uppercase;
-            box-shadow: 0 5px 15px rgba(255,255,255,0.2);
-        }
-
-        .btn-home-club:hover {
-            transform: scale(1.03);
-            background: var(--neon-green);
-            color: #000;
-        }
-
-        .confetti {
-            position: fixed;
-            width: 8px;
-            height: 8px;
-            z-index: 1;
-            top: -10px;
-            animation: fall linear infinite;
-            pointer-events: none;
-        }
-
-        @keyframes fall {
-            to {
-                transform: translateY(110vh) rotate(360deg);
-            }
-        }
-
-        @media (max-width: 480px) {
-
-            .report-container {
-                padding: 25px;
-            }
-
-            .report-title {
-                font-size: 24px;
-            }
-
-            .table-row {
-                flex-direction: column;
-                align-items: flex-start;
-            }
-
-            .table-row .value {
-                text-align: left;
-                font-size: 11px;
-            }
-
-        }
-    </style>
+@media (prefers-reduced-motion: reduce) {
+  .ok *, .ok *::before, .ok *::after { animation: none !important; transition: none !important; }
+  .check path { stroke-dashoffset: 0; }
+  .confetti { display: none; }
+}
+</style>
 </head>
-<body data-no-footer>
-<div class="club-confirmation-wrapper">
+<body>
 
-    <div class="disco-light"></div>
+<main class="ok">
 
-    <div id="confetti-wrapper"></div>
-
-    <div class="report-container">
-
-        <div class="report-badge">
-            SUCCESS!
-        </div>
-
-        <h1 class="report-title">
-            CANDIDATURA <br>
-            <span style="color:var(--neon-green)">
-                RICEVUTA
-            </span>
-        </h1>
-
-        <div class="report-divider"></div>
-
-
-        <div class="status-box">
-
-            <div class="status-text">
-
-                <h2>
-                    PROCEDURA AVVIATA
-                </h2>
-
-                <p>
-                    La tua candidatura è stata ricevuta
-                    correttamente e verrà analizzata
-                    dallo <strong>STAFF PADANIA TUNING</strong>.
-                    <br><br>
-                    In caso di esito positivo, riceverai una
-                    <strong>mail ufficiale di conferma</strong>.
-                </p>
-
-            </div>
-
-        </div>
-
-
-        <div class="email-alert">
-
-            ⚠️ <strong>ATTENZIONE:</strong>
-
-            Controlla regolarmente la tua casella email
-            (anche la cartella
-            <strong>SPAM / Posta Indesiderata</strong>).
-
-            Riceverai tramite email tutte le informazioni
-            e le istruzioni necessarie in caso di selezione.
-
-        </div>
-
-
-        <div class="technical-table">
-
-
-            <div class="table-row">
-
-                <span class="label">
-                    LOCATION
-                </span>
-
-                <span class="value" id="cLuogo"></span>
-
-            </div>
-
-
-            <div class="table-row">
-
-                <span class="label">
-                    DATA EVENTO
-                </span>
-
-                <span class="value" id="cData"></span>
-
-            </div>
-
-
-            <div class="table-row">
-
-                <span class="label">
-                    ORARIO
-                </span>
-
-                <span class="value" id="cOrario"></span>
-
-            </div>
-
-
-            <div class="table-row">
-
-                <span class="label">
-                    INGRESSO
-                </span>
-
-                <span class="value" id="cIngresso"></span>
-
-            </div>
-
-
-            <div class="table-row">
-
-                <span class="label">
-                    CANDIDATURA
-                </span>
-
-                <span class="value" style="color:var(--neon-green)">
-                    IN FASE DI ANALISI
-                </span>
-
-            </div>
-
-        </div>
-
-
-        <p style="
-            font-size: 12px;
-            color: #888;
-            margin-bottom: 25px;
-            line-height: 1.5;
-        ">
-
-            Per dubbi consulta le
-
-            <a href="index.html?openmodal=1" class="rules-link">
-                REGOLE UFFICIALI
-            </a>.
-
-        </p>
-
-
-        <a href="index.html" class="btn-home-club">
-            TORNA ALLA HOME
-        </a>
-
+  <section class="pass" aria-label="Candidatura ricevuta">
+    <div class="pass-top">
+      <div class="check"><svg viewBox="0 0 24 24"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg></div>
+      <h1 class="pass-title"><span>Candidatura</span><span class="stroke">Ricevuta</span></h1>
+      <p class="pass-sub">Grazie! Il tuo garage è arrivato allo staff Padania Tuning. Ti abbiamo mandato una mail di conferma con il riepilogo e il tuo QR code.</p>
     </div>
+    <div class="pass-tear"></div>
+    <div class="pass-info">
+      <div class="pass-date" id="passDate"></div>
+      <div class="pass-where" id="passWhere"></div>
+    </div>
+  </section>
 
-</div>
+  <section class="next">
+    <h2>Cosa succede ora</h2>
+    <ol class="timeline">
+      <li class="done"><i class="dot"></i><b>Candidatura inviata</b><span>Abbiamo ricevuto i tuoi dati e le foto.</span></li>
+      <li class="now"><i class="dot"></i><b>Selezione dello staff</b><span>Valutiamo ogni auto candidata per l'area espositiva.</span></li>
+      <li><i class="dot"></i><b>Esito via email</b><span>Se vieni selezionato ricevi le istruzioni per ingresso e posizionamento. Il QR della mail ti servirà all'ingresso.</span></li>
+    </ol>
+  </section>
+
+  <div class="mailnote">
+    <span class="ico">📬</span>
+    <span>Non trovi la mail? Controlla la cartella <b>Spam / Posta indesiderata</b> e segnala che non è spam: così riceverai anche l'esito.</span>
+  </div>
+
+  <div class="actions">
+    <a href="index.html" class="btn btn-main">Torna alla home</a>
+    <a href="https://www.instagram.com/padaniatuning/" target="_blank" rel="noopener" class="btn btn-ghost">Seguici su Instagram</a>
+  </div>
+
+  <p class="rules">Dubbi? Leggi il <a href="index.html?openmodal=1">regolamento dell'evento</a>.</p>
+
+</main>
 
 <script src="assets/js/config.js"></script>
 <script src="assets/js/site.js"></script>
 <script>
-    var EV = window.PT_CONFIG.EVENTO;
-    document.getElementById('cLuogo').innerHTML = EV.luogo + '<br>' + EV.indirizzo.replace(', 25', '<br>25');
-    document.getElementById('cData').textContent = EV.data;
-    document.getElementById('cOrario').innerHTML = 'Raduno ' + EV.orarioRaduno + '<br>Serata ' + EV.luogo + ' ' + EV.orarioSerata;
-    document.getElementById('cIngresso').innerHTML = 'Raduno gratuito · +100 posti auto<br>Omaggio in discoteca con Padania Tuning';
-</script>
-<script>
+(function () {
+  var EV = window.PT_CONFIG.EVENTO;
+  var m = EV.data.match(/(\d{1,2})\s+(\w+)\s+(\d{4})/);
+  var giorno = EV.data.split(' ')[0];
+  document.getElementById('passDate').innerHTML = m
+    ? '<b>' + ('0' + m[1]).slice(-2) + '</b><small>' + m[2].slice(0, 3) + '</small><em>' + m[3] + '</em>'
+    : '<b>' + EV.data + '</b>';
+  document.getElementById('passWhere').innerHTML =
+    '<b>' + EV.luogo + '</b>' +
+    '<span>' + EV.indirizzo + '</span>' +
+    '<span class="times">' + giorno + ' · raduno ' + EV.orarioRaduno + ', serata ' + EV.orarioSerata + '</span>';
 
-    const wrapper =
-        document.getElementById('confetti-wrapper');
-
-    const colors = [
-        '#ff4fd8',
-        '#ffffff',
-        '#ff8fe6',
-        '#c218a6'
-    ];
-
-    for (let i = 0; i < 40; i++) {
-
-        const confetti =
-            document.createElement('div');
-
-        confetti.className = 'confetti';
-
-        confetti.style.left =
-            Math.random() * 100 + 'vw';
-
-        confetti.style.backgroundColor =
-            colors[
-                Math.floor(
-                    Math.random() * colors.length
-                )
-            ];
-
-        confetti.style.animationDuration =
-            (Math.random() * 3 + 3) + 's';
-
-        confetti.style.animationDelay =
-            (Math.random() * 5) + 's';
-
-        wrapper.appendChild(confetti);
-    }
-
+  // Un solo lancio di coriandoli
+  if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+  var colori = ['#ff69b4', '#ffffff', '#ff9fd0', '#35e06f'];
+  for (var i = 0; i < 46; i++) {
+    var c = document.createElement('div');
+    c.className = 'confetti';
+    c.style.left = Math.random() * 100 + 'vw';
+    c.style.background = colori[i % colori.length];
+    c.style.animationDuration = (Math.random() * 2 + 2.2) + 's';
+    c.style.animationDelay = (Math.random() * 0.8) + 's';
+    c.style.borderRadius = Math.random() > 0.5 ? '50%' : '2px';
+    document.body.appendChild(c);
+    c.addEventListener('animationend', function () { this.remove(); });
+  }
+})();
 </script>
 </body>
 </html>
