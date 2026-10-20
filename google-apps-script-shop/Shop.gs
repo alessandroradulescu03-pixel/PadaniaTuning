@@ -20,6 +20,8 @@ var SPEDIZIONE_EURO   = 7.00;   // spedizione in Italia
 var SPEDIZIONE_GRATIS = 80.00;  // sopra questo totale la spedizione è gratis (metti 0 per disattivare)
 var RITIRO_EVENTO     = true;   // true = c'è anche "Ritiro gratis al prossimo evento"
 var PAESI_SPEDIZIONE  = ['IT', 'SM', 'VA', 'CH'];
+var GIORNI_PREPARAZIONE = 14;   // tempo per preparare l'ordine prima della spedizione (lo leggono mail e sito)
+var EMAIL_CONTATTO    = 'padaniatuning@gmail.com';   // mostrata al cliente per domande e fatture
 
 // Nomi delle schede del Foglio
 var TAB_PRODOTTI  = 'Prodotti';
@@ -152,9 +154,9 @@ function creaCheckout(carrello) {
   add('shipping_options[' + opz + '][shipping_rate_data][fixed_amount][amount]', Math.round(spedizione * 100));
   add('shipping_options[' + opz + '][shipping_rate_data][fixed_amount][currency]', 'eur');
   add('shipping_options[' + opz + '][shipping_rate_data][delivery_estimate][minimum][unit]', 'business_day');
-  add('shipping_options[' + opz + '][shipping_rate_data][delivery_estimate][minimum][value]', 3);
+  add('shipping_options[' + opz + '][shipping_rate_data][delivery_estimate][minimum][value]', Math.round(GIORNI_PREPARAZIONE * 5 / 7) + 2);
   add('shipping_options[' + opz + '][shipping_rate_data][delivery_estimate][maximum][unit]', 'business_day');
-  add('shipping_options[' + opz + '][shipping_rate_data][delivery_estimate][maximum][value]', 7);
+  add('shipping_options[' + opz + '][shipping_rate_data][delivery_estimate][maximum][value]', Math.round(GIORNI_PREPARAZIONE * 5 / 7) + 5);
   if (RITIRO_EVENTO) {
     opz++;
     add('shipping_options[' + opz + '][shipping_rate_data][type]', 'fixed_amount');
@@ -187,6 +189,17 @@ function confermaOrdine(sessionId) {
     var gia = foglio.getRange(1, 2, Math.max(1, foglio.getLastRow()), 1).getValues()
       .some(function (r) { return r[0] === s.id; });
 
+    // Dati del pagamento (carta, ricevuta Stripe) per mail e scontrino
+    var ch = (s.payment_intent && s.payment_intent.latest_charge) || {};
+    var card = (ch.payment_method_details && ch.payment_method_details.card) || {};
+    var wallet = card.wallet && card.wallet.type ? { apple_pay: 'Apple Pay', google_pay: 'Google Pay', link: 'Link' }[card.wallet.type] || '' : '';
+    info.pagamento = (wallet ? wallet + ' · ' : '') + (card.brand ? card.brand.toUpperCase() + ' •••• ' + card.last4 : 'Carta');
+    info.ricevuta = ch.receipt_url || '';
+    info.subtotale = (s.amount_subtotal || 0) / 100;
+    info.spedizione = (s.total_details && s.total_details.amount_shipping || 0) / 100;
+    info.data = s.created * 1000;
+    info.test = s.livemode === false;
+
     if (!gia) {
       foglio.appendRow([
         new Date(s.created * 1000), s.id, info.numero, info.nome, info.email, info.telefono,
@@ -197,20 +210,12 @@ function confermaOrdine(sessionId) {
       mailCliente(info);
       mailStaff(info);
     }
-    // Dati per lo scontrino della pagina "Ordine confermato"
-    var ch = (s.payment_intent && s.payment_intent.latest_charge) || {};
-    var card = (ch.payment_method_details && ch.payment_method_details.card) || {};
-    var wallet = card.wallet && card.wallet.type ? { apple_pay: 'Apple Pay', google_pay: 'Google Pay', link: 'Link' }[card.wallet.type] || '' : '';
     return { ok: true, ordine: {
       numero: info.numero, nome: info.nome, email: info.email, telefono: info.telefono,
       articoli: info.articoli, consegna: info.consegna, indirizzo: info.indirizzo,
-      subtotale: (s.amount_subtotal || 0) / 100,
-      spedizione: (s.total_details && s.total_details.amount_shipping || 0) / 100,
-      totale: info.totale,
-      data: s.created * 1000,
-      pagamento: (wallet ? wallet + ' · ' : '') + (card.brand ? card.brand.toUpperCase() + ' •••• ' + card.last4 : 'Carta'),
-      ricevuta: ch.receipt_url || '',
-      test: s.livemode === false
+      ritiro: info.ritiro, subtotale: info.subtotale, spedizione: info.spedizione,
+      totale: info.totale, data: info.data, pagamento: info.pagamento,
+      ricevuta: info.ricevuta, test: info.test, giorniPreparazione: GIORNI_PREPARAZIONE
     } };
   } finally {
     lock.releaseLock();
@@ -232,8 +237,14 @@ function riassunto(s) {
   var det = s.customer_details || {};
   var sped = (s.shipping_details || (s.collected_information && s.collected_information.shipping_details)) || {};
   var a = sped.address || {};
+  var catalogo = [];
+  try { catalogo = leggiCatalogo(); } catch (err) { /* senza foto va bene lo stesso */ }
   var articoli = ((s.line_items && s.line_items.data) || []).map(function (li) {
-    return { nome: li.description, qta: li.quantity, totale: li.amount_total / 100 };
+    var parti = String(li.description).split(' — ');
+    var p = catalogo.filter(function (x) { return x.nome === parti[0]; })[0];
+    var foto = p && p.foto ? (p.foto.indexOf('http') === 0 ? p.foto : SITO_URL + p.foto) : '';
+    return { nome: li.description, prodotto: parti[0], dettaglio: parti[1] || '', foto: foto,
+             qta: li.quantity, prezzo: li.amount_total / 100 / (li.quantity || 1), totale: li.amount_total / 100 };
   });
   var spedCosto = (s.total_details && s.total_details.amount_shipping || 0) / 100;
   var consegna = spedCosto > 0 ? 'Spedizione (' + euro(spedCosto) + ')' : 'Spedizione gratuita / ritiro';
@@ -253,6 +264,7 @@ function riassunto(s) {
     articoli: articoli,
     articoliTesto: articoli.map(function (x) { return x.qta + '× ' + x.nome; }).join('\n'),
     consegna: consegna,
+    ritiro: /ritiro/i.test(consegna),
     indirizzo: [a.line1, a.line2, (a.postal_code || '') + ' ' + (a.city || ''), a.state, a.country].filter(function (x) { return x && String(x).trim(); }).join(', '),
     totale: s.amount_total / 100
   };
@@ -282,13 +294,90 @@ function scalaMagazzino(carrello) {
 // =========================================================
 function mailCliente(o) {
   if (!o.email) return;
-  var T = '#111114', S = '#45454d', M = '#7c7c86', L = '#dedee4';
+  var T = '#111114', S = '#45454d', M = '#7c7c86', L = '#dedee4', G = '#1f8a4c';
   var F = "font-family:'Barlow Condensed','Arial Narrow',Arial,sans-serif;";
-  var td = 'padding:10px 0;border-bottom:1px solid ' + L + ';font-size:15px;';
-  var righeHtml = o.articoli.map(function (x) {
-    return '<tr><td class="dm-t dm-l" style="' + td + 'color:' + T + '">' + x.qta + '× ' + esc(x.nome) + '</td>' +
-      '<td class="dm-t dm-l" align="right" style="' + td + 'color:' + T + ';white-space:nowrap">' + euro(x.totale) + '</td></tr>';
-  }).join('');
+  var H = F + 'font-size:22px;font-weight:900;font-style:italic;text-transform:uppercase;color:' + T + ';margin:0';
+  var box = 'border:1px solid ' + L + ';border-radius:14px;padding:16px 16px';
+  var oggi = new Date(o.data || Date.now());
+  var entro = new Date(oggi.getTime() + GIORNI_PREPARAZIONE * 864e5);
+  var settimane = GIORNI_PREPARAZIONE % 7 === 0 ? (GIORNI_PREPARAZIONE / 7) + (GIORNI_PREPARAZIONE === 7 ? ' settimana' : ' settimane') : GIORNI_PREPARAZIONE + ' giorni';
+  function data(d) { return Utilities.formatDate(d, 'Europe/Rome', 'dd/MM/yyyy'); }
+  function sezione(titolo, corpo) {
+    return '<tr><td style="padding:10px 20px"><div class="dm-l" style="' + box + '">' +
+      '<p class="dm-t" style="' + H + '">' + titolo + '</p>' + corpo + '</div></td></tr>';
+  }
+
+  // --- Tempi: 3 passaggi ---
+  function step(fatto, titolo, testo, ultimo) {
+    var pallino = fatto
+      ? '<div style="width:22px;height:22px;border-radius:50%;background:' + G + ';color:#fff;font-size:13px;line-height:22px;text-align:center;font-weight:bold">&#10003;</div>'
+      : '<div class="dm-l" style="width:18px;height:18px;border-radius:50%;border:2px solid ' + L + '"></div>';
+    return '<tr><td valign="top" width="34" style="padding-top:2px">' + pallino +
+      (ultimo ? '' : '<div class="dm-l" style="width:0;height:26px;margin:4px 0 0 10px;border-left:2px solid ' + L + '"></div>') + '</td>' +
+      '<td valign="top" style="padding-bottom:' + (ultimo ? 0 : 10) + 'px"><div class="dm-t" style="font-size:15px;font-weight:bold;color:' + T + '">' + titolo + '</div>' +
+      '<div class="dm-s" style="font-size:13px;line-height:1.5;color:' + S + '">' + testo + '</div></td></tr>';
+  }
+  var tempi =
+    '<table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="margin-top:14px">' +
+      step(true, 'Ordine ricevuto', data(oggi) + ' · pagamento confermato') +
+      step(false, 'In preparazione', 'Fino a ' + settimane + ': prepariamo e controlliamo ogni pezzo') +
+      (o.ritiro
+        ? step(false, 'Pronto per il ritiro', 'Lo trovi al prossimo evento Padania Tuning', true)
+        : step(false, 'Spedito', 'Entro il ' + data(entro) + ', poi 2–4 giorni lavorativi per la consegna', true)) +
+    '</table>' +
+    (o.ritiro ? '' :
+      '<div style="margin-top:14px;padding:12px 14px;border-radius:10px;border:1px dashed ' + G + ';font-size:14px;line-height:1.5;color:' + G + '">' +
+      '&#128666; Spedizione prevista <b>entro il ' + data(entro) + '</b>. Ti avvisiamo quando parte.</div>');
+
+  // --- Articoli con foto ---
+  var articoli = '<table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="margin-top:8px">' +
+    o.articoli.map(function (x) {
+      var img = x.foto
+        ? '<img src="' + esc(x.foto) + '" width="64" height="64" alt="" style="display:block;width:64px;height:64px;object-fit:cover;border-radius:10px;border:1px solid ' + L + '">'
+        : '<div style="width:64px;height:64px;border-radius:10px;background:#ececf0"></div>';
+      var info = [x.dettaglio, 'Quantità ' + x.qta, x.qta > 1 ? euro(x.prezzo) + ' cad.' : ''].filter(String).join(' · ');
+      return '<tr><td class="dm-l" width="76" valign="middle" style="padding:12px 0;border-bottom:1px solid ' + L + '">' + img + '</td>' +
+        '<td class="dm-l" valign="middle" style="padding:12px 0;border-bottom:1px solid ' + L + '">' +
+          '<div class="dm-t" style="font-size:15px;font-weight:bold;color:' + T + '">' + esc(x.prodotto || x.nome) + '</div>' +
+          '<div class="dm-m" style="font-size:13px;color:' + M + ';margin-top:3px">' + esc(info) + '</div></td>' +
+        '<td class="dm-t dm-l" align="right" valign="middle" style="padding:12px 0 12px 8px;border-bottom:1px solid ' + L + ';font-size:15px;font-weight:bold;color:' + T + ';white-space:nowrap">' + euro(x.totale) + '</td></tr>';
+    }).join('') + '</table>';
+
+  function riga(a, b) {
+    return '<tr><td class="dm-s" style="padding:4px 0;font-size:14px;color:' + S + '">' + a + '</td>' +
+      '<td class="dm-t" align="right" style="padding:4px 0;font-size:14px;color:' + T + '">' + b + '</td></tr>';
+  }
+  var totali = '<table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="margin-top:12px">' +
+    riga('Subtotale', euro(o.subtotale || o.totale)) +
+    riga(o.ritiro ? 'Ritiro all\'evento' : 'Spedizione', o.spedizione ? euro(o.spedizione) : 'Gratis') +
+    '<tr><td class="dm-t dm-l" style="padding:10px 0 0;border-top:1px solid ' + L + ';' + F + 'font-size:26px;font-weight:900;font-style:italic;color:' + T + '">TOTALE</td>' +
+    '<td class="dm-t dm-l" align="right" style="padding:10px 0 0;border-top:1px solid ' + L + ';' + F + 'font-size:26px;font-weight:900;font-style:italic;color:' + T + '">' + euro(o.totale) + '</td></tr>' +
+    '<tr><td class="dm-s" style="padding:12px 0 0;font-size:13px;color:' + S + '">Pagato con</td><td class="dm-t" align="right" style="padding:12px 0 0;font-size:13px;color:' + T + '">' + esc(o.pagamento || 'Carta') + '</td></tr>' +
+    '</table>';
+
+  // --- Consegna ---
+  var consegna = o.ritiro
+    ? '<p class="dm-s" style="margin:10px 0 0;font-size:14px;line-height:1.6;color:' + S + '"><b class="dm-t" style="color:' + T + '">Ritiro gratis al prossimo evento Padania Tuning.</b><br>Allo stand mostra questa mail o dicci il numero d\'ordine <b class="dm-t" style="color:' + T + '">' + o.numero + '</b>.</p>'
+    : '<p class="dm-s" style="margin:10px 0 0;font-size:14px;line-height:1.6;color:' + S + '"><b class="dm-t" style="color:' + T + '">' + esc(o.nome) + '</b><br>' + esc(o.indirizzo) +
+      (o.telefono ? '<br>Tel. ' + esc(o.telefono) : '') + '</p>';
+  consegna += '<p class="dm-m" style="margin:10px 0 0;font-size:13px;color:' + M + '">Metodo: ' + esc(o.consegna) + '</p>';
+
+  // --- Buono a sapere ---
+  function punto(icona, testo) {
+    return '<tr><td valign="top" width="28" style="padding:6px 0;font-size:16px">' + icona + '</td>' +
+      '<td class="dm-s" style="padding:6px 0;font-size:14px;line-height:1.5;color:' + S + '">' + testo + '</td></tr>';
+  }
+  var aiuto = '<table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="margin-top:8px">' +
+    punto('&#128085;', '<b class="dm-t" style="color:' + T + '">Taglia sbagliata o qualche problema?</b> Rispondi a questa mail indicando il numero d\'ordine.') +
+    punto('&#129534;', '<b class="dm-t" style="color:' + T + '">Ti serve la fattura?</b> Scrivici ragione sociale, P.IVA o codice fiscale, indirizzo e codice SDI/PEC.') +
+    punto('&#128274;', 'Pagamento gestito in sicurezza da Stripe: riceverai anche la loro ricevuta.') +
+    '</table>';
+
+  var bottoni =
+    '<tr><td style="padding:14px 20px 6px">' +
+      (o.ricevuta ? '<a href="' + esc(o.ricevuta) + '" class="dm-btn" style="display:block;text-align:center;background:' + T + ';color:#ffffff;text-decoration:none;' + F + 'font-size:19px;font-weight:900;font-style:italic;padding:14px;border-radius:12px;margin-bottom:10px">Scarica la ricevuta</a>' : '') +
+      '<a href="https://ig.me/m/padaniatuning" class="dm-t dm-l" style="display:block;text-align:center;border:1.5px solid ' + T + ';color:' + T + ';text-decoration:none;' + F + 'font-size:19px;font-weight:900;font-style:italic;padding:13px;border-radius:12px">Scrivici su Instagram</a>' +
+    '</td></tr>';
 
   var html =
     '<!DOCTYPE html><html><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">' +
@@ -296,22 +385,24 @@ function mailCliente(o) {
     '<body class="dm-bg" style="margin:0;background:#ffffff">' +
     '<table role="presentation" width="100%" cellpadding="0" cellspacing="0" class="dm-bg" style="background:#ffffff;font-family:Arial,Helvetica,sans-serif"><tr><td align="center" style="padding:10px 6px">' +
     '<table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="max-width:560px">' +
-      '<tr><td class="dm-t" style="padding:18px 20px 0;' + F + 'font-size:20px;font-style:italic;font-weight:900;color:' + T + ';text-transform:uppercase">Padania Tuning Shop</td></tr>' +
-      '<tr><td style="padding:22px 20px 6px">' +
-        '<div style="font-size:13px;font-weight:bold;color:#1f8a4c">&#10003; Pagamento ricevuto</div>' +
-        '<h1 class="dm-t" style="margin:10px 0 0;' + F + 'font-size:40px;line-height:1;font-style:italic;font-weight:900;color:' + T + ';text-transform:uppercase">Grazie ' + esc(o.nome.split(' ')[0]) + '!</h1>' +
-        '<p class="dm-s" style="margin:14px 0 0;font-size:15px;line-height:1.6;color:' + S + '">Il tuo ordine <b class="dm-t" style="color:' + T + '">' + o.numero + '</b> è confermato. Ti scriviamo appena è pronto. &#127937;</p>' +
+      '<tr><td style="padding:18px 20px 0"><table role="presentation" cellpadding="0" cellspacing="0"><tr>' +
+        '<td><img src="' + SITO_URL + 'assets/img/logo.jpg" width="38" height="38" alt="" style="display:block;border-radius:50%"></td>' +
+        '<td class="dm-t" style="padding-left:10px;' + F + 'font-size:20px;font-style:italic;font-weight:900;color:' + T + ';text-transform:uppercase">Padania Tuning Shop</td>' +
+      '</tr></table></td></tr>' +
+      (o.test ? '<tr><td style="padding:14px 20px 0"><div style="border:1.5px dashed #c0392b;color:#c0392b;border-radius:10px;padding:8px;text-align:center;font-size:12px;font-weight:bold">ORDINE DI PROVA · NESSUN ADDEBITO</div></td></tr>' : '') +
+      '<tr><td style="padding:22px 20px 8px">' +
+        '<div style="font-size:13px;font-weight:bold;color:' + G + '">&#10003; Pagamento ricevuto</div>' +
+        '<h1 class="dm-t" style="margin:10px 0 0;' + F + 'font-size:42px;line-height:1;font-style:italic;font-weight:900;color:' + T + ';text-transform:uppercase">Grazie ' + esc(String(o.nome).split(' ')[0]) + '!</h1>' +
+        '<p class="dm-s" style="margin:14px 0 0;font-size:15px;line-height:1.6;color:' + S + '">Abbiamo ricevuto il tuo ordine <b class="dm-t" style="color:' + T + '">' + o.numero + '</b> del ' + data(oggi) + '. Qui sotto trovi il riepilogo completo. &#127937;</p>' +
       '</td></tr>' +
-      '<tr><td style="padding:16px 20px">' +
-        '<table role="presentation" width="100%" cellpadding="0" cellspacing="0">' + righeHtml +
-          '<tr><td class="dm-m" style="padding:10px 0;font-size:14px;color:' + M + '">Consegna: ' + esc(o.consegna) + '</td><td></td></tr>' +
-          '<tr><td class="dm-t" style="padding:6px 0;' + F + 'font-size:24px;font-weight:900;font-style:italic;color:' + T + '">Totale</td>' +
-          '<td class="dm-t" align="right" style="padding:6px 0;' + F + 'font-size:24px;font-weight:900;font-style:italic;color:' + T + '">' + euro(o.totale) + '</td></tr>' +
-        '</table>' +
-      '</td></tr>' +
-      (o.indirizzo ? '<tr><td class="dm-s" style="padding:0 20px 10px;font-size:14px;line-height:1.5;color:' + S + '"><b class="dm-t" style="color:' + T + '">Indirizzo:</b> ' + esc(o.indirizzo) + '</td></tr>' : '') +
-      '<tr><td style="padding:16px 20px 22px"><a href="https://ig.me/m/padaniatuning" class="dm-btn" style="display:block;text-align:center;background:' + T + ';color:#ffffff;text-decoration:none;' + F + 'font-size:19px;font-weight:900;font-style:italic;padding:14px;border-radius:12px">Domande? Scrivici su Instagram</a></td></tr>' +
-      '<tr><td class="dm-m" style="padding:0 20px 20px;font-size:11px;line-height:1.6;color:' + M + ';text-align:center">Riceverai anche la ricevuta di pagamento da Stripe.</td></tr>' +
+      sezione('Quando arriva', tempi) +
+      sezione('Cosa hai comprato', articoli + totali) +
+      sezione(o.ritiro ? 'Ritiro' : 'Spedizione', consegna) +
+      sezione('Buono a sapersi', aiuto) +
+      bottoni +
+      '<tr><td class="dm-m" style="padding:18px 20px 24px;font-size:11px;line-height:1.6;color:' + M + ';text-align:center">' +
+        'Padania Tuning · <a href="' + SITO_URL + 'shop.html" class="dm-m" style="color:' + M + '">Shop</a> · <a href="https://www.instagram.com/padaniatuning/" class="dm-m" style="color:' + M + '">Instagram</a><br>' +
+        'Hai ricevuto questa mail perché hai fatto un ordine sul nostro shop.</td></tr>' +
     '</table></td></tr></table></body></html>';
 
   MailApp.sendEmail({
@@ -319,18 +410,27 @@ function mailCliente(o) {
     subject: '🏁 Ordine ' + o.numero + ' confermato — Padania Tuning',
     htmlBody: html,
     name: NOME_MITTENTE,
-    replyTo: EMAIL_STAFF
+    replyTo: EMAIL_CONTATTO
   });
 }
 
 function mailStaff(o) {
+  var righe = o.articoli.map(function (x) {
+    return '<tr><td style="padding:6px 10px 6px 0;border-bottom:1px solid #eee">' + x.qta + '×</td>' +
+      '<td style="padding:6px 10px 6px 0;border-bottom:1px solid #eee"><b>' + esc(x.prodotto || x.nome) + '</b>' + (x.dettaglio ? ' — ' + esc(x.dettaglio) : '') + '</td>' +
+      '<td align="right" style="padding:6px 0;border-bottom:1px solid #eee">' + euro(x.totale) + '</td></tr>';
+  }).join('');
+  var entro = Utilities.formatDate(new Date((o.data || Date.now()) + GIORNI_PREPARAZIONE * 864e5), 'Europe/Rome', 'dd/MM/yyyy');
   var html =
-    '<div style="font-family:Arial,sans-serif;font-size:14px;line-height:1.55">' +
-    '<h2>Nuovo ordine ' + o.numero + ' — ' + euro(o.totale) + '</h2>' +
+    '<div style="font-family:Arial,sans-serif;font-size:14px;line-height:1.55;max-width:560px">' +
+    (o.test ? '<p style="color:#c0392b"><b>ORDINE DI PROVA (Stripe Sandbox)</b></p>' : '') +
+    '<h2 style="margin:0 0 6px">Nuovo ordine ' + o.numero + ' — ' + euro(o.totale) + '</h2>' +
+    '<p style="margin:0 0 14px;color:#555">' + (o.ritiro ? '📍 Ritiro al prossimo evento' : '📦 Da spedire entro il <b>' + entro + '</b>') + '</p>' +
+    '<table cellpadding="0" cellspacing="0" style="width:100%;border-collapse:collapse">' + righe + '</table>' +
+    '<p>Subtotale ' + euro(o.subtotale || o.totale) + ' · Spedizione ' + (o.spedizione ? euro(o.spedizione) : 'gratis') + ' · <b>Totale ' + euro(o.totale) + '</b><br>Pagato con ' + esc(o.pagamento || 'carta') + '</p>' +
     '<p><b>Cliente:</b> ' + esc(o.nome) + '<br><b>Email:</b> ' + esc(o.email) + '<br><b>Telefono:</b> ' + esc(o.telefono) + '</p>' +
-    '<p><b>Articoli:</b><br>' + esc(o.articoliTesto).replace(/\n/g, '<br>') + '</p>' +
-    '<p><b>Consegna:</b> ' + esc(o.consegna) + (o.indirizzo ? '<br><b>Indirizzo:</b> ' + esc(o.indirizzo) : '') + '</p>' +
-    '<p><a href="' + SpreadsheetApp.getActiveSpreadsheet().getUrl() + '">📊 Apri il foglio ordini</a></p></div>';
+    '<p><b>Consegna:</b> ' + esc(o.consegna) + (o.indirizzo && !o.ritiro ? '<br><b>Indirizzo:</b> ' + esc(o.indirizzo) : '') + '</p>' +
+    '<p><a href="' + SpreadsheetApp.getActiveSpreadsheet().getUrl() + '">📊 Apri il foglio ordini</a>' + (o.ricevuta ? ' · <a href="' + o.ricevuta + '">🧾 Ricevuta Stripe</a>' : '') + '</p></div>';
   MailApp.sendEmail({ to: EMAIL_STAFF, subject: '🛒 Nuovo ordine ' + o.numero + ' (' + euro(o.totale) + ')', htmlBody: html, name: NOME_MITTENTE, replyTo: o.email || EMAIL_STAFF });
 }
 

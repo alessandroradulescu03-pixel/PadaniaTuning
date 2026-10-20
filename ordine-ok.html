@@ -175,6 +175,8 @@
 
     function esc(s) { return String(s == null ? '' : s).replace(/[&<>"]/g, function (c) { return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]; }); }
     function pad(n) { return n < 10 ? '0' + n : n; }
+    function tempo(g) { return g % 7 === 0 ? 'massimo ' + (g / 7 === 1 ? '1 settimana' : (g / 7) + ' settimane') : 'massimo ' + g + ' giorni'; }
+    function entro(o) { var d = new Date((o.data || Date.now()) + (o.giorniPreparazione || 14) * 864e5); return pad(d.getDate()) + '/' + pad(d.getMonth() + 1) + '/' + d.getFullYear(); }
 
     // Codice a barre finto ma "vero" nell'aspetto: barre ricavate dal numero d'ordine
     function barcode(testo) {
@@ -246,7 +248,7 @@
                 '<div class="printer-body"><span class="printer-brand">Padania Tuning</span><span class="printer-led"><i></i><em id="ledTxt" style="font-style:normal">Stampa in corso…</em></span><div class="slot"></div></div>' +
                 '<div class="paper-wrap"><div class="paper" id="paper">' + scontrino(o) + '</div></div>' +
             '</div>' +
-            '<div class="note"><span>📦</span><span><b>Cosa succede ora:</b> prepariamo il tuo ordine e ti scriviamo quando parte o quando puoi ritirarlo. Per qualsiasi domanda scrivici su Instagram indicando il numero d\'ordine.</span></div>' +
+            '<div class="note"><span>📦</span><span><b>Cosa succede ora:</b> prepariamo il tuo ordine in ' + tempo(o.giorniPreparazione || 14) + (o.ritiro ? ', poi lo trovi al <b>prossimo evento</b> Padania Tuning.' : ' e lo spediamo <b>entro il ' + entro(o) + '</b>. Ti avvisiamo quando parte.') + ' Per qualsiasi domanda scrivici indicando il numero d\'ordine.</span></div>' +
             '<div class="actions">' +
                 '<a href="shop.html" class="pt-btn pt-btn-main">Torna allo shop</a>' +
                 '<a href="https://ig.me/m/padaniatuning" target="_blank" rel="noopener" class="pt-btn pt-btn-ghost">Scrivici su Instagram</a>' +
