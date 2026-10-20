@@ -7,59 +7,152 @@
 <meta name="robots" content="noindex">
 <link rel="icon" href="assets/img/logo.jpg">
 <link rel="stylesheet" href="assets/css/site.css">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
 <style>
-.ok { max-width: 560px; margin: 0 auto; padding: 34px 16px 40px; }
+.ok { max-width: 520px; margin: 0 auto; padding: 30px 16px 40px; }
 
-.pass {
-    position: relative; overflow: hidden;
-    border-radius: 22px; background: var(--panel); border: 1px solid var(--line);
-    box-shadow: 0 30px 60px -24px rgba(255, 255, 255, 0.18);
-    animation: passIn 0.6s cubic-bezier(0.2, 0.9, 0.3, 1.2) both;
-}
-@keyframes passIn { from { opacity: 0; transform: translateY(24px) scale(0.97); } }
-.pass-top { padding: 26px 24px 26px; background: linear-gradient(180deg, #1f1d22 0%, var(--panel) 100%); }
-
+/* ---------- INTESTAZIONE ---------- */
+.head { text-align: center; animation: fadeUp 0.5s ease both; }
+@keyframes fadeUp { from { opacity: 0; transform: translateY(14px); } }
 .check {
-    width: 58px; height: 58px; border-radius: 50%;
+    width: 58px; height: 58px; margin: 0 auto; border-radius: 50%;
     display: flex; align-items: center; justify-content: center;
     box-shadow: 0 0 0 8px rgba(220, 220, 228, 0.12);
 }
 .check svg { width: 30px; height: 30px; }
-.check path { stroke: #0a0a0a; stroke-width: 3.5; fill: none; stroke-linecap: round; stroke-linejoin: round; stroke-dasharray: 30; stroke-dashoffset: 30; animation: draw 0.5s 0.4s ease-out forwards; }
+.check path { stroke: #0a0a0a; stroke-width: 3.5; fill: none; stroke-linecap: round; stroke-linejoin: round; stroke-dasharray: 30; stroke-dashoffset: 30; animation: draw 0.5s 0.3s ease-out forwards; }
 @keyframes draw { to { stroke-dashoffset: 0; } }
-
-.title { font-family: var(--cond); font-style: italic; font-weight: 900; text-transform: uppercase; font-size: clamp(42px, 12vw, 64px); line-height: 0.88; margin: 18px 0 10px; }
+.title { font-family: var(--cond); font-style: italic; font-weight: 900; text-transform: uppercase; font-size: clamp(42px, 12vw, 62px); line-height: 0.88; margin: 16px 0 10px; }
 .title span { display: block; }
-.sub { margin: 0; color: var(--soft); font-size: 15px; line-height: 1.5; }
+.sub { margin: 0 auto; max-width: 400px; color: var(--soft); font-size: 15px; line-height: 1.5; }
 .sub b { color: var(--text); }
 
-.items { padding: 20px 24px 6px; }
-.row { display: flex; justify-content: space-between; gap: 14px; padding: 12px 0; border-bottom: 1px solid var(--line); font-size: 15px; }
-.row span:last-child { white-space: nowrap; font-weight: 700; }
-.row.muted { color: var(--muted); font-size: 14px; }
-.tot { display: flex; justify-content: space-between; align-items: baseline; padding: 14px 24px 22px; }
-.tot span { color: var(--soft); }
-.tot b { font-family: var(--cond); font-style: italic; font-weight: 900; font-size: 34px; }
+/* ---------- STAMPANTE ---------- */
+.printer { position: relative; margin: 30px auto 0; width: 100%; max-width: 380px; }
 
+.printer-body {
+    position: relative; z-index: 3;
+    height: 92px; border-radius: 22px 22px 14px 14px;
+    background: linear-gradient(180deg, #34323a 0%, #1d1b20 55%, #141216 100%);
+    border: 1px solid rgba(255,255,255,0.12);
+    box-shadow: 0 20px 40px rgba(0,0,0,0.55), inset 0 1px 0 rgba(255,255,255,0.12);
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 0 20px 14px;
+}
+.printer.printing .printer-body { animation: buzz 0.12s linear infinite; }
+@keyframes buzz { 50% { transform: translateY(0.6px); } }
+
+.printer-brand { font-family: var(--cond); font-style: italic; font-weight: 900; font-size: 18px; text-transform: uppercase; letter-spacing: 0.5px; color: rgba(255,255,255,0.75); }
+.printer-led { display: flex; align-items: center; gap: 8px; font-size: 12px; color: var(--muted); }
+.printer-led i { width: 9px; height: 9px; border-radius: 50%; background: #f5a524; box-shadow: 0 0 8px #f5a524; animation: ledBlink 0.6s steps(2) infinite; }
+.printer.done .printer-led i { background: var(--green); box-shadow: 0 0 8px var(--green); animation: none; }
+@keyframes ledBlink { 50% { opacity: 0.25; } }
+
+.slot {
+    position: absolute; z-index: 4;
+    left: 22px; right: 22px; bottom: 12px; height: 9px;
+    border-radius: 6px;
+    background: #050505;
+    box-shadow: inset 0 3px 6px rgba(0,0,0,0.9), 0 1px 0 rgba(255,255,255,0.08);
+}
+
+/* Carta che esce dalla fessura */
+.paper-wrap {
+    position: relative; z-index: 2;
+    margin: -16px 30px 0;
+    overflow: hidden;
+    padding-bottom: 18px;  /* spazio per l'ombra */
+    filter: drop-shadow(0 10px 14px rgba(0,0,0,0.5));
+}
+.paper {
+    position: relative;
+    background: #fbfbf7;
+    color: #141414;
+    font-family: 'Space Mono', 'Courier New', monospace;
+    font-size: 12.5px;
+    line-height: 1.55;
+    padding: 30px 18px 26px;
+    transform: translateY(-101%);
+    /* bordo in basso "strappato" */
+    -webkit-mask: linear-gradient(#000 0 0) top / 100% calc(100% - 10px) no-repeat, conic-gradient(from -45deg at bottom, #0000, #000 1deg 89deg, #0000 90deg) bottom / 14px 10px repeat-x;
+            mask: linear-gradient(#000 0 0) top / 100% calc(100% - 10px) no-repeat, conic-gradient(from -45deg at bottom, #0000, #000 1deg 89deg, #0000 90deg) bottom / 14px 10px repeat-x;
+}
+.paper::before {      /* leggera grana della carta termica */
+    content: ''; position: absolute; inset: 0; pointer-events: none;
+    background: repeating-linear-gradient(0deg, rgba(0,0,0,0.018) 0 1px, transparent 1px 3px);
+}
+.printer.printing .paper { animation: printOut var(--durata, 5s) steps(34, end) forwards; }
+.printer.done .paper { transform: none; }
+@keyframes printOut { to { transform: translateY(0); } }
+
+.r-center { text-align: center; }
+.r-brand { font-weight: 700; font-size: 17px; letter-spacing: 1px; }
+.r-small { font-size: 11px; color: #555; }
+.r-sep { border: 0; border-top: 1.5px dashed #9a9a9a; margin: 12px 0; }
+.r-sep.double { border-top: 3px double #222; }
+.r-row { display: flex; justify-content: space-between; gap: 10px; }
+.r-row span:last-child { text-align: right; white-space: nowrap; }
+.r-label { color: #555; }
+.r-item { margin-bottom: 8px; }
+.r-item small { display: block; color: #555; font-size: 11.5px; padding-left: 22px; }
+.r-total { font-weight: 700; font-size: 16px; }
+.r-test { margin: 10px 0 0; padding: 5px; border: 1.5px dashed #b00; color: #b00; font-weight: 700; text-align: center; font-size: 11px; }
+.r-addr { font-size: 11.5px; color: #333; }
+
+.barcode {
+    height: 46px; margin: 14px auto 4px; width: 86%;
+    background: #141414;
+}
+.thanks { font-weight: 700; margin-top: 12px; }
+
+.r-actions { display: grid; gap: 8px; margin-top: 18px; }
+.r-btn {
+    display: flex; align-items: center; justify-content: center; gap: 8px;
+    height: 46px; border-radius: 10px;
+    font-family: 'Space Mono', monospace; font-weight: 700; font-size: 13px; text-transform: uppercase; letter-spacing: 0.5px;
+    text-decoration: none; cursor: pointer;
+    background: #141414; color: #fbfbf7; border: 1.5px solid #141414;
+}
+.r-btn.ghost { background: transparent; color: #141414; }
+.r-btn svg { width: 16px; height: 16px; stroke: currentColor; fill: none; stroke-width: 2.2; stroke-linecap: round; stroke-linejoin: round; }
+.r-actions { opacity: 0; transition: opacity 0.5s 0.2s; }
+.printer.done .r-actions { opacity: 1; }
+
+/* ---------- SOTTO ---------- */
 .note {
     display: flex; gap: 14px; align-items: flex-start;
-    margin-top: 18px; padding: 16px 18px; border-radius: 16px;
+    margin-top: 10px; padding: 16px 18px; border-radius: 16px;
     background: var(--panel); border: 1px solid var(--line);
     color: var(--soft); font-size: 14px; line-height: 1.5;
 }
 .note b { color: var(--text); }
-.actions { display: grid; gap: 10px; margin-top: 22px; }
+.actions { display: grid; gap: 10px; margin-top: 18px; }
 .actions .pt-btn { width: 100%; }
 
 .loading { text-align: center; padding: 70px 10px; color: var(--soft); }
 .spin { width: 44px; height: 44px; margin: 0 auto 18px; border-radius: 50%; border: 3px solid rgba(255,255,255,0.15); border-top-color: #fff; animation: spin 0.8s linear infinite; }
 @keyframes spin { to { transform: rotate(360deg); } }
+.err { background: var(--panel); border: 1px solid var(--line); border-radius: 22px; padding: 24px; }
 
-@media (max-width: 520px) {
-    .ok { padding-top: 20px; }
-    .pass-top { padding: 22px 18px; }
-    .items { padding: 16px 18px 4px; }
-    .tot { padding: 12px 18px 20px; }
+@media (max-width: 420px) {
+    .paper-wrap { margin-left: 22px; margin-right: 22px; }
+    .paper { padding: 26px 14px 22px; font-size: 12px; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .printer .paper { animation: none !important; transform: none; }
+    .printer .r-actions { opacity: 1; }
+}
+
+/* Stampa / salva come PDF: solo lo scontrino */
+@media print {
+    body * { visibility: hidden !important; }
+    .paper, .paper * { visibility: visible !important; }
+    .paper { position: absolute; left: 0; top: 0; width: 80mm; transform: none !important; box-shadow: none; -webkit-mask: none; mask: none; }
+    .r-actions { display: none !important; }
+    html, body { background: #fff !important; }
 }
 </style>
 </head>
@@ -75,41 +168,113 @@
 <script>
 (function () {
     var CFG = window.PT_CONFIG;
+    var EMAIL_FATTURE = 'padaniatuning@gmail.com';
     var euro = PTCart.euro;
     var box = document.getElementById('box');
     var sid = new URLSearchParams(location.search).get('session_id');
 
     function esc(s) { return String(s == null ? '' : s).replace(/[&<>"]/g, function (c) { return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]; }); }
+    function pad(n) { return n < 10 ? '0' + n : n; }
+
+    // Codice a barre finto ma "vero" nell'aspetto: barre ricavate dal numero d'ordine
+    function barcode(testo) {
+        var stops = [], x = 0, s = 0;
+        for (var i = 0; i < testo.length; i++) s = (s * 31 + testo.charCodeAt(i)) >>> 0;
+        while (x < 100) {
+            s = (s * 1103515245 + 12345) >>> 0;
+            var w = 0.6 + (s % 4) * 0.55, g = 0.5 + ((s >> 3) % 3) * 0.5;
+            stops.push('#141414 ' + x.toFixed(2) + '% ' + Math.min(100, x + w).toFixed(2) + '%', 'transparent ' + Math.min(100, x + w).toFixed(2) + '% ' + Math.min(100, x + w + g).toFixed(2) + '%');
+            x += w + g;
+        }
+        return 'linear-gradient(90deg,' + stops.join(',') + ')';
+    }
+
+    function scontrino(o) {
+        var d = new Date(o.data || Date.now());
+        var quando = pad(d.getDate()) + '/' + pad(d.getMonth() + 1) + '/' + d.getFullYear() + ' ' + pad(d.getHours()) + ':' + pad(d.getMinutes());
+        var articoli = o.articoli.map(function (a) {
+            var parti = String(a.nome).split(' — ');
+            return '<div class="r-item"><div class="r-row"><span>' + a.qta + 'x ' + esc(parti[0]) + '</span><span>' + euro(a.totale) + '</span></div>' +
+                (parti[1] ? '<small>' + esc(parti[1]) + '</small>' : '') + '</div>';
+        }).join('');
+        var oggetto = encodeURIComponent('Richiesta fattura ordine ' + o.numero);
+        var corpo = encodeURIComponent(
+            'Ciao Padania Tuning,\nvorrei la fattura per l\'ordine ' + o.numero + ' del ' + quando + ' (totale ' + euro(o.totale) + ').\n\n' +
+            'Ragione sociale / Nome e cognome:\nPartita IVA / Codice fiscale:\nIndirizzo di fatturazione:\nCodice SDI o PEC:\n\nGrazie!');
+
+        return '' +
+            '<div class="r-center">' +
+                '<div class="r-brand">PADANIA TUNING</div>' +
+                '<div class="r-small">SHOP UFFICIALE · @padaniatuning</div>' +
+            '</div>' +
+            '<hr class="r-sep">' +
+            '<div class="r-row"><span class="r-label">ORDINE</span><span>' + esc(o.numero) + '</span></div>' +
+            '<div class="r-row"><span class="r-label">DATA</span><span>' + quando + '</span></div>' +
+            '<div class="r-row"><span class="r-label">CLIENTE</span><span>' + esc(o.nome) + '</span></div>' +
+            '<hr class="r-sep">' +
+            articoli +
+            '<hr class="r-sep">' +
+            '<div class="r-row"><span>SUBTOTALE</span><span>' + euro(o.subtotale || o.totale) + '</span></div>' +
+            '<div class="r-row"><span>SPEDIZIONE</span><span>' + (o.spedizione ? euro(o.spedizione) : 'GRATIS') + '</span></div>' +
+            '<hr class="r-sep double">' +
+            '<div class="r-row r-total"><span>TOTALE</span><span>' + euro(o.totale) + '</span></div>' +
+            '<hr class="r-sep double">' +
+            '<div class="r-row"><span class="r-label">PAGATO</span><span>' + esc(o.pagamento || 'Carta') + '</span></div>' +
+            '<div class="r-row"><span class="r-label">CONSEGNA</span><span>' + esc(String(o.consegna || '').replace(/\s*\(.*\)$/, '')) + '</span></div>' +
+            (o.indirizzo ? '<div class="r-addr">' + esc(o.indirizzo) + '</div>' : '') +
+            '<div class="barcode" style="background:' + barcode(o.numero) + '"></div>' +
+            '<div class="r-center r-small">' + esc(o.numero) + '</div>' +
+            '<div class="r-center thanks">*** GRAZIE! ***</div><div class="r-center r-small">Ci vediamo al prossimo raduno</div>' +
+            (o.test ? '<div class="r-test">PAGAMENTO DI PROVA · NESSUN ADDEBITO</div>' : '') +
+            '<div class="r-actions">' +
+                (o.ricevuta
+                    ? '<a class="r-btn" href="' + esc(o.ricevuta) + '" target="_blank" rel="noopener"><svg viewBox="0 0 24 24"><path d="M12 3v12"/><path d="m7 10 5 5 5-5"/><path d="M5 21h14"/></svg>Scarica ricevuta</a>'
+                    : '<button class="r-btn" type="button" onclick="window.print()"><svg viewBox="0 0 24 24"><path d="M12 3v12"/><path d="m7 10 5 5 5-5"/><path d="M5 21h14"/></svg>Scarica ricevuta</button>') +
+                '<a class="r-btn ghost" href="mailto:' + EMAIL_FATTURE + '?subject=' + oggetto + '&body=' + corpo + '"><svg viewBox="0 0 24 24"><path d="M14 3H6a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V9z"/><path d="M14 3v6h6"/><path d="M8 13h8M8 17h5"/></svg>Richiedi fattura</a>' +
+            '</div>';
+    }
 
     function mostra(o) {
         PTCart.clear();
         box.innerHTML =
-            '<section class="pass">' +
-                '<div class="pass-top">' +
-                    '<div class="check pt-btn-main"><svg viewBox="0 0 24 24"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg></div>' +
-                    '<h1 class="title"><span>Ordine</span><span class="chrome-t">confermato</span></h1>' +
-                    '<p class="sub">Grazie <b>' + esc((o.nome || '').split(' ')[0]) + '</b>! L\'ordine <b>' + esc(o.numero) + '</b> è pagato. Ti abbiamo mandato il riepilogo a <b>' + esc(o.email) + '</b>.</p>' +
-                '</div>' +
-                '<div class="pt-pass-tear"></div>' +
-                '<div class="items">' +
-                    o.articoli.map(function (a) { return '<div class="row"><span>' + a.qta + '× ' + esc(a.nome) + '</span><span>' + euro(a.totale) + '</span></div>'; }).join('') +
-                    '<div class="row muted"><span>' + esc(o.consegna) + '</span><span></span></div>' +
-                '</div>' +
-                '<div class="tot"><span>Totale pagato</span><b>' + euro(o.totale) + '</b></div>' +
+            '<section class="head">' +
+                '<div class="check pt-btn-main"><svg viewBox="0 0 24 24"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg></div>' +
+                '<h1 class="title"><span>Ordine</span><span class="chrome-t">confermato</span></h1>' +
+                '<p class="sub">Grazie <b>' + esc((o.nome || '').split(' ')[0]) + '</b>! Ti abbiamo mandato il riepilogo a <b>' + esc(o.email) + '</b>. Ecco il tuo scontrino 👇</p>' +
             '</section>' +
+            '<div class="printer" id="printer">' +
+                '<div class="printer-body"><span class="printer-brand">Padania Tuning</span><span class="printer-led"><i></i><em id="ledTxt" style="font-style:normal">Stampa in corso…</em></span><div class="slot"></div></div>' +
+                '<div class="paper-wrap"><div class="paper" id="paper">' + scontrino(o) + '</div></div>' +
+            '</div>' +
             '<div class="note"><span>📦</span><span><b>Cosa succede ora:</b> prepariamo il tuo ordine e ti scriviamo quando parte o quando puoi ritirarlo. Per qualsiasi domanda scrivici su Instagram indicando il numero d\'ordine.</span></div>' +
             '<div class="actions">' +
                 '<a href="shop.html" class="pt-btn pt-btn-main">Torna allo shop</a>' +
                 '<a href="https://ig.me/m/padaniatuning" target="_blank" rel="noopener" class="pt-btn pt-btn-ghost">Scrivici su Instagram</a>' +
             '</div>';
+
+        // Avvia la stampa: la durata cresce con la lunghezza dello scontrino
+        var printer = document.getElementById('printer');
+        var paper = document.getElementById('paper');
+        var durata = Math.min(7, Math.max(3.5, paper.offsetHeight / 120));
+        printer.style.setProperty('--durata', durata + 's');
+        setTimeout(function () { printer.classList.add('printing'); }, 500);
+        paper.addEventListener('animationend', function () {
+            printer.classList.remove('printing');
+            printer.classList.add('done');
+            document.getElementById('ledTxt').textContent = 'Stampato';
+        });
+        if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+            printer.classList.add('done');
+            document.getElementById('ledTxt').textContent = 'Stampato';
+        }
     }
 
     function errore(msg) {
         box.innerHTML =
-            '<section class="pass"><div class="pass-top">' +
-                '<h1 class="title"><span>Quasi</span><span>fatto…</span></h1>' +
-                '<p class="sub">' + esc(msg) + '</p>' +
-            '</div></section>' +
+            '<section class="err">' +
+                '<h1 class="title" style="font-size:44px"><span>Quasi</span><span>fatto…</span></h1>' +
+                '<p class="sub" style="margin:0">' + esc(msg) + '</p>' +
+            '</section>' +
             '<div class="note"><span>💳</span><span>Se hai già pagato <b>non rifare l\'ordine</b>: hai ricevuto la ricevuta di Stripe via mail e noi vediamo comunque il pagamento. Per qualsiasi dubbio scrivici su Instagram.</span></div>' +
             '<div class="actions"><a href="shop.html" class="pt-btn pt-btn-main">Torna allo shop</a>' +
             '<a href="https://ig.me/m/padaniatuning" target="_blank" rel="noopener" class="pt-btn pt-btn-ghost">Scrivici su Instagram</a></div>';

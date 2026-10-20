@@ -179,7 +179,7 @@ function confermaOrdine(sessionId) {
   var lock = LockService.getScriptLock();
   lock.waitLock(30000);
   try {
-    var s = stripe('get', '/v1/checkout/sessions/' + encodeURIComponent(sessionId) + '?expand[]=line_items', null);
+    var s = stripe('get', '/v1/checkout/sessions/' + encodeURIComponent(sessionId) + '?expand[]=line_items&expand[]=payment_intent.latest_charge', null);
     if (s.payment_status !== 'paid') return { ok: false, error: 'Pagamento non completato' };
 
     var info = riassunto(s);
@@ -197,7 +197,21 @@ function confermaOrdine(sessionId) {
       mailCliente(info);
       mailStaff(info);
     }
-    return { ok: true, ordine: { numero: info.numero, nome: info.nome, email: info.email, articoli: info.articoli, consegna: info.consegna, totale: info.totale } };
+    // Dati per lo scontrino della pagina "Ordine confermato"
+    var ch = (s.payment_intent && s.payment_intent.latest_charge) || {};
+    var card = (ch.payment_method_details && ch.payment_method_details.card) || {};
+    var wallet = card.wallet && card.wallet.type ? { apple_pay: 'Apple Pay', google_pay: 'Google Pay', link: 'Link' }[card.wallet.type] || '' : '';
+    return { ok: true, ordine: {
+      numero: info.numero, nome: info.nome, email: info.email, telefono: info.telefono,
+      articoli: info.articoli, consegna: info.consegna, indirizzo: info.indirizzo,
+      subtotale: (s.amount_subtotal || 0) / 100,
+      spedizione: (s.total_details && s.total_details.amount_shipping || 0) / 100,
+      totale: info.totale,
+      data: s.created * 1000,
+      pagamento: (wallet ? wallet + ' · ' : '') + (card.brand ? card.brand.toUpperCase() + ' •••• ' + card.last4 : 'Carta'),
+      ricevuta: ch.receipt_url || '',
+      test: s.livemode === false
+    } };
   } finally {
     lock.releaseLock();
   }
