@@ -17,7 +17,8 @@
     // Pagine "figlie" che accendono una voce del menu
     var PARENT = {
         'collaborazioni.html': 'eventi.html',
-        'conferma.html': 'eventi.html'
+        'conferma.html': 'eventi.html',
+        'ordine-ok.html': 'shop.html'
     };
 
     var page = location.pathname.split('/').pop() || 'index.html';
