@@ -11,7 +11,7 @@ window.PT_CONFIG = {
 
     // Indirizzo dello script Google dello SHOP (catalogo, pagamenti Stripe, ordini).
     // Lo ottieni seguendo google-apps-script-shop/ISTRUZIONI-SHOP.md
-    SHOP_SCRIPT_URL: 'INCOLLA_QUI_URL_SCRIPT_SHOP',
+    SHOP_SCRIPT_URL: 'https://script.google.com/macros/s/AKfycbx0aCVeNQaC3Tz4yhLUIbR0TCuUzjzeMVPA_xzWqCJw-GiMRNzWOrU2bUPip8bFP5m0fg/exec',
 
     // Testi di consegna mostrati nel carrello (devono corrispondere a Shop.gs)
     SHOP: {
