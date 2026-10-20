@@ -171,6 +171,68 @@
 .cart-msg { display: none; margin-bottom: 12px; padding: 11px 13px; border-radius: 12px; font-size: 14px; line-height: 1.4; background: rgba(255,90,90,0.1); border: 1px solid rgba(255,90,90,0.35); color: #ffc2c2; }
 .cart-msg.show { display: block; }
 
+/* ---------- SCHEDA PRODOTTO ---------- */
+.card-img, .card-title { cursor: pointer; }
+.card-more {
+    position: absolute; top: 8px; right: 8px;
+    width: 34px; height: 34px; border-radius: 50%; border: 0;
+    background: rgba(0,0,0,0.7); color: #fff; cursor: pointer;
+    display: flex; align-items: center; justify-content: center;
+}
+.card-more svg { width: 16px; height: 16px; stroke: #fff; fill: none; stroke-width: 2.4; stroke-linecap: round; }
+.card-link { background: none; border: 0; padding: 0; color: var(--muted); font-size: 13px; text-decoration: underline; text-underline-offset: 3px; cursor: pointer; text-align: left; margin-top: -6px; }
+.card-link:hover { color: #fff; }
+
+.pd-wrap { position: fixed; inset: 0; z-index: 1050; visibility: hidden; }
+.pd-wrap.open { visibility: visible; }
+.pd-bg { position: absolute; inset: 0; background: rgba(0,0,0,0.65); backdrop-filter: blur(6px); -webkit-backdrop-filter: blur(6px); opacity: 0; transition: opacity 0.25s; }
+.pd-wrap.open .pd-bg { opacity: 1; }
+.pd {
+    position: absolute; left: 50%; top: 50%;
+    width: min(940px, calc(100% - 40px)); max-height: calc(100vh - 60px);
+    transform: translate(-50%, -46%); opacity: 0;
+    background: var(--panel); border: 1px solid var(--line); border-radius: 24px;
+    display: grid; grid-template-columns: 1.05fr 1fr; overflow: hidden;
+    box-shadow: 0 30px 80px rgba(0,0,0,0.6);
+    transition: transform 0.3s cubic-bezier(0.2, 0.9, 0.3, 1), opacity 0.25s;
+}
+.pd-wrap.open .pd { transform: translate(-50%, -50%); opacity: 1; }
+.pd-x { position: absolute; top: 14px; right: 14px; z-index: 3; }
+
+.pd-gal { position: relative; background: #fff; min-height: 0; }
+.pd-track { display: flex; height: 100%; overflow-x: auto; scroll-snap-type: x mandatory; scrollbar-width: none; }
+.pd-track::-webkit-scrollbar { display: none; }
+.pd-track img { flex: 0 0 100%; width: 100%; height: 100%; aspect-ratio: 1 / 1; object-fit: cover; scroll-snap-align: center; display: block; }
+.pd-dots { position: absolute; left: 0; right: 0; bottom: 12px; display: flex; justify-content: center; gap: 6px; }
+.pd-dots i { width: 7px; height: 7px; border-radius: 50%; background: rgba(0,0,0,0.25); transition: all 0.2s; }
+.pd-dots i.on { background: #0a0a0a; width: 18px; border-radius: 4px; }
+
+.pd-info { display: flex; flex-direction: column; min-height: 0; }
+.pd-scroll { overflow-y: auto; padding: 26px 26px 10px; -webkit-overflow-scrolling: touch; }
+.pd-cat { display: inline-block; font-size: 11px; font-weight: 700; letter-spacing: 1px; text-transform: uppercase; color: var(--muted); }
+.pd-name { font-family: var(--cond); font-style: italic; font-weight: 900; font-size: 40px; line-height: 0.95; text-transform: uppercase; margin: 6px 44px 10px 0; }
+.pd-price { font-family: var(--cond); font-style: italic; font-weight: 900; font-size: 34px; line-height: 1; }
+.pd-desc { color: var(--soft); font-size: 15px; line-height: 1.55; margin: 14px 0 0; }
+.pd-label { display: flex; justify-content: space-between; align-items: baseline; margin: 22px 0 10px; font-size: 13px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.8px; color: var(--soft); }
+.pd-label span { text-transform: none; letter-spacing: 0; font-weight: 600; color: var(--muted); }
+.pd-label span.warn { color: #ffb3b3; }
+.pd .sizes { gap: 8px; }
+.pd .size { min-width: 54px; height: 46px; font-size: 18px; border-radius: 12px; }
+.pd-list { list-style: none; padding: 0; margin: 0; display: grid; gap: 9px; }
+.pd-list li { display: flex; gap: 10px; align-items: flex-start; font-size: 14px; line-height: 1.45; color: var(--soft); }
+.pd-list svg { width: 18px; height: 18px; flex-shrink: 0; margin-top: 1px; stroke: #e6e6eb; fill: none; stroke-width: 2.2; stroke-linecap: round; stroke-linejoin: round; }
+.pd-info-box { margin-top: 22px; border: 1px solid var(--line); border-radius: 16px; overflow: hidden; }
+.pd-info-box div { display: flex; gap: 12px; align-items: center; padding: 12px 14px; font-size: 13.5px; line-height: 1.4; color: var(--soft); }
+.pd-info-box div + div { border-top: 1px solid var(--line); }
+.pd-info-box b { color: var(--text); }
+.pd-info-box svg { width: 20px; height: 20px; flex-shrink: 0; stroke: #e6e6eb; fill: none; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
+.pd-help { display: inline-block; margin: 16px 0 6px; color: var(--muted); font-size: 13px; }
+.pd-help a { color: var(--text); }
+.pd-foot { padding: 14px 26px calc(18px + env(safe-area-inset-bottom)); border-top: 1px solid var(--line); background: #110f13; display: grid; gap: 8px; }
+.pd-foot .add { margin: 0; height: 54px; font-size: 21px; }
+.pd-go { display: none; height: 44px; border-radius: 12px; border: 1px solid rgba(255,255,255,0.2); background: transparent; color: var(--text); font-family: var(--cond); font-style: italic; font-weight: 800; font-size: 18px; cursor: pointer; }
+.pd-go.show { display: block; }
+
 /* ---------- AVVISO ---------- */
 .toast {
     position: fixed; z-index: 1200; left: 50%; top: 78px;
@@ -209,6 +271,30 @@
     .drawer-foot { padding-left: 18px; padding-right: 18px; }
     .line { grid-template-columns: 64px 1fr auto; gap: 12px; }
     .line img { width: 64px; height: 64px; }
+
+    .card-more { width: 30px; height: 30px; top: 6px; right: 6px; }
+    .card-link { font-size: 12px; }
+    .pd {
+        left: 0; right: 0; top: auto; bottom: 0; width: 100%;
+        max-height: 94vh; height: 94vh;
+        border-radius: 22px 22px 0 0; border-bottom: 0;
+        transform: translateY(100%); opacity: 1;
+        display: flex; flex-direction: column;
+    }
+    .pd-wrap.open .pd { transform: none; }
+    /* sul telefono scorre tutta la scheda, foto compresa; il bottone resta in basso */
+    .pd { display: block; overflow-y: auto; -webkit-overflow-scrolling: touch; overscroll-behavior: contain; }
+    .pd-x { position: sticky; top: 12px; display: block; margin: 12px 12px -54px auto; background: rgba(0,0,0,0.75); border-color: rgba(255,255,255,0.2); z-index: 5; }
+    .pd-track img { height: auto; }
+    .pd-info { display: block; }
+    .pd-scroll { overflow: visible; padding: 20px 16px 8px; }
+    .pd-foot { position: sticky; bottom: 0; z-index: 4; }
+    .pd-name { font-size: 32px; margin-right: 0; }
+    .pd-price { font-size: 30px; }
+    .pd .sizes { gap: 6px; }
+    .pd .size { min-width: 0; flex: 1 1 0; height: 46px; }
+    .pd-foot { padding-left: 16px; padding-right: 16px; }
+    .pd::before { content: ''; position: absolute; z-index: 4; top: 8px; left: 50%; width: 40px; height: 4px; margin-left: -20px; border-radius: 4px; background: rgba(0,0,0,0.25); }
 }
 </style>
 </head>
@@ -263,6 +349,11 @@
     </aside>
 </div>
 
+<div class="pd-wrap" id="pdWrap">
+    <div class="pd-bg" id="pdBg"></div>
+    <article class="pd" id="pd" role="dialog" aria-modal="true" aria-labelledby="pdName"></article>
+</div>
+
 <div class="toast" id="toast" role="status"></div>
 
 <script src="assets/js/config.js"></script>
@@ -277,10 +368,13 @@
     /* Catalogo di riserva: usato solo finché lo shop online non è collegato */
     var CATALOGO_DEMO = [
         { id: 'maglietta',  nome: 'Maglietta Personalizzata', categoria: 'Magliette', prezzo: 24.90, descrizione: 'T-shirt in cotone 180 gr con grafica Padania Tuning.', foto: 'assets/img/shop/maglietta.jpg',
+          dettagli: ['Cotone 100%, 180 g/m²', 'Grafica Padania Tuning stampata', 'Vestibilità regolare unisex', 'Lavaggio a 30° al rovescio'],
           taglie: [{ taglia: 'S', disponibili: 10 }, { taglia: 'M', disponibili: 10 }, { taglia: 'L', disponibili: 10 }, { taglia: 'XL', disponibili: 10 }] },
         { id: 'felpa',      nome: 'Felpa Premium', categoria: 'Felpe', prezzo: 49.90, descrizione: 'Felpa calda e morbida, perfetta per i raduni serali.', foto: 'assets/img/shop/felpa.jpg',
+          dettagli: ['Felpa con cappuccio e tasca a marsupio', 'Interno felpato morbido', 'Logo Padania Tuning', 'Lavaggio a 30° al rovescio'],
           taglie: [{ taglia: 'S', disponibili: 10 }, { taglia: 'M', disponibili: 10 }, { taglia: 'L', disponibili: 10 }, { taglia: 'XL', disponibili: 10 }] },
         { id: 'cappellino', nome: 'Cappellino Baseball', categoria: 'Accessori', prezzo: 19.90, descrizione: 'Cappellino regolabile con logo ricamato.', foto: 'assets/img/shop/cappellino.png',
+          dettagli: ['Visiera curva', 'Logo ricamato', 'Chiusura regolabile sul retro', 'Taglia unica'],
           taglie: [{ taglia: 'Unica', disponibili: 20 }] }
     ];
 
@@ -329,14 +423,16 @@
             else if (!unica) hint = '<div class="size-hint">' + (sel ? 'Taglia ' + sel : 'Scegli la taglia') + '</div>';
 
             return '<article class="card" style="animation-delay:' + (n * 0.05) + 's">' +
-                '<div class="card-img"><img src="' + p.foto + '" alt="' + p.nome + '" loading="lazy">' +
+                '<div class="card-img" data-open="' + p.id + '"><img src="' + p.foto + '" alt="' + p.nome + '" loading="lazy">' +
                     '<span class="card-badge">' + p.categoria + '</span>' +
+                    '<button type="button" class="card-more" data-open="' + p.id + '" aria-label="Dettagli ' + p.nome + '"><svg viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></svg></button>' +
                     (disponibile ? '' : '<div class="card-out">Esaurito</div>') +
                 '</div>' +
                 '<div class="card-body">' +
-                    '<h2 class="card-title">' + p.nome + '</h2>' +
+                    '<h2 class="card-title" data-open="' + p.id + '">' + p.nome + '</h2>' +
                     (p.descrizione ? '<p class="card-desc">' + p.descrizione + '</p>' : '') +
                     '<div class="card-price">' + euro(p.prezzo) + '</div>' +
+                    '<button type="button" class="card-link" data-open="' + p.id + '">Vedi dettagli</button>' +
                     (unica ? '' : '<div class="sizes" role="group" aria-label="Taglia">' + p.taglie.map(function (x) {
                         return '<button type="button" class="size' + (x.taglia === sel ? ' sel' : '') + '" data-id="' + p.id + '" data-t="' + x.taglia + '"' + (x.disponibili > 0 ? '' : ' disabled') + '>' + x.taglia + '</button>';
                     }).join('') + '</div>') +
@@ -347,27 +443,135 @@
         }).join('');
     }
 
+    function trova(id) { return catalogo.filter(function (x) { return x.id === id; })[0]; }
+    function scuoti(el) { if (el) el.animate([{ transform: 'translateX(0)' }, { transform: 'translateX(-6px)' }, { transform: 'translateX(6px)' }, { transform: 'translateX(0)' }], { duration: 300 }); }
+
+    // Aggiunge al carrello il prodotto con la taglia scelta; true se aggiunto
+    function aggiungi(p, sizesEl) {
+        var taglia = scelte[p.id];
+        if (!taglia) { toast('Scegli prima la taglia 👕'); scuoti(sizesEl); return false; }
+        var t = p.taglie.filter(function (x) { return x.taglia === taglia; })[0];
+        if (PTCart.add(p, taglia, t ? t.disponibili : 10)) {
+            toast('Aggiunto al carrello ✓');
+            var fab = $('cartFab'); fab.classList.remove('bump'); void fab.offsetWidth; fab.classList.add('bump');
+            return true;
+        }
+        toast('Hai già tutti i pezzi disponibili');
+        return false;
+    }
+
     $('products').addEventListener('click', function (e) {
+        var o = e.target.closest('[data-open]');
+        if (o) { apriDettaglio(o.dataset.open, true); return; }
         var s = e.target.closest('.size');
         if (s) { scelte[s.dataset.id] = s.dataset.t; render(); return; }
         var a = e.target.closest('[data-add]');
-        if (a) {
-            var p = catalogo.filter(function (x) { return x.id === a.dataset.add; })[0];
-            var taglia = scelte[p.id];
-            if (!taglia) {
-                toast('Scegli prima la taglia 👕');
-                var card = a.closest('.card').querySelector('.sizes');
-                if (card) { card.animate([{ transform: 'translateX(0)' }, { transform: 'translateX(-6px)' }, { transform: 'translateX(6px)' }, { transform: 'translateX(0)' }], { duration: 300 }); }
-                return;
-            }
-            var t = p.taglie.filter(function (x) { return x.taglia === taglia; })[0];
-            if (PTCart.add(p, taglia, t ? t.disponibili : 10)) {
-                toast('Aggiunto al carrello ✓');
-                var fab = $('cartFab'); fab.classList.remove('bump'); void fab.offsetWidth; fab.classList.add('bump');
-            } else {
-                toast('Hai già tutti i pezzi disponibili');
-            }
+        if (a) aggiungi(trova(a.dataset.add), a.closest('.card').querySelector('.sizes'));
+    });
+
+    /* ---------- SCHEDA PRODOTTO ---------- */
+    var aperto = null;
+    var icoCheck = '<svg viewBox="0 0 24 24"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg>';
+    var icoBox = '<svg viewBox="0 0 24 24"><path d="M21 8 12 3 3 8v8l9 5 9-5z"/><path d="M3 8l9 5 9-5M12 13v8"/></svg>';
+
+    function settimane(g) { return g % 7 === 0 ? (g / 7 === 1 ? '1 settimana' : (g / 7) + ' settimane') : g + ' giorni'; }
+
+    function disegnaDettaglio() {
+        var p = aperto; if (!p) return;
+        var foto = [p.foto].concat(p.altreFoto || []).filter(String);
+        var unica = p.taglie.length === 1 && p.taglie[0].taglia === 'Unica';
+        if (unica && !scelte[p.id]) scelte[p.id] = 'Unica';
+        var sel = scelte[p.id];
+        var disponibile = p.taglie.some(function (t) { return t.disponibili > 0; });
+        var t = p.taglie.filter(function (x) { return x.taglia === sel; })[0];
+        var stato = !disponibile ? '<span class="warn">Esaurito</span>'
+            : t && t.disponibili > 0 && t.disponibili <= 3 ? '<span class="warn">Ultimi ' + t.disponibili + ' pezzi</span>'
+            : t ? '<span>Disponibile</span>' : '<span>Scegli la tua taglia</span>';
+        var dettagli = (p.dettagli && p.dettagli.length) ? p.dettagli : [];
+        var giorni = SHOP.giorniPreparazione || 14;
+
+        var vecchio = document.querySelector('.pd-scroll'), giu = vecchio ? vecchio.scrollTop : 0, giuPd = $('pd').scrollTop;
+        var vecchiaGal = $('pdTrack'), lato = vecchiaGal ? vecchiaGal.scrollLeft : 0;
+        var mostraGo = $('pdGo') && $('pdGo').classList.contains('show');
+        $('pd').innerHTML =
+            '<button class="x pd-x" type="button" id="pdClose" aria-label="Chiudi">×</button>' +
+            '<div class="pd-gal">' +
+                '<div class="pd-track" id="pdTrack">' + foto.map(function (f, i) { return '<img src="' + f + '" alt="' + p.nome + (i ? ' — foto ' + (i + 1) : '') + '">'; }).join('') + '</div>' +
+                (foto.length > 1 ? '<div class="pd-dots" id="pdDots">' + foto.map(function (f, i) { return '<i' + (i ? '' : ' class="on"') + '></i>'; }).join('') + '</div>' : '') +
+            '</div>' +
+            '<div class="pd-info">' +
+                '<div class="pd-scroll">' +
+                    '<span class="pd-cat">' + p.categoria + '</span>' +
+                    '<h2 class="pd-name" id="pdName">' + p.nome + '</h2>' +
+                    '<div class="pd-price">' + euro(p.prezzo) + '</div>' +
+                    (p.descrizione ? '<p class="pd-desc">' + p.descrizione + '</p>' : '') +
+                    (unica ? '<div class="pd-label">Taglia unica ' + stato + '</div>'
+                        : '<div class="pd-label">Taglia ' + stato + '</div>' +
+                          '<div class="sizes" id="pdSizes" role="group" aria-label="Taglia">' + p.taglie.map(function (x) {
+                              return '<button type="button" class="size' + (x.taglia === sel ? ' sel' : '') + '" data-t="' + x.taglia + '"' + (x.disponibili > 0 ? '' : ' disabled') + '>' + x.taglia + '</button>';
+                          }).join('') + '</div>') +
+                    (dettagli.length ? '<div class="pd-label">Dettagli</div><ul class="pd-list">' + dettagli.map(function (d) { return '<li>' + icoCheck + '<span>' + d + '</span></li>'; }).join('') + '</ul>' : '') +
+                    '<div class="pd-info-box">' +
+                        '<div>' + icoBox + '<span><b>Pronto in massimo ' + settimane(giorni) + '</b>, poi lo spediamo o te lo portiamo al raduno</span></div>' +
+                        '<div>' + ico.truck + '<span>Spedizione <b>' + euro(SHOP.spedizione) + '</b>' + (SHOP.spedizioneGratisDa ? ', gratis sopra ' + euro(SHOP.spedizioneGratisDa) : '') + '</span></div>' +
+                        (SHOP.ritiroEvento ? '<div>' + ico.pin + '<span><b>Ritiro gratis</b> al prossimo evento Padania Tuning</span></div>' : '') +
+                        '<div>' + ico.lock + '<span>Pagamento sicuro con carta, Apple Pay o Google Pay</span></div>' +
+                    '</div>' +
+                    (unica ? '' : '<span class="pd-help">Dubbi sulla taglia? <a href="https://ig.me/m/padaniatuning" target="_blank" rel="noopener">Scrivici su Instagram</a></span>') +
+                '</div>' +
+                '<div class="pd-foot">' +
+                    '<button type="button" class="add" id="pdAdd"' + (disponibile ? '' : ' disabled') + '>' + (disponibile ? 'Aggiungi al carrello · ' + euro(p.prezzo) : 'Esaurito') + '</button>' +
+                    '<button type="button" class="pd-go" id="pdGo">Vai al carrello →</button>' +
+                '</div>' +
+            '</div>';
+
+        document.querySelector('.pd-scroll').scrollTop = giu;
+        $('pd').scrollTop = giuPd;
+        $('pdTrack').scrollLeft = lato;
+        if (mostraGo) $('pdGo').classList.add('show');
+        var track = $('pdTrack'), dots = $('pdDots');
+        if (dots) track.addEventListener('scroll', function () {
+            var i = Math.round(track.scrollLeft / track.clientWidth);
+            dots.querySelectorAll('i').forEach(function (d, n) { d.classList.toggle('on', n === i); });
+        }, { passive: true });
+    }
+
+    function apriDettaglio(id, push) {
+        var p = trova(id); if (!p) return;
+        var gia = !!aperto;
+        if (!gia || aperto.id !== p.id) { $('pd').innerHTML = ''; $('pd').scrollTop = 0; }
+        aperto = p;
+        disegnaDettaglio();
+        $('pdWrap').classList.add('open');
+        document.body.style.overflow = 'hidden';
+        if (push && !gia) history.pushState({ pd: id }, '', '#' + id);
+    }
+    function nascondiDettaglio() {
+        if (!aperto) return;
+        aperto = null;
+        $('pdWrap').classList.remove('open');
+        if (!$('cartWrap').classList.contains('open')) document.body.style.overflow = '';
+    }
+    function chiudiDettaglio() {
+        // Se la scheda è stata aperta dal sito torno indietro, così il tasto "indietro" del telefono la chiude
+        if (history.state && history.state.pd) history.back();
+        else { if (location.hash) history.replaceState({}, '', location.pathname + location.search); nascondiDettaglio(); }
+    }
+    window.addEventListener('popstate', function () {
+        var id = location.hash.slice(1);
+        if (id && trova(id)) apriDettaglio(id, false); else nascondiDettaglio();
+    });
+
+    $('pdBg').addEventListener('click', chiudiDettaglio);
+    $('pd').addEventListener('click', function (e) {
+        if (e.target.closest('#pdClose')) { chiudiDettaglio(); return; }
+        var s = e.target.closest('.size');
+        if (s && !s.disabled) { scelte[aperto.id] = s.dataset.t; disegnaDettaglio(); render(); return; }
+        if (e.target.closest('#pdAdd')) {
+            if (aggiungi(aperto, $('pdSizes'))) $('pdGo').classList.add('show');
+            return;
         }
+        if (e.target.closest('#pdGo')) { chiudiDettaglio(); setTimeout(openCart, 80); }
     });
 
     /* ---------- CARRELLO ---------- */
@@ -430,7 +634,10 @@
     $('cartFab').addEventListener('click', openCart);
     $('cartClose').addEventListener('click', closeCart);
     $('drawerBg').addEventListener('click', closeCart);
-    document.addEventListener('keydown', function (e) { if (e.key === 'Escape') closeCart(); });
+    document.addEventListener('keydown', function (e) {
+        if (e.key !== 'Escape') return;
+        if ($('cartWrap').classList.contains('open')) closeCart(); else if (aperto) chiudiDettaglio();
+    });
 
     $('payBtn').addEventListener('click', function () {
         var b = $('payBtn'), span = b.querySelector('span');
@@ -455,6 +662,8 @@
         catalogo = lista;
         PTCart.sync(catalogo);
         render();
+        var h = location.hash.slice(1);
+        if (h && trova(h)) apriDettaglio(h, false);
         if (new URLSearchParams(location.search).get('annullato') === '1') {
             history.replaceState({}, '', location.pathname);
             toast('Pagamento annullato: il carrello è ancora qui');

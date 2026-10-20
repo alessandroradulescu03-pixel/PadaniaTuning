@@ -23,6 +23,15 @@ var PAESI_SPEDIZIONE  = ['IT', 'SM', 'VA', 'CH'];
 var GIORNI_PREPARAZIONE = 14;   // tempo per preparare l'ordine prima della spedizione (lo leggono mail e sito)
 var EMAIL_CONTATTO    = 'padaniatuning@gmail.com';   // mostrata al cliente per domande e fatture
 
+// Dati stampati sulla ricevuta PDF (lascia vuoto quello che non c'è)
+var VENDITORE = {
+  nome: 'Padania Tuning',
+  indirizzo: '',        // es. 'Via Roma 1, 24030 Almenno (BG)'
+  piva: '',             // es. 'P.IVA 01234567890'
+  email: EMAIL_CONTATTO,
+  instagram: '@padaniatuning'
+};
+
 // Nomi delle schede del Foglio
 var TAB_PRODOTTI  = 'Prodotti';
 var TAB_MAGAZZINO = 'Magazzino';
@@ -41,12 +50,13 @@ function chiaveStripe() {
 //  RICHIESTE DAL SITO
 // =========================================================
 
-// GET: ?azione=catalogo   oppure   ?azione=conferma&session_id=cs_...
+// GET: ?azione=catalogo  ·  ?azione=conferma&session_id=cs_...  ·  ?azione=ricevuta&session_id=cs_...
 function doGet(e) {
   try {
     var azione = (e && e.parameter && e.parameter.azione) || 'stato';
     if (azione === 'catalogo') return json({ ok: true, prodotti: leggiCatalogo() });
     if (azione === 'conferma') return json(confermaOrdine(e.parameter.session_id));
+    if (azione === 'ricevuta') return json(ricevutaPdf(e.parameter.session_id));
     return json({ ok: true, messaggio: 'Shop Padania Tuning attivo 🏁' });
   } catch (err) {
     console.error(err);
@@ -88,6 +98,8 @@ function leggiCatalogo() {
         prezzo: Number(p.prezzo),
         descrizione: String(p.descrizione || ''),
         foto: String(p.foto || ''),
+        altreFoto: String(p.altre_foto || '').split(',').map(function (x) { return x.trim(); }).filter(String),
+        dettagli: String(p.dettagli || '').split(/\n|\|/).map(function (x) { return x.trim(); }).filter(String),
         taglie: taglie
       };
     });
@@ -153,6 +165,7 @@ function creaCheckout(carrello) {
   add('shipping_options[' + opz + '][shipping_rate_data][display_name]', spedizione === 0 ? 'Spedizione gratuita' : 'Spedizione a casa');
   add('shipping_options[' + opz + '][shipping_rate_data][fixed_amount][amount]', Math.round(spedizione * 100));
   add('shipping_options[' + opz + '][shipping_rate_data][fixed_amount][currency]', 'eur');
+  add('shipping_options[' + opz + '][shipping_rate_data][metadata][tipo]', 'casa');
   add('shipping_options[' + opz + '][shipping_rate_data][delivery_estimate][minimum][unit]', 'business_day');
   add('shipping_options[' + opz + '][shipping_rate_data][delivery_estimate][minimum][value]', Math.round(GIORNI_PREPARAZIONE * 5 / 7) + 2);
   add('shipping_options[' + opz + '][shipping_rate_data][delivery_estimate][maximum][unit]', 'business_day');
@@ -163,6 +176,7 @@ function creaCheckout(carrello) {
     add('shipping_options[' + opz + '][shipping_rate_data][display_name]', 'Ritiro gratis al prossimo evento Padania Tuning');
     add('shipping_options[' + opz + '][shipping_rate_data][fixed_amount][amount]', 0);
     add('shipping_options[' + opz + '][shipping_rate_data][fixed_amount][currency]', 'eur');
+    add('shipping_options[' + opz + '][shipping_rate_data][metadata][tipo]', 'ritiro');
   }
 
   var res = stripe('post', '/v1/checkout/sessions', f.join('&'));
@@ -175,35 +189,44 @@ function creaCheckout(carrello) {
 //  (chiamata dalla pagina ordine-ok.html e, per sicurezza,
 //   anche ogni 10 minuti da sincronizzaOrdini)
 // =========================================================
+function leggiSessione(sessionId) {
+  return stripe('get', '/v1/checkout/sessions/' + encodeURIComponent(sessionId) +
+    '?expand[]=line_items&expand[]=payment_intent.latest_charge&expand[]=shipping_cost.shipping_rate', null);
+}
+
+// Tutti i dati dell'ordine (per foglio, mail, scontrino e PDF)
+function datiOrdine(s) {
+  var info = riassunto(s);
+  var ch = (s.payment_intent && s.payment_intent.latest_charge) || {};
+  var card = (ch.payment_method_details && ch.payment_method_details.card) || {};
+  var wallet = card.wallet && card.wallet.type ? { apple_pay: 'Apple Pay', google_pay: 'Google Pay', link: 'Link' }[card.wallet.type] || '' : '';
+  info.pagamento = (wallet ? wallet + ' · ' : '') + (card.brand ? card.brand.toUpperCase() + ' •••• ' + card.last4 : 'Carta');
+  info.ricevuta = ch.receipt_url || '';
+  info.subtotale = (s.amount_subtotal || 0) / 100;
+  info.spedizione = (s.total_details && s.total_details.amount_shipping || 0) / 100;
+  info.data = s.created * 1000;
+  info.test = s.livemode === false;
+  return info;
+}
+
 function confermaOrdine(sessionId) {
   if (!sessionId || String(sessionId).indexOf('cs_') !== 0) return { ok: false, error: 'Ordine non valido' };
 
   var lock = LockService.getScriptLock();
   lock.waitLock(30000);
   try {
-    var s = stripe('get', '/v1/checkout/sessions/' + encodeURIComponent(sessionId) + '?expand[]=line_items&expand[]=payment_intent.latest_charge', null);
+    var s = leggiSessione(sessionId);
     if (s.payment_status !== 'paid') return { ok: false, error: 'Pagamento non completato' };
 
-    var info = riassunto(s);
+    var info = datiOrdine(s);
     var foglio = getOrdini();
     var gia = foglio.getRange(1, 2, Math.max(1, foglio.getLastRow()), 1).getValues()
       .some(function (r) { return r[0] === s.id; });
 
-    // Dati del pagamento (carta, ricevuta Stripe) per mail e scontrino
-    var ch = (s.payment_intent && s.payment_intent.latest_charge) || {};
-    var card = (ch.payment_method_details && ch.payment_method_details.card) || {};
-    var wallet = card.wallet && card.wallet.type ? { apple_pay: 'Apple Pay', google_pay: 'Google Pay', link: 'Link' }[card.wallet.type] || '' : '';
-    info.pagamento = (wallet ? wallet + ' · ' : '') + (card.brand ? card.brand.toUpperCase() + ' •••• ' + card.last4 : 'Carta');
-    info.ricevuta = ch.receipt_url || '';
-    info.subtotale = (s.amount_subtotal || 0) / 100;
-    info.spedizione = (s.total_details && s.total_details.amount_shipping || 0) / 100;
-    info.data = s.created * 1000;
-    info.test = s.livemode === false;
-
     if (!gia) {
       foglio.appendRow([
         new Date(s.created * 1000), s.id, info.numero, info.nome, info.email, info.telefono,
-        info.articoliTesto, info.consegna, info.indirizzo,
+        info.articoliTesto, info.consegna, info.ritiro ? '— (ritiro all\'evento)' : info.indirizzo,
         info.totale, 'Da preparare'
       ]);
       scalaMagazzino(s.metadata && s.metadata.carrello);
@@ -212,7 +235,7 @@ function confermaOrdine(sessionId) {
     }
     return { ok: true, ordine: {
       numero: info.numero, nome: info.nome, email: info.email, telefono: info.telefono,
-      articoli: info.articoli, consegna: info.consegna, indirizzo: info.indirizzo,
+      articoli: info.articoli, consegna: info.consegna, indirizzo: info.ritiro ? '' : info.indirizzo,
       ritiro: info.ritiro, subtotale: info.subtotale, spedizione: info.spedizione,
       totale: info.totale, data: info.data, pagamento: info.pagamento,
       ricevuta: info.ricevuta, test: info.test, giorniPreparazione: GIORNI_PREPARAZIONE
@@ -220,6 +243,15 @@ function confermaOrdine(sessionId) {
   } finally {
     lock.releaseLock();
   }
+}
+
+// La ricevuta PDF di Padania, scaricabile dalla pagina "Ordine confermato"
+function ricevutaPdf(sessionId) {
+  if (!sessionId || String(sessionId).indexOf('cs_') !== 0) return { ok: false, error: 'Ordine non valido' };
+  var s = leggiSessione(sessionId);
+  if (s.payment_status !== 'paid') return { ok: false, error: 'Pagamento non completato' };
+  var pdf = creaPdfRicevuta(datiOrdine(s));
+  return { ok: true, nome: pdf.getName(), pdf: Utilities.base64Encode(pdf.getBytes()) };
 }
 
 // Controlla gli ultimi pagamenti su Stripe e registra quelli mancanti
@@ -247,13 +279,14 @@ function riassunto(s) {
              qta: li.quantity, prezzo: li.amount_total / 100 / (li.quantity || 1), totale: li.amount_total / 100 };
   });
   var spedCosto = (s.total_details && s.total_details.amount_shipping || 0) / 100;
-  var consegna = spedCosto > 0 ? 'Spedizione (' + euro(spedCosto) + ')' : 'Spedizione gratuita / ritiro';
+  // Quale consegna ha scelto il cliente su Stripe
+  var rate = (s.shipping_cost && s.shipping_cost.shipping_rate) || null;
   try {
-    if (s.shipping_cost && s.shipping_cost.shipping_rate) {
-      var rate = stripe('get', '/v1/shipping_rates/' + s.shipping_cost.shipping_rate, null);
-      consegna = rate.display_name + (spedCosto > 0 ? ' (' + euro(spedCosto) + ')' : '');
-    }
-  } catch (err) { /* va bene il testo generico */ }
+    if (rate && typeof rate === 'string') rate = stripe('get', '/v1/shipping_rates/' + rate, null);
+  } catch (err) { rate = null; }
+  var nomeConsegna = rate && rate.display_name ? rate.display_name : (spedCosto > 0 ? 'Spedizione a casa' : 'Spedizione gratuita');
+  var ritiro = !!(rate && ((rate.metadata && rate.metadata.tipo === 'ritiro') || /ritiro/i.test(rate.display_name || '')));
+  var consegna = nomeConsegna + (spedCosto > 0 ? ' (' + euro(spedCosto) + ')' : '');
 
   return {
     id: s.id,
@@ -264,7 +297,7 @@ function riassunto(s) {
     articoli: articoli,
     articoliTesto: articoli.map(function (x) { return x.qta + '× ' + x.nome; }).join('\n'),
     consegna: consegna,
-    ritiro: /ritiro/i.test(consegna),
+    ritiro: ritiro,
     indirizzo: [a.line1, a.line2, (a.postal_code || '') + ' ' + (a.city || ''), a.state, a.country].filter(function (x) { return x && String(x).trim(); }).join(', '),
     totale: s.amount_total / 100
   };
@@ -360,7 +393,7 @@ function mailCliente(o) {
     ? '<p class="dm-s" style="margin:10px 0 0;font-size:14px;line-height:1.6;color:' + S + '"><b class="dm-t" style="color:' + T + '">Ritiro gratis al prossimo evento Padania Tuning.</b><br>Allo stand mostra questa mail o dicci il numero d\'ordine <b class="dm-t" style="color:' + T + '">' + o.numero + '</b>.</p>'
     : '<p class="dm-s" style="margin:10px 0 0;font-size:14px;line-height:1.6;color:' + S + '"><b class="dm-t" style="color:' + T + '">' + esc(o.nome) + '</b><br>' + esc(o.indirizzo) +
       (o.telefono ? '<br>Tel. ' + esc(o.telefono) : '') + '</p>';
-  consegna += '<p class="dm-m" style="margin:10px 0 0;font-size:13px;color:' + M + '">Metodo: ' + esc(o.consegna) + '</p>';
+  if (!o.ritiro) consegna += '<p class="dm-m" style="margin:10px 0 0;font-size:13px;color:' + M + '">Metodo: ' + esc(o.consegna) + '</p>';
 
   // --- Buono a sapere ---
   function punto(icona, testo) {
@@ -370,12 +403,13 @@ function mailCliente(o) {
   var aiuto = '<table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="margin-top:8px">' +
     punto('&#128085;', '<b class="dm-t" style="color:' + T + '">Taglia sbagliata o qualche problema?</b> Rispondi a questa mail indicando il numero d\'ordine.') +
     punto('&#129534;', '<b class="dm-t" style="color:' + T + '">Ti serve la fattura?</b> Scrivici ragione sociale, P.IVA o codice fiscale, indirizzo e codice SDI/PEC.') +
+    punto('&#128206;', 'In allegato trovi la <b class="dm-t" style="color:' + T + '">ricevuta PDF</b> del tuo ordine.') +
     punto('&#128274;', 'Pagamento gestito in sicurezza da Stripe: riceverai anche la loro ricevuta.') +
     '</table>';
 
   var bottoni =
     '<tr><td style="padding:14px 20px 6px">' +
-      (o.ricevuta ? '<a href="' + esc(o.ricevuta) + '" class="dm-btn" style="display:block;text-align:center;background:' + T + ';color:#ffffff;text-decoration:none;' + F + 'font-size:19px;font-weight:900;font-style:italic;padding:14px;border-radius:12px;margin-bottom:10px">Scarica la ricevuta</a>' : '') +
+      (o.ricevuta ? '<a href="' + esc(o.ricevuta) + '" class="dm-btn" style="display:block;text-align:center;background:' + T + ';color:#ffffff;text-decoration:none;' + F + 'font-size:19px;font-weight:900;font-style:italic;padding:14px;border-radius:12px;margin-bottom:10px">Ricevuta di pagamento Stripe</a>' : '') +
       '<a href="https://ig.me/m/padaniatuning" class="dm-t dm-l" style="display:block;text-align:center;border:1.5px solid ' + T + ';color:' + T + ';text-decoration:none;' + F + 'font-size:19px;font-weight:900;font-style:italic;padding:13px;border-radius:12px">Scrivici su Instagram</a>' +
     '</td></tr>';
 
@@ -405,12 +439,16 @@ function mailCliente(o) {
         'Hai ricevuto questa mail perché hai fatto un ordine sul nostro shop.</td></tr>' +
     '</table></td></tr></table></body></html>';
 
+  var allegati = [];
+  try { allegati.push(creaPdfRicevuta(o)); } catch (err) { console.error('PDF non creato', err); }
+
   MailApp.sendEmail({
     to: o.email,
     subject: '🏁 Ordine ' + o.numero + ' confermato — Padania Tuning',
     htmlBody: html,
     name: NOME_MITTENTE,
-    replyTo: EMAIL_CONTATTO
+    replyTo: EMAIL_CONTATTO,
+    attachments: allegati
   });
 }
 
@@ -432,6 +470,134 @@ function mailStaff(o) {
     '<p><b>Consegna:</b> ' + esc(o.consegna) + (o.indirizzo && !o.ritiro ? '<br><b>Indirizzo:</b> ' + esc(o.indirizzo) : '') + '</p>' +
     '<p><a href="' + SpreadsheetApp.getActiveSpreadsheet().getUrl() + '">📊 Apri il foglio ordini</a>' + (o.ricevuta ? ' · <a href="' + o.ricevuta + '">🧾 Ricevuta Stripe</a>' : '') + '</p></div>';
   MailApp.sendEmail({ to: EMAIL_STAFF, subject: '🛒 Nuovo ordine ' + o.numero + ' (' + euro(o.totale) + ')', htmlBody: html, name: NOME_MITTENTE, replyTo: o.email || EMAIL_STAFF });
+}
+
+
+// =========================================================
+//  RICEVUTA PDF (allegata alla mail e scaricabile dal sito)
+// =========================================================
+function logoBase64() {
+  var cache = CacheService.getScriptCache();
+  var c = cache.get('logo64');
+  if (c) return c;
+  try {
+    var r = UrlFetchApp.fetch(SITO_URL + 'assets/img/logo.jpg', { muteHttpExceptions: true });
+    if (r.getResponseCode() !== 200) return '';
+    var b64 = Utilities.base64Encode(r.getContent());
+    if (b64.length < 90000) cache.put('logo64', b64, 21600);
+    return b64;
+  } catch (err) { return ''; }
+}
+
+function htmlRicevuta(o) {
+  var T = '#111114', S = '#4a4a52', M = '#8a8a93', L = '#e3e3e8';
+  var data = Utilities.formatDate(new Date(o.data || Date.now()), 'Europe/Rome', 'dd/MM/yyyy HH:mm');
+  var entro = Utilities.formatDate(new Date((o.data || Date.now()) + GIORNI_PREPARAZIONE * 864e5), 'Europe/Rome', 'dd/MM/yyyy');
+  var logo = logoBase64();
+  var th = 'padding:8px 6px;font-size:10px;letter-spacing:1px;text-transform:uppercase;color:' + M + ';border-bottom:2px solid ' + T + ';text-align:left';
+  var td = 'padding:10px 6px;font-size:12px;color:' + T + ';border-bottom:1px solid ' + L;
+  var venditore = [VENDITORE.indirizzo, VENDITORE.piva, VENDITORE.email, VENDITORE.instagram].filter(String).map(esc).join('<br>');
+
+  var righe = o.articoli.map(function (x) {
+    return '<tr>' +
+      '<td style="' + td + '"><b>' + esc(x.prodotto || x.nome) + '</b></td>' +
+      '<td style="' + td + '">' + esc(String(x.dettaglio || 'Taglia unica').replace(/^Taglia /, '')) + '</td>' +
+      '<td style="' + td + ';text-align:center">' + x.qta + '</td>' +
+      '<td style="' + td + ';text-align:right">' + euro(x.prezzo) + '</td>' +
+      '<td style="' + td + ';text-align:right"><b>' + euro(x.totale) + '</b></td></tr>';
+  }).join('');
+
+  function tot(a, b, forte) {
+    var st = forte ? 'font-size:16px;font-weight:bold;color:' + T + ';padding:10px 6px 4px;border-top:2px solid ' + T : 'font-size:12px;color:' + S + ';padding:4px 6px';
+    return '<tr><td style="' + st + '">' + a + '</td><td style="' + st + ';text-align:right">' + b + '</td></tr>';
+  }
+
+  return '<html><head><meta charset="utf-8"></head><body style="margin:0;font-family:Arial,Helvetica,sans-serif;color:' + T + '">' +
+    '<div style="padding:34px 40px">' +
+    (o.test ? '<div style="border:1.5px dashed #c0392b;color:#c0392b;padding:6px;text-align:center;font-size:11px;font-weight:bold;margin-bottom:18px">ORDINE DI PROVA · NESSUN ADDEBITO REALE</div>' : '') +
+
+    // Intestazione
+    '<table width="100%" cellpadding="0" cellspacing="0"><tr>' +
+      '<td valign="top"><table cellpadding="0" cellspacing="0"><tr>' +
+        (logo ? '<td valign="middle" style="padding-right:12px"><img src="data:image/jpeg;base64,' + logo + '" width="54" height="54" style="border-radius:27px"></td>' : '') +
+        '<td valign="middle"><div style="font-size:22px;font-weight:bold;font-style:italic;letter-spacing:0.5px">PADANIA TUNING</div>' +
+        '<div style="font-size:10px;color:' + M + ';letter-spacing:2px;margin-top:2px">SHOP UFFICIALE</div></td>' +
+      '</tr></table></td>' +
+      '<td valign="top" align="right" style="font-size:10px;line-height:1.6;color:' + S + '"><b style="color:' + T + '">' + esc(VENDITORE.nome) + '</b><br>' + venditore + '</td>' +
+    '</tr></table>' +
+
+    // Titolo
+    '<table width="100%" cellpadding="0" cellspacing="0" style="margin-top:26px;border-top:3px solid ' + T + ';border-bottom:1px solid ' + L + '"><tr>' +
+      '<td style="padding:14px 0;color:' + T + ';font-size:20px;font-weight:bold;font-style:italic;letter-spacing:1px">RICEVUTA D\'ORDINE</td>' +
+      '<td align="right" style="padding:14px 0;color:' + S + ';font-size:11px;line-height:1.5">N. <b style="color:' + T + '">' + o.numero + '</b><br>' + data + '</td>' +
+    '</tr></table>' +
+
+    // Cliente e consegna
+    '<table width="100%" cellpadding="0" cellspacing="0" style="margin-top:18px"><tr>' +
+      '<td valign="top" width="50%" style="padding-right:12px">' +
+        '<div style="font-size:10px;letter-spacing:1px;color:' + M + ';margin-bottom:6px">CLIENTE</div>' +
+        '<div style="font-size:12px;line-height:1.6"><b>' + esc(o.nome) + '</b><br>' + esc(o.email) + (o.telefono ? '<br>' + esc(o.telefono) : '') + '</div></td>' +
+      '<td valign="top" width="50%">' +
+        '<div style="font-size:10px;letter-spacing:1px;color:' + M + ';margin-bottom:6px">' + (o.ritiro ? 'RITIRO' : 'SPEDIZIONE') + '</div>' +
+        '<div style="font-size:12px;line-height:1.6">' + (o.ritiro
+          ? '<b>Ritiro gratis al prossimo evento Padania Tuning</b><br>Mostra questa ricevuta o il numero d\'ordine allo stand.'
+          : '<b>' + esc(o.nome) + '</b><br>' + esc(o.indirizzo) + '<br><span style="color:' + S + '">Spedizione entro il ' + entro + '</span>') + '</div></td>' +
+    '</tr></table>' +
+
+    // Articoli
+    '<table width="100%" cellpadding="0" cellspacing="0" style="margin-top:22px;border-collapse:collapse">' +
+      '<tr><th style="' + th + '">Articolo</th><th style="' + th + '">Taglia</th><th style="' + th + ';text-align:center">Q.tà</th><th style="' + th + ';text-align:right">Prezzo</th><th style="' + th + ';text-align:right">Totale</th></tr>' +
+      righe +
+    '</table>' +
+
+    // Totali
+    '<table width="100%" cellpadding="0" cellspacing="0" style="margin-top:12px"><tr><td width="52%"></td><td>' +
+      '<table width="100%" cellpadding="0" cellspacing="0">' +
+        tot('Subtotale', euro(o.subtotale || o.totale)) +
+        tot(o.ritiro ? 'Ritiro all\'evento' : 'Spedizione', o.spedizione ? euro(o.spedizione) : 'Gratis') +
+        tot('TOTALE', euro(o.totale), true) +
+        tot('Pagato con', esc(o.pagamento || 'Carta')) +
+      '</table></td></tr></table>' +
+
+    '<table cellpadding="0" cellspacing="0" style="margin-top:14px"><tr><td style="border:2px solid #1f8a4c;color:#1f8a4c;font-weight:bold;font-size:12px;letter-spacing:2px;padding:6px 14px">PAGATO</td></tr></table>' +
+
+    // Note
+    '<div style="margin-top:30px;padding-top:14px;border-top:1px solid ' + L + ';font-size:10px;line-height:1.6;color:' + M + '">' +
+      'Grazie per il tuo ordine! Per domande, cambi taglia o richiesta di fattura scrivi a ' + esc(VENDITORE.email) + ' indicando il numero d\'ordine ' + o.numero + '.<br>' +
+      'Pagamento elaborato da Stripe. Documento di riepilogo dell\'ordine, non valido ai fini fiscali.' +
+    '</div>' +
+    '</div></body></html>';
+}
+
+function creaPdfRicevuta(o) {
+  return Utilities.newBlob(htmlRicevuta(o), 'text/html', 'ricevuta.html')
+    .getAs('application/pdf')
+    .setName('Ricevuta-' + o.numero + '.pdf');
+}
+
+// Aggiunge al foglio Prodotti le colonne "dettagli" e "altre_foto" (se mancano)
+// e riempie i dettagli dei prodotti di partenza. Si può rieseguire senza problemi.
+function aggiungiDettagli() {
+  var sh = SpreadsheetApp.getActiveSpreadsheet().getSheetByName(TAB_PRODOTTI);
+  var testi = {
+    maglietta: 'Cotone 100%, 180 g/m²|Grafica Padania Tuning stampata|Vestibilità regolare unisex|Lavaggio a 30° al rovescio',
+    felpa: 'Felpa con cappuccio e tasca a marsupio|Interno felpato morbido|Logo Padania Tuning|Lavaggio a 30° al rovescio',
+    cappellino: 'Visiera curva|Logo ricamato|Chiusura regolabile sul retro|Taglia unica'
+  };
+  var head = sh.getRange(1, 1, 1, sh.getLastColumn()).getValues()[0].map(function (h) { return String(h).toLowerCase().trim(); });
+  ['dettagli', 'altre_foto'].forEach(function (col) {
+    if (head.indexOf(col) === -1) {
+      sh.getRange(1, head.length + 1).setValue(col).setFontWeight('bold').setBackground('#111111').setFontColor('#ffffff');
+      head.push(col);
+    }
+  });
+  var cId = head.indexOf('id'), cD = head.indexOf('dettagli');
+  var dati = sh.getDataRange().getValues();
+  for (var r = 1; r < dati.length; r++) {
+    var id = String(dati[r][cId]);
+    if (testi[id] && !String(dati[r][cD] || '').trim()) sh.getRange(r + 1, cD + 1).setValue(testi[id]);
+  }
+  Logger.log('Colonne pronte ✅ — i dettagli si separano con |');
 }
 
 
@@ -497,11 +663,11 @@ function preparaFoglio() {
 
   if (!ss.getSheetByName(TAB_PRODOTTI)) {
     var p = ss.insertSheet(TAB_PRODOTTI);
-    p.appendRow(['id', 'nome', 'categoria', 'prezzo', 'descrizione', 'foto', 'attivo']);
+    p.appendRow(['id', 'nome', 'categoria', 'prezzo', 'descrizione', 'foto', 'attivo', 'dettagli', 'altre_foto']);
     p.appendRow(['maglietta', 'Maglietta Personalizzata', 'Magliette', 24.90, 'T-shirt in cotone 180 gr con grafica Padania Tuning.', 'assets/img/shop/maglietta.jpg', 'si']);
     p.appendRow(['felpa', 'Felpa Premium', 'Felpe', 49.90, 'Felpa calda e morbida, perfetta per i raduni serali.', 'assets/img/shop/felpa.jpg', 'si']);
     p.appendRow(['cappellino', 'Cappellino Baseball', 'Accessori', 19.90, 'Cappellino regolabile con logo ricamato.', 'assets/img/shop/cappellino.png', 'si']);
-    p.getRange(1, 1, 1, 7).setFontWeight('bold').setBackground('#111111').setFontColor('#ffffff');
+    p.getRange(1, 1, 1, 9).setFontWeight('bold').setBackground('#111111').setFontColor('#ffffff');
     p.setFrozenRows(1);
     p.getRange('D2:D').setNumberFormat('0.00');
   }
@@ -517,6 +683,7 @@ function preparaFoglio() {
   }
 
   getOrdini();
+  aggiungiDettagli();
   var vuoto = ss.getSheetByName('Foglio1') || ss.getSheetByName('Sheet1');
   if (vuoto && vuoto.getLastRow() === 0 && ss.getSheets().length > 1) ss.deleteSheet(vuoto);
   Logger.log('Foglio pronto ✅');

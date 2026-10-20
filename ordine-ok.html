@@ -116,6 +116,9 @@
     background: #141414; color: #fbfbf7; border: 1.5px solid #141414;
 }
 .r-btn.ghost { background: transparent; color: #141414; }
+.r-btn:disabled { opacity: 0.7; cursor: wait; }
+.r-stripe { margin-top: 12px; }
+.r-stripe a { color: #555; }
 .r-btn svg { width: 16px; height: 16px; stroke: currentColor; fill: none; stroke-width: 2.2; stroke-linecap: round; stroke-linejoin: round; }
 .r-actions { opacity: 0; transition: opacity 0.5s 0.2s; }
 .printer.done .r-actions { opacity: 1; }
@@ -217,23 +220,47 @@
             articoli +
             '<hr class="r-sep">' +
             '<div class="r-row"><span>SUBTOTALE</span><span>' + euro(o.subtotale || o.totale) + '</span></div>' +
-            '<div class="r-row"><span>SPEDIZIONE</span><span>' + (o.spedizione ? euro(o.spedizione) : 'GRATIS') + '</span></div>' +
+            '<div class="r-row"><span>' + (o.ritiro ? 'RITIRO EVENTO' : 'SPEDIZIONE') + '</span><span>' + (o.spedizione ? euro(o.spedizione) : 'GRATIS') + '</span></div>' +
             '<hr class="r-sep double">' +
             '<div class="r-row r-total"><span>TOTALE</span><span>' + euro(o.totale) + '</span></div>' +
             '<hr class="r-sep double">' +
             '<div class="r-row"><span class="r-label">PAGATO</span><span>' + esc(o.pagamento || 'Carta') + '</span></div>' +
-            '<div class="r-row"><span class="r-label">CONSEGNA</span><span>' + esc(String(o.consegna || '').replace(/\s*\(.*\)$/, '')) + '</span></div>' +
-            (o.indirizzo ? '<div class="r-addr">' + esc(o.indirizzo) + '</div>' : '') +
+            '<div class="r-row"><span class="r-label">CONSEGNA</span><span>' + (o.ritiro ? 'Ritiro al raduno' : esc(String(o.consegna || '').replace(/\s*\(.*\)$/, ''))) + '</span></div>' +
+            (o.indirizzo && !o.ritiro ? '<div class="r-addr">' + esc(o.indirizzo) + '</div>' : '') +
             '<div class="barcode" style="background:' + barcode(o.numero) + '"></div>' +
             '<div class="r-center r-small">' + esc(o.numero) + '</div>' +
             '<div class="r-center thanks">*** GRAZIE! ***</div><div class="r-center r-small">Ci vediamo al prossimo raduno</div>' +
             (o.test ? '<div class="r-test">PAGAMENTO DI PROVA · NESSUN ADDEBITO</div>' : '') +
             '<div class="r-actions">' +
-                (o.ricevuta
-                    ? '<a class="r-btn" href="' + esc(o.ricevuta) + '" target="_blank" rel="noopener"><svg viewBox="0 0 24 24"><path d="M12 3v12"/><path d="m7 10 5 5 5-5"/><path d="M5 21h14"/></svg>Scarica ricevuta</a>'
-                    : '<button class="r-btn" type="button" onclick="window.print()"><svg viewBox="0 0 24 24"><path d="M12 3v12"/><path d="m7 10 5 5 5-5"/><path d="M5 21h14"/></svg>Scarica ricevuta</button>') +
+                '<button class="r-btn" type="button" id="pdfBtn"><svg viewBox="0 0 24 24"><path d="M12 3v12"/><path d="m7 10 5 5 5-5"/><path d="M5 21h14"/></svg><span>Scarica ricevuta PDF</span></button>' +
                 '<a class="r-btn ghost" href="mailto:' + EMAIL_FATTURE + '?subject=' + oggetto + '&body=' + corpo + '"><svg viewBox="0 0 24 24"><path d="M14 3H6a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V9z"/><path d="M14 3v6h6"/><path d="M8 13h8M8 17h5"/></svg>Richiedi fattura</a>' +
+                (o.ricevuta ? '<div class="r-center r-small r-stripe"><a href="' + esc(o.ricevuta) + '" target="_blank" rel="noopener">Ricevuta di pagamento Stripe</a></div>' : '') +
             '</div>';
+    }
+
+    // Scarica la ricevuta PDF generata dallo script (con logo e dati Padania)
+    function scaricaPdf(btn) {
+        var testo = btn.querySelector('span');
+        if (btn.disabled) return;
+        btn.disabled = true; testo.textContent = 'Preparo il PDF…';
+        fetch(CFG.SHOP_SCRIPT_URL + '?azione=ricevuta&session_id=' + encodeURIComponent(sid))
+            .then(function (r) { return r.json(); })
+            .then(function (res) {
+                if (!res.ok || !res.pdf) throw new Error(res.error || 'PDF non disponibile');
+                var bin = atob(res.pdf), bytes = new Uint8Array(bin.length);
+                for (var i = 0; i < bin.length; i++) bytes[i] = bin.charCodeAt(i);
+                var url = URL.createObjectURL(new Blob([bytes], { type: 'application/pdf' }));
+                var a = document.createElement('a');
+                a.href = url; a.download = res.nome || 'Ricevuta-Padania-Tuning.pdf';
+                document.body.appendChild(a); a.click(); a.remove();
+                setTimeout(function () { URL.revokeObjectURL(url); }, 60000);
+                testo.textContent = 'Ricevuta scaricata ✓';
+                setTimeout(function () { testo.textContent = 'Scarica ricevuta PDF'; btn.disabled = false; }, 2500);
+            })
+            .catch(function () {
+                testo.textContent = 'Scarica ricevuta PDF'; btn.disabled = false;
+                window.print();   // piano B: stampa / salva come PDF lo scontrino
+            });
     }
 
     function mostra(o) {
@@ -255,6 +282,7 @@
             '</div>';
 
         // Avvia la stampa: la durata cresce con la lunghezza dello scontrino
+        document.getElementById('pdfBtn').addEventListener('click', function () { scaricaPdf(this); });
         var printer = document.getElementById('printer');
         var paper = document.getElementById('paper');
         var durata = Math.min(7, Math.max(3.5, paper.offsetHeight / 120));

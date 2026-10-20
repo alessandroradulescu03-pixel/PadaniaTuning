@@ -17,7 +17,8 @@ window.PT_CONFIG = {
     SHOP: {
         spedizione: 7.00,          // € spedizione in Italia
         spedizioneGratisDa: 80.00, // € sopra cui è gratis (0 = mai)
-        ritiroEvento: true         // ritiro gratis al prossimo evento
+        ritiroEvento: true,        // ritiro gratis al prossimo evento
+        giorniPreparazione: 14     // tempo di preparazione prima della spedizione
     },
 
     // Chiusura iscrizioni (AAAA-MM-GGTHH:MM:SS+01:00 = ora italiana invernale, +02:00 d'estate)
