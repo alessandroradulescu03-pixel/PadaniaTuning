@@ -16,7 +16,7 @@ Si parte in **modalità TEST** (carte finte, nessun soldo vero). Quando è tutto
 1. Vai su [sheets.new](https://sheets.new) e chiamalo **Shop Padania Tuning**
 2. **Estensioni → Apps Script**, cancella tutto e incolla il contenuto di `Shop.gs`, poi salva (**Cmd+S**)
 3. Dal menu delle funzioni scegli **preparaFoglio** → **▶ Esegui** → dai i permessi
-   (crea le schede *Prodotti*, *Magazzino*, *Ordini* con i 3 prodotti attuali)
+   (crea le schede *Prodotti*, *Magazzino*, *Ordini* con tutti i prodotti del `LISTINO`)
 
 ## 3. Salva la chiave Stripe (in modo sicuro)
 1. Nello script trova la funzione `salvaChiaveStripe` e incolla la chiave al posto di `INCOLLA_QUI_LA_CHIAVE_SEGRETA`
@@ -46,10 +46,10 @@ Devi vedere la pagina **Ordine confermato**, una riga nella scheda *Ordini*, il 
 ---
 
 ### Gestire lo shop ogni giorno (senza toccare il codice)
-- **Prezzi, nomi, descrizioni** → scheda *Prodotti*
+- **Prezzi, nomi, descrizioni** → scheda *Prodotti* (oppure modifica il `LISTINO` in `Shop.gs` ed esegui **aggiornaProdotti**)
 - **Nascondere un prodotto** → colonna `attivo` = `no`
 - **Taglie e pezzi disponibili** → scheda *Magazzino* (una riga per taglia; `Unica` per gli accessori). A zero il sito mostra *Esaurito*
-- **Nuovo prodotto** → aggiungi una riga in *Prodotti* (con un `id` senza spazi, es. `adesivo`) e le sue righe in *Magazzino*. La foto va in `assets/img/shop/` sul sito
+- **Nuovo prodotto** → aggiungi una riga in *Prodotti* (con un `id` senza spazi, es. `adesivo`) e le sue righe in *Magazzino*. La foto va in `assets/img/shop/` sul sito, oppure metti direttamente un link `https://...` a un'immagine
 - **Ordini** → scheda *Ordini*: cambia la colonna *Stato* in *Spedito* / *Ritirato*
 - **Spedizione**: costo, soglia gratis e "ritiro all'evento" sono in cima a `Shop.gs` (e i testi uguali in `config.js`)
 

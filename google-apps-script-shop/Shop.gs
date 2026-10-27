@@ -575,6 +575,71 @@ function creaPdfRicevuta(o) {
     .setName('Ricevuta-' + o.numero + '.pdf');
 }
 
+// =========================================================
+//  LISTINO PRODOTTI
+//  Esegui aggiornaProdotti() dall'editor per copiarlo nel Foglio:
+//  aggiorna nome, categoria, prezzo, descrizione, foto e dettagli dei
+//  prodotti già presenti e aggiunge quelli nuovi (anche in Magazzino).
+//  I pezzi disponibili già nel Magazzino NON vengono toccati.
+// =========================================================
+var LISTINO = [
+  { id: "maglietta", nome: "Maglietta Padania Tuning", categoria: "Magliette", prezzo: 15, descrizione: "T-shirt con grafica Padania Tuning.",
+    foto: "assets/img/shop/maglietta.jpg",
+    dettagli: "Grafica Padania Tuning|Vestibilità unisex|Lavaggio a 30° al rovescio", taglie: { 'S': 10, 'M': 10, 'L': 10, 'XL': 10 } },
+  { id: "felpa", nome: "Felpa Padania Tuning", categoria: "Felpe", prezzo: 25, descrizione: "Felpa calda e morbida, perfetta per i raduni serali.",
+    foto: "assets/img/shop/felpa.jpg",
+    dettagli: "Felpa con cappuccio|Logo Padania Tuning|Lavaggio a 30° al rovescio", taglie: { 'S': 10, 'M': 10, 'L': 10, 'XL': 10 } },
+  { id: "cappellino", nome: "Cappellino Estivo", categoria: "Cappellini", prezzo: 10, descrizione: "Cappellino con visiera e logo Padania Tuning.",
+    foto: "assets/img/shop/cappellino.png",
+    dettagli: "Visiera curva|Logo Padania Tuning|Chiusura regolabile|Taglia unica", taglie: { 'Unica': 20 } },
+  { id: "cappellino-invernale", nome: "Cappellino Invernale", categoria: "Cappellini", prezzo: 10, descrizione: "Berretto invernale caldo con logo Padania Tuning.",
+    foto: "https://images.unsplash.com/photo-1618354691792-d1d42acfd860?w=900&h=900&fit=crop&q=80&auto=format",
+    dettagli: "Berretto in maglia con risvolto|Logo Padania Tuning|Taglia unica", taglie: { 'Unica': 20 } },
+  { id: "profumo", nome: "Profumo Auto", categoria: "Accessori", prezzo: 1, descrizione: "Profumatore da appendere in auto.",
+    foto: "https://images.unsplash.com/photo-1768983298275-942312c9b446?w=900&h=900&fit=crop&q=80&auto=format",
+    dettagli: "Da appendere allo specchietto|Padania Tuning", taglie: { 'Unica': 50 } },
+  { id: "adesivo", nome: "Adesivo Padania Tuning", categoria: "Adesivi", prezzo: 1, descrizione: "Adesivo lungo con la scritta Padania Tuning.",
+    foto: "https://images.unsplash.com/photo-1617369021745-99c83e08a037?w=900&h=900&fit=crop&q=80&auto=format",
+    dettagli: "Scritta Padania Tuning in lungo|Per carrozzeria, vetri, casco", taglie: { 'Unica': 50 } },
+  { id: "adesivo-grande", nome: "Adesivo Grande Lunotto", categoria: "Adesivi", prezzo: 20, descrizione: "Logo Padania Tuning in formato grande per il lunotto.",
+    foto: "https://images.unsplash.com/photo-1783621661435-53a13d0e85d3?w=900&h=900&fit=crop&q=80&auto=format",
+    dettagli: "Logo grande Padania Tuning|Pensato per il lunotto posteriore", taglie: { 'Unica': 20 } },
+  { id: "clipper", nome: "Clipper", categoria: "Accessori", prezzo: 3, descrizione: "Accendino Clipper Padania Tuning.",
+    foto: "https://images.unsplash.com/photo-1575908539629-62b3f98d7b3a?w=900&h=900&fit=crop&q=80&auto=format",
+    dettagli: "Accendino ricaricabile|Padania Tuning", taglie: { 'Unica': 30 } },
+  { id: "portachiavi", nome: "Portachiavi", categoria: "Accessori", prezzo: 3.5, descrizione: "Portachiavi Padania Tuning per le chiavi della tua auto.",
+    foto: "https://images.unsplash.com/photo-1575908539614-ff89490f4a78?w=900&h=900&fit=crop&q=80&auto=format",
+    dettagli: "Anello in metallo|Padania Tuning", taglie: { 'Unica': 30 } }
+];
+
+function aggiornaProdotti() {
+  var ss = SpreadsheetApp.getActiveSpreadsheet();
+  var sh = ss.getSheetByName(TAB_PRODOTTI);
+  var mag = ss.getSheetByName(TAB_MAGAZZINO);
+  if (!sh || !mag) throw new Error('Esegui prima preparaFoglio()');
+  aggiungiDettagli();
+
+  var head = sh.getRange(1, 1, 1, sh.getLastColumn()).getValues()[0].map(function (h) { return String(h).toLowerCase().trim(); });
+  var col = function (n) { return head.indexOf(n); };
+  var dati = sh.getDataRange().getValues();
+  var nuovi = 0, aggiornati = 0;
+
+  LISTINO.forEach(function (p) {
+    var valori = { id: p.id, nome: p.nome, categoria: p.categoria, prezzo: p.prezzo, descrizione: p.descrizione, foto: p.foto, attivo: 'si', dettagli: p.dettagli };
+    var riga = -1;
+    for (var r = 1; r < dati.length; r++) if (String(dati[r][col('id')]) === p.id) { riga = r + 1; break; }
+    if (riga === -1) { riga = sh.getLastRow() + 1; nuovi++; } else { aggiornati++; }
+    Object.keys(valori).forEach(function (k) { if (col(k) > -1) sh.getRange(riga, col(k) + 1).setValue(valori[k]); });
+
+    var esistenti = righe(mag).filter(function (m) { return String(m.id) === p.id; }).map(function (m) { return String(m.taglia); });
+    Object.keys(p.taglie).forEach(function (t) {
+      if (esistenti.indexOf(t) === -1) mag.appendRow([p.id, t, p.taglie[t]]);
+    });
+  });
+  sh.getRange('D2:D').setNumberFormat('0.00');
+  Logger.log('Prodotti aggiornati ✅ — ' + aggiornati + ' modificati, ' + nuovi + ' nuovi');
+}
+
 // Aggiunge al foglio Prodotti le colonne "dettagli" e "altre_foto" (se mancano)
 // e riempie i dettagli dei prodotti di partenza. Si può rieseguire senza problemi.
 function aggiungiDettagli() {
@@ -664,9 +729,6 @@ function preparaFoglio() {
   if (!ss.getSheetByName(TAB_PRODOTTI)) {
     var p = ss.insertSheet(TAB_PRODOTTI);
     p.appendRow(['id', 'nome', 'categoria', 'prezzo', 'descrizione', 'foto', 'attivo', 'dettagli', 'altre_foto']);
-    p.appendRow(['maglietta', 'Maglietta Personalizzata', 'Magliette', 24.90, 'T-shirt in cotone 180 gr con grafica Padania Tuning.', 'assets/img/shop/maglietta.jpg', 'si']);
-    p.appendRow(['felpa', 'Felpa Premium', 'Felpe', 49.90, 'Felpa calda e morbida, perfetta per i raduni serali.', 'assets/img/shop/felpa.jpg', 'si']);
-    p.appendRow(['cappellino', 'Cappellino Baseball', 'Accessori', 19.90, 'Cappellino regolabile con logo ricamato.', 'assets/img/shop/cappellino.png', 'si']);
     p.getRange(1, 1, 1, 9).setFontWeight('bold').setBackground('#111111').setFontColor('#ffffff');
     p.setFrozenRows(1);
     p.getRange('D2:D').setNumberFormat('0.00');
@@ -675,15 +737,13 @@ function preparaFoglio() {
   if (!ss.getSheetByName(TAB_MAGAZZINO)) {
     var m = ss.insertSheet(TAB_MAGAZZINO);
     m.appendRow(['id', 'taglia', 'disponibili']);
-    ['S', 'M', 'L', 'XL'].forEach(function (t) { m.appendRow(['maglietta', t, 10]); });
-    ['S', 'M', 'L', 'XL'].forEach(function (t) { m.appendRow(['felpa', t, 10]); });
-    m.appendRow(['cappellino', 'Unica', 20]);
     m.getRange(1, 1, 1, 3).setFontWeight('bold').setBackground('#111111').setFontColor('#ffffff');
     m.setFrozenRows(1);
   }
 
   getOrdini();
   aggiungiDettagli();
+  aggiornaProdotti();
   var vuoto = ss.getSheetByName('Foglio1') || ss.getSheetByName('Sheet1');
   if (vuoto && vuoto.getLastRow() === 0 && ss.getSheets().length > 1) ss.deleteSheet(vuoto);
   Logger.log('Foglio pronto ✅');
