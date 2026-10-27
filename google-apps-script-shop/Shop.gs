@@ -25,9 +25,9 @@ var EMAIL_CONTATTO    = 'padaniatuning@gmail.com';   // mostrata al cliente per 
 
 // Dati stampati sulla ricevuta PDF (lascia vuoto quello che non c'è)
 var VENDITORE = {
-  nome: 'Padania Tuning',
-  indirizzo: '',        // es. 'Via Roma 1, 24030 Almenno (BG)'
-  piva: '',             // es. 'P.IVA 01234567890'
+  nome: 'Italian Motors Events S.N.C. — Padania Tuning',
+  indirizzo: 'Via Roma 68, 24056 Fontanella (BG)',
+  piva: 'P.IVA e C.F. 04910050162',
   email: EMAIL_CONTATTO,
   instagram: '@padaniatuning'
 };

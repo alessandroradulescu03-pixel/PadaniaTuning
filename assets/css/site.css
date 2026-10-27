@@ -236,6 +236,17 @@ img { max-width: 100%; }
 }
 .pt-footer-social a:hover { border-color: var(--pink); color: var(--pink); }
 .pt-footer-copy { color: var(--muted); font-size: 13px; }
+.pt-footer-legal {
+    max-width: 1100px; margin: 0 auto; padding: 18px 20px 30px;
+    border-top: 1px solid var(--line);
+    display: flex; flex-wrap: wrap; justify-content: space-between; align-items: flex-end; gap: 14px;
+    color: var(--muted); font-size: 12.5px; line-height: 1.6;
+}
+.pt-footer-legal p { margin: 0; }
+.pt-footer-legal b { color: var(--soft); font-weight: 600; }
+.pt-footer-legal a { color: var(--soft); text-decoration: none; }
+.pt-footer-legal a:hover { color: #fff; text-decoration: underline; }
+.pt-footer-legal nav { display: flex; flex-wrap: wrap; gap: 6px 16px; }
 
 @media (max-width: 600px) {
     .pt-footer-inner { flex-direction: column; align-items: flex-start; }

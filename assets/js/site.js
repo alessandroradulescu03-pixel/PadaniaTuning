@@ -64,6 +64,16 @@
                     '</div>' +
                     '<div class="pt-footer-copy">© ' + new Date().getFullYear() + ' Padania Tuning · Passione e motori dal 2025</div>' +
                 '</div>' +
+            '</div>' +
+            '<div class="pt-footer-legal">' +
+                '<p>Padania Tuning è organizzato da <b>Italian Motors Events S.N.C.</b> · P.IVA e C.F. 04910050162<br>' +
+                'Sede legale: Via Roma 68, 24056 Fontanella (BG) · Sede operativa: Via Gregis 46, 24050 Covo (BG)<br>' +
+                '<a href="mailto:padaniatuning@gmail.com">padaniatuning@gmail.com</a> · PEC <a href="mailto:italianmotorevents@pec.it">italianmotorevents@pec.it</a></p>' +
+                '<nav aria-label="Note legali">' +
+                    '<a href="condizioni-vendita.html">Condizioni di vendita</a>' +
+                    '<a href="privacy.html">Privacy</a>' +
+                    '<a href="cookie.html">Cookie</a>' +
+                '</nav>' +
             '</div>';
         document.body.appendChild(footer);
     }
