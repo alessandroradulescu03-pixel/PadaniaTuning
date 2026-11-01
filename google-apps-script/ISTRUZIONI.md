@@ -52,3 +52,40 @@ Dal Foglio: **File → Scarica → Microsoft Excel (.xlsx)**
 
 ### Limite mail
 Un account Gmail normale può inviare circa **100 mail al giorno** (ogni iscrizione ne usa 2: conferma + notifica staff). Per eventi grandi puoi togliere la notifica allo staff cancellando la riga `inviaNotificaStaff(d, riga);`.
+
+---
+
+# Collegare l'app check-in (Padania-App) 📱
+
+Lo stesso script fa anche da "server" per l'app check-in: l'app scarica gli iscritti dal Foglio e sincronizza gli ingressi tra tutti i telefoni dello staff. I check-in finiscono in una nuova scheda **Check-in** del Foglio (creata da sola).
+
+## 1. Aggiorna il codice
+1. Apri il Foglio → **Estensioni → Apps Script**
+2. Cancella tutto e incolla il nuovo `Codice.gs` → 💾 **Salva**
+
+## 2. Imposta la chiave staff (una volta sola)
+La chiave **non** va nel codice (il repo è pubblico): si salva nelle proprietà dello script.
+1. A sinistra ⚙️ **Impostazioni progetto**
+2. In fondo: **Proprietà script → Aggiungi proprietà script**
+   - Proprietà: `CHIAVE_STAFF`
+   - Valore: la **password dell'app** (es. `PadaniaTuning00!`)
+3. **Salva proprietà script**
+
+> Se un giorno cambi la password dell'app, cambiala anche qui.
+
+## 3. Ripubblica (l'URL resta uguale)
+**Esegui il deployment → Gestisci deployment → ✏️ → Versione: Nuova versione → Esegui il deployment**
+
+## 4. Prova
+Nel menu delle funzioni scegli **provaApp** → ▶ **Esegui**: nei log deve comparire `CHIAVE_STAFF impostata ✅`.
+Poi nell'app: **Strumenti → Scarica / aggiorna iscritti dal sito**.
+
+### Come funziona all'evento
+- Ogni telefono dello staff apre l'app, entra con la password e preme **Scarica iscritti dal sito**: la sincronizzazione si attiva da sola
+- In alto compare **● LIVE** quando è tutto collegato, **Offline** se manca il campo (l'app continua a funzionare e invia tutto appena torna la rete)
+- La lista iscritti si riaggiorna da sola ogni 5 minuti: se cambi lo **Stato** nel Foglio (Selezionato / Scartato) l'app lo vede
+- Il QR della mail di conferma contiene la targa: l'app lo riconosce e registra anche con quale auto è entrato
+- Chi ha Stato diverso da "Selezionato" viene segnalato prima dell'ingresso
+- Nella scheda **Check-in** del Foglio vedi chi è entrato, a che ora, se è uscito e da quale telefono
+
+⚠️ Non modificare a mano la colonna nascosta "Dati" della scheda Check-in.

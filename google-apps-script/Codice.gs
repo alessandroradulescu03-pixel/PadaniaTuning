@@ -36,10 +36,15 @@ var COLONNE = [
 
 // ---------- RICEZIONE DEL FORM ----------
 function doPost(e) {
+  // Le richieste dell'app check-in hanno il campo "action": vanno alla sezione API in fondo
+  var richiesta;
+  try { richiesta = JSON.parse(e.postData.contents); } catch (err) { return json({ ok: false, error: 'Richiesta non valida' }); }
+  if (richiesta.action) return api(richiesta);
+
   var lock = LockService.getScriptLock();
   lock.waitLock(30000);
   try {
-    var d = JSON.parse(e.postData.contents);
+    var d = richiesta;
 
     if (!d.nome || !d.email || !d.veicoli || !d.veicoli.length) {
       return json({ ok: false, error: 'Dati mancanti' });
@@ -311,4 +316,89 @@ function autorizza() {
   getFoglio();
   getCartella();
   Logger.log('Permessi OK — mail rimanenti oggi: ' + MailApp.getRemainingDailyQuota());
+}
+
+
+/* =========================================================
+ *  API PER L'APP CHECK-IN (Padania-App)
+ *  L'app scarica da qui la lista iscritti e sincronizza i
+ *  check-in tra più telefoni. Ogni richiesta deve avere la
+ *  chiave staff, salvata nelle Proprietà dello script
+ *  (CHIAVE_STAFF) e quindi NON visibile nel codice su GitHub.
+ * ========================================================= */
+var NOME_FOGLIO_CHECKIN = 'Check-in';
+var COLONNE_CHECKIN = ['Chiave', 'Nome', 'Primo ingresso', 'Uscito alle', 'Dentro ora', 'Veicolo', 'Note', 'Dispositivo', 'Aggiornato', 'Dati (non modificare)'];
+
+function api(d) {
+  var chiave = PropertiesService.getScriptProperties().getProperty('CHIAVE_STAFF');
+  if (!chiave) return json({ ok: false, error: 'Nello script manca la proprietà CHIAVE_STAFF' });
+  if (d.key !== chiave) return json({ ok: false, auth: false, error: 'Chiave staff errata' });
+
+  if (d.action === 'ping') return json({ ok: true, evento: EVENTO.nome });
+
+  if (d.action === 'list') {
+    var valori = getFoglio().getDataRange().getDisplayValues();
+    return json({ ok: true, name: 'Iscrizioni ' + EVENTO.luogo, headers: valori[0], rows: valori.slice(1), at: Date.now() });
+  }
+
+  if (d.action === 'sync') {
+    var lock = LockService.getScriptLock();
+    lock.waitLock(20000);
+    try {
+      var sh = getFoglioCheckin();
+      var dati = sh.getDataRange().getValues();
+      var riga = {}, recs = {};
+      for (var i = 1; i < dati.length; i++) {
+        var k = String(dati[i][0] || '');
+        if (!k) continue;
+        riga[k] = i + 1;
+        try { recs[k] = JSON.parse(dati[i][9]); } catch (err) {}
+      }
+      (d.ops || []).forEach(function (op) {
+        if (!op || !op.k || !op.r) return;
+        var vecchio = recs[op.k];
+        if (vecchio && (vecchio.u || 0) >= (op.r.u || 0)) return;   // vince la modifica più recente
+        recs[op.k] = op.r;
+        var nuova = rigaCheckin(op.k, op.name, op.r);
+        if (riga[op.k]) sh.getRange(riga[op.k], 1, 1, nuova.length).setValues([nuova]);
+        else { sh.appendRow(nuova); riga[op.k] = sh.getLastRow(); }
+      });
+      return json({ ok: true, recs: recs, at: Date.now() });
+    } finally {
+      lock.releaseLock();
+    }
+  }
+
+  return json({ ok: false, error: 'Azione sconosciuta' });
+}
+
+function rigaCheckin(k, nome, r) {
+  var dentro = r.t && !r.o;
+  return [
+    k, nome || '',
+    r.t ? new Date(r.t) : '', r.o ? new Date(r.o) : '',
+    r.t ? (dentro ? 'SI' : 'USCITO') : 'NO',
+    r.v || '', r.n || '', r.d || '',
+    new Date(r.u || Date.now()), JSON.stringify(r)
+  ];
+}
+
+function getFoglioCheckin() {
+  var ss = SpreadsheetApp.getActiveSpreadsheet();
+  var sh = ss.getSheetByName(NOME_FOGLIO_CHECKIN) || ss.insertSheet(NOME_FOGLIO_CHECKIN);
+  if (sh.getLastRow() === 0) {
+    sh.appendRow(COLONNE_CHECKIN);
+    sh.getRange(1, 1, 1, COLONNE_CHECKIN.length).setFontWeight('bold').setBackground('#111111').setFontColor('#ffffff');
+    sh.setFrozenRows(1);
+    sh.hideColumns(10);
+  }
+  return sh;
+}
+
+// Prova veloce dall'editor: controlla che la chiave staff sia impostata
+function provaApp() {
+  var chiave = PropertiesService.getScriptProperties().getProperty('CHIAVE_STAFF');
+  Logger.log(chiave ? 'CHIAVE_STAFF impostata ✅' : 'Manca CHIAVE_STAFF ❌ (Impostazioni progetto → Proprietà script)');
+  getFoglioCheckin();
+  Logger.log('Iscritti nel foglio: ' + Math.max(0, getFoglio().getLastRow() - 1));
 }
