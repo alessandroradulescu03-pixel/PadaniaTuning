@@ -325,9 +325,15 @@ function autorizza() {
  *  check-in tra più telefoni. Ogni richiesta deve avere la
  *  chiave staff, salvata nelle Proprietà dello script
  *  (CHIAVE_STAFF) e quindi NON visibile nel codice su GitHub.
+ *
+ *  Per essere quasi istantanea l'app chiede ogni 2-3 secondi
+ *  "è cambiato qualcosa?": lo script risponde subito guardando
+ *  solo un numero di revisione in memoria, senza leggere il Foglio.
  * ========================================================= */
 var NOME_FOGLIO_CHECKIN = 'Check-in';
-var COLONNE_CHECKIN = ['Chiave', 'Nome', 'Primo ingresso', 'Uscito alle', 'Dentro ora', 'Veicolo', 'Note', 'Dispositivo', 'Aggiornato', 'Dati (non modificare)'];
+var COLONNE_CHECKIN = ['Chiave', 'Nome', 'Stato', 'Primo ingresso', 'Fatto entrare da', 'Ultima uscita', 'Uscita registrata da',
+  'Veicolo', 'Note', 'Storico', 'Ultima modifica da', 'Aggiornato', 'Dati (non modificare)'];
+var COL_DATI = COLONNE_CHECKIN.length;   // ultima colonna
 
 function api(d) {
   var chiave = PropertiesService.getScriptProperties().getProperty('CHIAVE_STAFF');
@@ -342,6 +348,10 @@ function api(d) {
   }
 
   if (d.action === 'sync') {
+    var ops = d.ops || [];
+    // controllo veloce: niente da inviare e niente di nuovo -> risposta immediata
+    if (!ops.length && d.rev && d.rev === leggiRevisione()) return json({ ok: true, same: true, rev: d.rev });
+
     var lock = LockService.getScriptLock();
     lock.waitLock(20000);
     try {
@@ -352,18 +362,21 @@ function api(d) {
         var k = String(dati[i][0] || '');
         if (!k) continue;
         riga[k] = i + 1;
-        try { recs[k] = JSON.parse(dati[i][9]); } catch (err) {}
+        try { recs[k] = JSON.parse(dati[i][COL_DATI - 1]); } catch (err) {}
       }
-      (d.ops || []).forEach(function (op) {
+      var cambiato = false;
+      ops.forEach(function (op) {
         if (!op || !op.k || !op.r) return;
         var vecchio = recs[op.k];
         if (vecchio && (vecchio.u || 0) >= (op.r.u || 0)) return;   // vince la modifica più recente
         recs[op.k] = op.r;
+        cambiato = true;
         var nuova = rigaCheckin(op.k, op.name, op.r);
         if (riga[op.k]) sh.getRange(riga[op.k], 1, 1, nuova.length).setValues([nuova]);
         else { sh.appendRow(nuova); riga[op.k] = sh.getLastRow(); }
       });
-      return json({ ok: true, recs: recs, at: Date.now() });
+      var rev = cambiato ? scriviRevisione() : leggiRevisione();
+      return json({ ok: true, recs: recs, rev: rev, at: Date.now() });
     } finally {
       lock.releaseLock();
     }
@@ -372,13 +385,39 @@ function api(d) {
   return json({ ok: false, error: 'Azione sconosciuta' });
 }
 
+/* numero di revisione: cambia a ogni modifica dei check-in */
+function leggiRevisione() {
+  var c = CacheService.getScriptCache().get('rev');
+  if (c) return c;
+  var p = PropertiesService.getScriptProperties().getProperty('REV_CHECKIN') || '0';
+  CacheService.getScriptCache().put('rev', p, 21600);
+  return p;
+}
+function scriviRevisione() {
+  var r = String(Date.now());
+  PropertiesService.getScriptProperties().setProperty('REV_CHECKIN', r);
+  CacheService.getScriptCache().put('rev', r, 21600);
+  return r;
+}
+
 function rigaCheckin(k, nome, r) {
-  var dentro = r.t && !r.o;
+  var log = r.l || [];
+  var chi = function (e) { return e[2] || r.d || ''; };
+  var primoIn = null, ultimoOut = null;
+  log.forEach(function (e) {
+    if (e[1] === 'i' && !primoIn) primoIn = e;
+    if (e[1] === 'o') ultimoOut = e;
+  });
+  var ora = function (t) { return Utilities.formatDate(new Date(t), 'Europe/Rome', 'HH:mm'); };
+  var storico = log.map(function (e) {
+    return ora(e[0]) + ' ' + (e[1] === 'i' ? 'entrata' : e[1] === 'o' ? 'uscita' : 'annullato') + (chi(e) ? ' (' + chi(e) + ')' : '');
+  }).join(' · ');
+  var stato = !r.t ? 'Non entrato' : r.o ? 'Uscito' : 'Dentro';
   return [
-    k, nome || '',
-    r.t ? new Date(r.t) : '', r.o ? new Date(r.o) : '',
-    r.t ? (dentro ? 'SI' : 'USCITO') : 'NO',
-    r.v || '', r.n || '', r.d || '',
+    k, nome || '', stato,
+    r.t ? new Date(r.t) : '', r.t && primoIn ? chi(primoIn) : '',
+    r.o ? new Date(r.o) : '', r.o && ultimoOut ? chi(ultimoOut) : '',
+    r.v || '', r.n || '', storico, r.d || '',
     new Date(r.u || Date.now()), JSON.stringify(r)
   ];
 }
@@ -386,13 +425,29 @@ function rigaCheckin(k, nome, r) {
 function getFoglioCheckin() {
   var ss = SpreadsheetApp.getActiveSpreadsheet();
   var sh = ss.getSheetByName(NOME_FOGLIO_CHECKIN) || ss.insertSheet(NOME_FOGLIO_CHECKIN);
-  if (sh.getLastRow() === 0) {
-    sh.appendRow(COLONNE_CHECKIN);
-    sh.getRange(1, 1, 1, COLONNE_CHECKIN.length).setFontWeight('bold').setBackground('#111111').setFontColor('#ffffff');
-    sh.setFrozenRows(1);
-    sh.hideColumns(10);
+  if (sh.getLastRow() === 0) { intestaCheckin(sh); return sh; }
+
+  // se la scheda è stata creata con la versione precedente (colonne diverse), la riscrive nel formato nuovo
+  var intest = sh.getRange(1, 1, 1, sh.getLastColumn()).getValues()[0];
+  if (intest.join('|') !== COLONNE_CHECKIN.join('|')) {
+    var colDati = intest.indexOf('Dati (non modificare)');
+    var vecchie = sh.getLastRow() > 1 ? sh.getRange(2, 1, sh.getLastRow() - 1, sh.getLastColumn()).getValues() : [];
+    var nuove = [];
+    vecchie.forEach(function (v) {
+      try { var r = JSON.parse(v[colDati]); nuove.push(rigaCheckin(String(v[0]), v[1], r)); } catch (err) {}
+    });
+    sh.clear();
+    sh.showColumns(1, sh.getMaxColumns());
+    intestaCheckin(sh);
+    if (nuove.length) sh.getRange(2, 1, nuove.length, COLONNE_CHECKIN.length).setValues(nuove);
   }
   return sh;
+}
+function intestaCheckin(sh) {
+  sh.getRange(1, 1, 1, COLONNE_CHECKIN.length).setValues([COLONNE_CHECKIN])
+    .setFontWeight('bold').setBackground('#111111').setFontColor('#ffffff');
+  sh.setFrozenRows(1);
+  sh.hideColumns(COL_DATI);
 }
 
 // Prova veloce dall'editor: controlla che la chiave staff sia impostata

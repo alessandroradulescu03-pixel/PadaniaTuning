@@ -86,6 +86,8 @@ Poi nell'app: **Strumenti → Scarica / aggiorna iscritti dal sito**.
 - La lista iscritti si riaggiorna da sola ogni 5 minuti: se cambi lo **Stato** nel Foglio (Selezionato / Scartato) l'app lo vede
 - Il QR della mail di conferma contiene la targa: l'app lo riconosce e registra anche con quale auto è entrato
 - Chi ha Stato diverso da "Selezionato" viene segnalato prima dell'ingresso
-- Nella scheda **Check-in** del Foglio vedi chi è entrato, a che ora, se è uscito e da quale telefono
+- Al primo accesso ogni telefono chiede **il nome dell'operatore**: ogni ingresso e uscita viene firmato con quel nome
+- Nella scheda **Check-in** del Foglio vedi chi è entrato, a che ora, **chi l'ha fatto entrare**, se è uscito e **chi ha registrato l'uscita**, più lo storico completo
+- L'aggiornamento tra telefoni arriva in pochi secondi (l'app controlla ogni 2,5 s con una verifica leggerissima)
 
 ⚠️ Non modificare a mano la colonna nascosta "Dati" della scheda Check-in.
