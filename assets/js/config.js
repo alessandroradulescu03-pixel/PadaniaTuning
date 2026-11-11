@@ -17,7 +17,7 @@ window.PT_CONFIG = {
     // Con la chiave, il pagamento si apre DENTRO il sito. Lasciala vuota ('') per tornare
     // alla pagina di pagamento esterna di Stripe. La trovi su Stripe: Sviluppatori → Chiavi API.
     // (La chiave pubblica si può scrivere qui senza rischi; quella SEGRETA sk_... mai.)
-    STRIPE_PK: '',
+    STRIPE_PK: 'pk_test_51UQsPfC0Td4LDolLCTiefW1qKVWfWjTfWkaWmGxUGrd9QOVJQYHV2P6Tz1hR1hOrHdTBIfG7teY2EIa0hvX03Zut00d2ZI1yYu',   // chiave di PROVA (sandbox): per vendere davvero metti la pk_live_...
 
     // Testi di consegna mostrati nel carrello (devono corrispondere a Shop.gs)
     SHOP: {
