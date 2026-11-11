@@ -64,11 +64,11 @@ function doGet(e) {
   }
 }
 
-// POST: { azione: 'checkout', carrello: [{ id, taglia, qta }] }
+// POST: { azione: 'checkout', incorporato: true|false, carrello: [{ id, taglia, qta }] }
 function doPost(e) {
   try {
     var d = JSON.parse(e.postData.contents);
-    if (d.azione === 'checkout') return json(creaCheckout(d.carrello || []));
+    if (d.azione === 'checkout') return json(creaCheckout(d.carrello || [], d.incorporato === true));
     return json({ ok: false, error: 'Azione sconosciuta' });
   } catch (err) {
     console.error(err);
@@ -107,9 +107,11 @@ function leggiCatalogo() {
 
 
 // =========================================================
-//  PAGAMENTO: crea la pagina di pagamento Stripe
+//  PAGAMENTO: crea il pagamento Stripe
+//  incorporato = true  -> pagamento DENTRO il sito (restituisce clientSecret)
+//  incorporato = false -> pagina di pagamento di Stripe (restituisce url)
 // =========================================================
-function creaCheckout(carrello) {
+function creaCheckout(carrello, incorporato) {
   if (!carrello.length) return { ok: false, error: 'Il carrello è vuoto' };
 
   var catalogo = leggiCatalogo();
@@ -142,8 +144,12 @@ function creaCheckout(carrello) {
 
   add('mode', 'payment');
   add('locale', 'it');
-  add('success_url', SITO_URL + 'ordine-ok.html?session_id={CHECKOUT_SESSION_ID}');
-  add('cancel_url', SITO_URL + 'shop.html?annullato=1');
+  if (incorporato) {
+    add('return_url', SITO_URL + 'ordine-ok.html?session_id={CHECKOUT_SESSION_ID}');
+  } else {
+    add('success_url', SITO_URL + 'ordine-ok.html?session_id={CHECKOUT_SESSION_ID}');
+    add('cancel_url', SITO_URL + 'shop.html?annullato=1');
+  }
   add('phone_number_collection[enabled]', 'true');
   add('billing_address_collection', 'auto');
   add('metadata[carrello]', riepilogo.join(','));
@@ -177,6 +183,18 @@ function creaCheckout(carrello) {
     add('shipping_options[' + opz + '][shipping_rate_data][fixed_amount][amount]', 0);
     add('shipping_options[' + opz + '][shipping_rate_data][fixed_amount][currency]', 'eur');
     add('shipping_options[' + opz + '][shipping_rate_data][metadata][tipo]', 'ritiro');
+  }
+
+  if (incorporato) {
+    // Stripe ha rinominato questa opzione: le versioni nuove vogliono "embedded_page", le vecchie "embedded"
+    var dentro;
+    try {
+      dentro = stripe('post', '/v1/checkout/sessions', f.join('&') + '&ui_mode=embedded_page');
+    } catch (err) {
+      if (!/ui_mode/i.test(String(err.message || err))) throw err;
+      dentro = stripe('post', '/v1/checkout/sessions', f.join('&') + '&ui_mode=embedded');
+    }
+    return { ok: true, clientSecret: dentro.client_secret };
   }
 
   var res = stripe('post', '/v1/checkout/sessions', f.join('&'));

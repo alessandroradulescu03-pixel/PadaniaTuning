@@ -662,7 +662,9 @@
         var b = $('payBtn'), span = b.querySelector('span');
         b.disabled = true; span.textContent = 'Preparo il pagamento…';
         $('cartMsg').classList.remove('show');
-        PTCart.checkout().catch(function (err) {
+        PTCart.checkout().then(function () {
+            b.disabled = false; span.textContent = 'Vai al pagamento sicuro';
+        }).catch(function (err) {
             b.disabled = false; span.textContent = 'Vai al pagamento sicuro';
             $('cartMsg').textContent = err.message;
             $('cartMsg').classList.add('show');

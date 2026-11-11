@@ -13,6 +13,12 @@ window.PT_CONFIG = {
     // Lo ottieni seguendo google-apps-script-shop/ISTRUZIONI-SHOP.md
     SHOP_SCRIPT_URL: 'https://script.google.com/macros/s/AKfycbx0aCVeNQaC3Tz4yhLUIbR0TCuUzjzeMVPA_xzWqCJw-GiMRNzWOrU2bUPip8bFP5m0fg/exec',
 
+    // Chiave PUBBLICA di Stripe (inizia con pk_test_... per le prove, pk_live_... per vendere davvero).
+    // Con la chiave, il pagamento si apre DENTRO il sito. Lasciala vuota ('') per tornare
+    // alla pagina di pagamento esterna di Stripe. La trovi su Stripe: Sviluppatori → Chiavi API.
+    // (La chiave pubblica si può scrivere qui senza rischi; quella SEGRETA sk_... mai.)
+    STRIPE_PK: '',
+
     // Testi di consegna mostrati nel carrello (devono corrispondere a Shop.gs)
     SHOP: {
         spedizione: 7.00,          // € spedizione in Italia
