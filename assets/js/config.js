@@ -33,6 +33,7 @@ window.PT_CONFIG = {
         orarioSerata: '',          // lascia '' se non c'è la serata: non viene mostrata
         vantaggi: [
             '250+ auto',
+            'Ingresso €10',
             'Raduno di domenica pomeriggio'
         ]
     }

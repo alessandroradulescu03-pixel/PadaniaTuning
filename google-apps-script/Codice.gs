@@ -191,6 +191,7 @@ function inviaConferma(d) {
     // VANTAGGI
     '<tr><td class="dm-s" style="padding:12px 20px 4px;font-size:14px;line-height:2;color:' + S + '">' +
       '&#128663; 250+ auto<br>' +
+      '&#127903;&#65039; Ingresso &euro;10<br>' +
       (NATALE ? '&#127876;' : '&#127937;') + ' Raduno di domenica pomeriggio' +
     '</td></tr>' +
 
