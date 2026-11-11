@@ -1,0 +1,274 @@
+/* =========================================================
+   PADANIA TUNING — CHRISTMAS EDITION 🎄
+   Tutto il tema natalizio sta in questo file + assets/js/natale.js.
+   Vale solo quando <html> ha la classe "natale" (la mette site.js).
+   Per spegnerlo: in fondo a assets/js/site.js metti  attivo: false
+   (si spegne comunque da solo dopo l'Epifania).
+   ========================================================= */
+
+html.natale {
+    --xm-red: #e11d2e;
+    --xm-red-deep: #8f0d1a;
+    --xm-green: #1fbf6b;
+    --xm-pine: #0f6b3f;
+    --xm-gold: #f2c96b;
+    --xm-snow: #f6fbff;
+
+    /* l'accento argento diventa oro caldo */
+    --pink: #f2c96b;
+    --pink-deep: #b98a2e;
+    --pink-soft: rgba(31, 191, 107, 0.12);
+    --pink-line: rgba(242, 201, 107, 0.32);
+    --ink: #1a0d05;
+    --bg: #07090c;
+    --panel: #10151a;
+    --panel-2: #172027;
+    --line: rgba(255, 255, 255, 0.1);
+
+    /* il cromato diventa "rosso caramella" */
+    --chrome: linear-gradient(180deg, #ffffff 0%, #ffd6d6 16%, #ff4a57 40%, #a80f1e 55%, #e2313f 70%, #ffc2c2 100%);
+    --chrome-btn: linear-gradient(180deg, #ff5d69 0%, #e11d2e 46%, #b5101f 54%, #d81d2d 100%);
+}
+
+/* ---------- SFONDO: notte d'inverno ---------- */
+html.natale, html.natale body {
+    background-color: var(--bg);
+    background-image:
+        radial-gradient(70% 45% at 0% 0%, rgba(225, 29, 46, 0.16), transparent 70%),
+        radial-gradient(60% 45% at 100% 8%, rgba(15, 107, 63, 0.24), transparent 70%),
+        url('https://www.transparenttextures.com/patterns/asphalt.png');
+    background-attachment: fixed;
+}
+html.natale body { background-color: transparent; }
+html.natale ::selection { background: var(--xm-red); color: #fff; }
+
+/* ---------- NEVE (canvas creato da natale.js) ---------- */
+.xmas-snow {
+    position: fixed;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 900;
+    pointer-events: none;
+}
+
+/* ---------- STRISCIA IN ALTO ---------- */
+.xmas-bar {
+    position: relative;
+    z-index: 1001;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 12px;
+    min-height: 36px;
+    padding: 6px 14px;
+    background: linear-gradient(90deg, #0b3d26, #0f6b3f 50%, #0b3d26);
+    color: #fff;
+    font-family: var(--cond);
+    font-size: 16px;
+    font-weight: 700;
+    letter-spacing: 0.3px;
+    line-height: 1.15;
+    text-align: center;
+}
+.xmas-bar::after {            /* bordino bastoncino di zucchero */
+    content: '';
+    position: absolute;
+    left: 0; right: 0; bottom: 0;
+    height: 4px;
+    background: repeating-linear-gradient(135deg, #fff 0 8px, var(--xm-red) 8px 16px);
+}
+.xmas-bar b { color: var(--xm-gold); font-weight: 900; font-size: 1.12em; }
+.xmas-bar-txt { min-width: 0; }
+.xmas-snow-btn {
+    flex: 0 0 auto;
+    font: inherit;
+    font-size: 14px;
+    color: #fff;
+    background: rgba(0, 0, 0, 0.28);
+    border: 1px solid rgba(255, 255, 255, 0.28);
+    border-radius: 100px;
+    padding: 3px 11px;
+    cursor: pointer;
+    white-space: nowrap;
+}
+.xmas-snow-btn:hover { background: rgba(0, 0, 0, 0.45); }
+.xmas-snow-btn[aria-pressed="false"] { opacity: 0.6; }
+
+/* ---------- MENU ---------- */
+html.natale .pt-nav { border-bottom-color: rgba(242, 201, 107, 0.28); }
+html.natale .pt-nav-brand { position: relative; }
+html.natale .pt-nav-brand img { border-color: rgba(242, 201, 107, 0.55); }
+
+/* cappello di Babbo Natale sul logo */
+.xmas-hat {
+    position: absolute;
+    left: 13px;
+    top: -13px;
+    width: 34px;
+    height: 30px;
+    transform: rotate(14deg);
+    pointer-events: none;
+    filter: drop-shadow(0 2px 2px rgba(0, 0, 0, 0.5));
+    transform-origin: 30% 90%;
+    animation: xmasHat 5s ease-in-out infinite;
+}
+@keyframes xmasHat { 0%, 86%, 100% { transform: rotate(14deg); } 90% { transform: rotate(6deg); } 94% { transform: rotate(18deg); } }
+
+/* luminarie appese sotto al menu */
+.xmas-lights {
+    position: absolute;
+    left: 0; right: 0;
+    top: 100%;
+    height: 30px;
+    overflow: hidden;
+    pointer-events: none;
+    background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='56' height='16' viewBox='0 0 56 16'%3E%3Cpath d='M0 1 Q28 15 56 1' fill='none' stroke='%232b3a33' stroke-width='1.6'/%3E%3C/svg%3E") repeat-x 0 0;
+}
+.xmas-lights i {
+    --c: var(--xm-red);
+    position: absolute;
+    top: 9px;
+    width: 9px;
+    height: 13px;
+    margin-left: -4.5px;
+    border-radius: 50% 50% 50% 50% / 38% 38% 62% 62%;
+    background: var(--c);
+    box-shadow: 0 0 10px 2px var(--c), inset 0 2px 2px rgba(255, 255, 255, 0.55);
+    animation: xmasTwinkle 2.4s ease-in-out infinite;
+}
+.xmas-lights i::before {       /* attacco della lampadina */
+    content: '';
+    position: absolute;
+    left: 2px; top: -3px;
+    width: 5px; height: 4px;
+    border-radius: 1px;
+    background: #2b3a33;
+}
+.xmas-lights i:nth-child(5n+1) { --c: #ff3b4b; }
+.xmas-lights i:nth-child(5n+2) { --c: #ffd257; animation-delay: -0.5s; }
+.xmas-lights i:nth-child(5n+3) { --c: #35e06f; animation-delay: -1s; }
+.xmas-lights i:nth-child(5n+4) { --c: #5cb8ff; animation-delay: -1.5s; }
+.xmas-lights i:nth-child(5n+5) { --c: #ffffff; animation-delay: -2s; }
+@keyframes xmasTwinkle { 0%, 100% { opacity: 1; } 50% { opacity: 0.35; box-shadow: 0 0 3px 0 var(--c), inset 0 2px 2px rgba(255, 255, 255, 0.4); } }
+.pt-nav.open .xmas-lights { display: none; }
+
+/* voce attiva: sottolineatura a bastoncino */
+html.natale .pt-nav-links a.active::after {
+    background: repeating-linear-gradient(135deg, #fff 0 5px, var(--xm-red) 5px 10px);
+}
+
+/* ---------- BOTTONI E RIQUADRI ROSSI ---------- */
+html.natale .pt-btn-main,
+html.natale .btn-main,
+html.natale .pt-nav-links .pt-nav-cta a,
+html.natale .pt-date, html.natale .pass-date,
+html.natale .btn-silver,
+html.natale .btn-order,
+html.natale .album-links a,
+html.natale .check,
+html.natale .count input:checked + label {
+    color: #fff !important;
+    text-shadow: 0 1px 2px rgba(80, 0, 8, 0.55);
+    box-shadow: 0 12px 28px -10px rgba(225, 29, 46, 0.75), inset 0 1px 0 rgba(255, 255, 255, 0.45), inset 0 -2px 0 rgba(0, 0, 0, 0.18);
+}
+html.natale .pt-nav-links .pt-nav-cta a { box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.4); }
+html.natale .pt-nav-links .pt-nav-cta a:hover { filter: brightness(1.1); }
+html.natale .pt-date em, html.natale .pass-date em { opacity: 0.9; }
+
+/* neve posata sui bottoni principali */
+html.natale .pt-btn-main { position: relative; overflow: hidden; }
+html.natale .pt-btn-main::before {
+    content: '';
+    position: absolute;
+    left: 0; right: 0; top: 0;
+    height: 7px;
+    background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='64' height='7' viewBox='0 0 64 7'%3E%3Cpath d='M0 0h64v2.5c-5 3.5-9 4.5-14 2s-8-3-13 0-9 3-15 0-10-2.5-22-1z' fill='%23f6fbff'/%3E%3C/svg%3E") repeat-x 0 0;
+    opacity: 0.95;
+    pointer-events: none;
+}
+
+/* bottone secondario: bordo oro */
+html.natale .pt-btn-ghost { border-color: rgba(242, 201, 107, 0.45); }
+html.natale .pt-btn-ghost:hover { border-color: var(--xm-gold); }
+
+/* ---------- BIGLIETTO EVENTO con la neve sopra ---------- */
+html.natale .pt-pass {
+    border-color: rgba(242, 201, 107, 0.22);
+    box-shadow: 0 30px 60px -24px rgba(225, 29, 46, 0.4);
+}
+html.natale .pt-pass::before,
+html.natale .pt-footer::before {
+    content: '';
+    position: absolute;
+    left: 0; right: 0; top: 0;
+    height: 16px;
+    background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='140' height='16' viewBox='0 0 140 16'%3E%3Cpath d='M0 0h140v6c-9 7-16 9-25 4s-14-7-23 0-16 9-27 3-16-7-25 0-21 7-40-7z' fill='%23f6fbff'/%3E%3C/svg%3E") repeat-x 0 0;
+    pointer-events: none;
+    z-index: 2;
+}
+html.natale .pt-perks li { color: #dff7e9; border-color: rgba(31, 191, 107, 0.35); }
+html.natale .pt-count div { border-color: rgba(242, 201, 107, 0.2); }
+html.natale .pt-count b { color: var(--xm-gold); }
+html.natale .ev-right { background: linear-gradient(160deg, rgba(15, 107, 63, 0.28), transparent 65%); }
+
+/* ---------- FOOTER innevato ---------- */
+html.natale .pt-footer {
+    position: relative;
+    border-top: 0;
+    background: linear-gradient(180deg, rgba(15, 107, 63, 0.22), transparent 75%);
+}
+html.natale .pt-footer-inner { padding-top: 52px; }
+html.natale .pt-footer-social a:hover { border-color: var(--xm-gold); color: var(--xm-gold); }
+.xmas-wish {
+    font-family: var(--cond);
+    font-style: italic;
+    font-weight: 800;
+    font-size: 21px;
+    color: var(--xm-gold);
+    margin: 0 0 12px;
+}
+
+/* la macchina che porta a casa l'albero */
+.xmas-road {
+    position: absolute;
+    left: 0; right: 0;
+    top: -44px;
+    height: 52px;
+    overflow: hidden;
+    pointer-events: none;
+    z-index: 3;
+}
+.xmas-car {
+    position: absolute;
+    left: 0; bottom: 0;
+    width: 132px;
+    height: 52px;
+    transform: translateX(-160px);
+    animation: xmasDrive 22s linear infinite;
+}
+.xmas-car .w { transform-box: fill-box; transform-origin: center; animation: xmasWheel 0.7s linear infinite; }
+@keyframes xmasDrive { 0% { transform: translateX(-160px); } 70%, 100% { transform: translateX(calc(100vw + 40px)); } }
+@keyframes xmasWheel { to { transform: rotate(360deg); } }
+
+/* ---------- RITOCCHI ALLE PAGINE ---------- */
+html.natale .hero-bg::after {
+    background:
+        linear-gradient(180deg, rgba(7, 9, 12, 0.25) 0%, rgba(7, 9, 12, 0.55) 45%, var(--bg) 100%),
+        linear-gradient(90deg, rgba(40, 4, 8, 0.78) 0%, transparent 70%);
+}
+html.natale .tile { border-color: rgba(242, 201, 107, 0.2); }
+html.natale .modal-content { border-color: rgba(242, 201, 107, 0.25); }
+html.natale .hero-line { background: repeating-linear-gradient(135deg, #fff 0 6px, var(--xm-red) 6px 12px); }
+
+@media (max-width: 600px) {
+    .xmas-bar { font-size: 14.5px; gap: 8px; padding: 6px 10px; }
+    .xmas-snow-btn { font-size: 13px; padding: 3px 9px; }
+    .xmas-snow-btn span { display: none; }
+    .xmas-wish { font-size: 19px; }
+    .xmas-car { animation-duration: 14s; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .xmas-car { animation: none; transform: translateX(18px); }
+}

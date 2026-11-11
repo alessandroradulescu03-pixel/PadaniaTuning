@@ -118,3 +118,22 @@
         }
     };
 })();
+
+/* =========================================================
+   CHRISTMAS EDITION 🎄
+   Tema natalizio di tutto il sito (assets/css/natale.css +
+   assets/js/natale.js). Per spegnerlo metti  attivo: false.
+   Si spegne comunque da solo dalla data "fino" (dopo l'Epifania).
+   Anteprima forzata: aggiungi ?natale=1 (o ?natale=0) all'indirizzo.
+   ========================================================= */
+(function () {
+    var NATALE = { attivo: true, fino: '2027-01-07' };
+
+    var q = new URLSearchParams(location.search).get('natale');
+    var acceso = q === '1' || (q !== '0' && NATALE.attivo && Date.now() < new Date(NATALE.fino + 'T00:00:00+01:00').getTime());
+    if (!acceso) return;
+    document.documentElement.classList.add('natale');
+    var s = document.createElement('script');
+    s.src = 'assets/js/natale.js';
+    document.body.appendChild(s);
+})();
