@@ -6,6 +6,10 @@
 <title>Shop — Padania Tuning</title>
 <meta name="description" content="Magliette, felpe e accessori ufficiali Padania Tuning. Pagamento sicuro con carta, Apple Pay e Google Pay.">
 <link rel="icon" href="assets/img/logo.jpg">
+<link rel="preconnect" href="https://script.google.com">
+<link rel="preconnect" href="https://script.googleusercontent.com">
+<link rel="preconnect" href="https://images.unsplash.com">
+<link rel="preconnect" href="https://js.stripe.com">
 <link rel="stylesheet" href="assets/css/site.css">
 <style>
 .shop-page { max-width: 1150px; margin: 0 auto; padding: 48px 18px 40px; }
@@ -424,6 +428,12 @@
     });
 
     /* ---------- PRODOTTI ---------- */
+    // Nelle schede basta una foto più piccola: si carica molto prima (quella grande resta nel dettaglio)
+    function fotoMini(f) {
+        if (String(f).indexOf('images.unsplash.com') === -1) return f;
+        return f.replace(/([?&])w=\d+/, '$1w=560').replace(/([?&])h=\d+/, '$1h=560').replace(/([?&])q=\d+/, '$1q=70') + (/[?&]auto=/.test(f) ? '' : '&auto=format');
+    }
+
     function render() {
         $('filters').querySelectorAll('.filter').forEach(function (b) { b.classList.toggle('active', b.dataset.cat === filtro); });
         var lista = catalogo.filter(function (p) { return filtro === 'Tutti' || p.categoria === filtro; });
@@ -442,7 +452,7 @@
             else if (!unica) hint = '<div class="size-hint">' + (sel ? 'Taglia ' + sel : 'Scegli la taglia') + '</div>';
 
             return '<article class="card" style="animation-delay:' + (n * 0.05) + 's">' +
-                '<div class="card-img" data-open="' + p.id + '"><img src="' + p.foto + '" alt="' + p.nome + '" loading="lazy">' +
+                '<div class="card-img" data-open="' + p.id + '"><img src="' + fotoMini(p.foto) + '" alt="' + p.nome + '" width="560" height="560" decoding="async"' + (n < 4 ? ' fetchpriority="high"' : ' loading="lazy"') + '>' +
                     '<span class="card-badge">' + p.categoria + '</span>' +
                     '<button type="button" class="card-more" data-open="' + p.id + '" aria-label="Dettagli ' + p.nome + '"><svg viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></svg></button>' +
                     (disponibile ? '' : '<div class="card-out">Esaurito</div>') +
@@ -648,7 +658,7 @@
         if (r) PTCart.remove(+r.dataset.rm);
     });
 
-    function openCart() { document.getElementById('cartWrap').classList.add('open'); document.body.style.overflow = 'hidden'; $('cartMsg').classList.remove('show'); }
+    function openCart() { document.getElementById('cartWrap').classList.add('open'); document.body.style.overflow = 'hidden'; $('cartMsg').classList.remove('show'); if (PTCart.prepara) PTCart.prepara(); }
     function closeCart() { document.getElementById('cartWrap').classList.remove('open'); document.body.style.overflow = ''; }
     $('cartFab').addEventListener('click', openCart);
     $('cartClose').addEventListener('click', closeCart);
@@ -678,11 +688,22 @@
         clearTimeout(tt); tt = setTimeout(function () { t.classList.remove('show'); }, 1800);
     }
 
-    /* ---------- CARICAMENTO CATALOGO ---------- */
+    /* ---------- CARICAMENTO CATALOGO ----------
+       Il catalogo arriva dal Foglio Google e ci mette qualche secondo.
+       Per non far aspettare, l'ultima versione vista resta salvata nel
+       telefono: la mostriamo subito e intanto la aggiorniamo.            */
+    var CAT_KEY = 'pt-catalogo-v1';
+    var primaVolta = true, mostrato = '';
+
     function avvia(lista) {
+        var firma = JSON.stringify(lista);
+        if (firma === mostrato) return;          // niente di nuovo: non ridisegno
+        mostrato = firma;
         catalogo = lista;
         PTCart.sync(catalogo);
         render();
+        if (!primaVolta) return;
+        primaVolta = false;
         var h = location.hash.slice(1);
         if (h && trova(h)) apriDettaglio(h, false);
         if (new URLSearchParams(location.search).get('annullato') === '1') {
@@ -692,12 +713,22 @@
         }
     }
 
+    var salvato = null;
+    try { salvato = JSON.parse(localStorage.getItem(CAT_KEY)); } catch (e) { /* niente memoria */ }
+    if (!(salvato && salvato.length)) salvato = null;
+
     var url = CFG.SHOP_SCRIPT_URL;
     if (url && url.indexOf('INCOLLA') !== 0) {
+        if (salvato) avvia(salvato);
         fetch(url + '?azione=catalogo')
             .then(function (r) { return r.json(); })
-            .then(function (res) { avvia(res.ok && res.prodotti && res.prodotti.length ? res.prodotti : CATALOGO_DEMO); })
-            .catch(function () { avvia(CATALOGO_DEMO); });
+            .then(function (res) {
+                if (res.ok && res.prodotti && res.prodotti.length) {
+                    try { localStorage.setItem(CAT_KEY, JSON.stringify(res.prodotti)); } catch (e) { /* memoria piena */ }
+                    avvia(res.prodotti);
+                } else if (!salvato) avvia(CATALOGO_DEMO);
+            })
+            .catch(function () { if (!salvato) avvia(CATALOGO_DEMO); });
     } else {
         avvia(CATALOGO_DEMO);
     }
