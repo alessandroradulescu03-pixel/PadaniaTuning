@@ -118,8 +118,8 @@
 <script src="assets/js/site.js"></script>
 <script>
     var CFG = window.PT_CONFIG, EV = CFG.EVENTO;
-    // Titolo: "Padania Tuning al Qi Clubbing" -> ultima parte col contorno rosa
-    document.getElementById('evTitle').innerHTML = 'Padania Tuning<br><em>al ' + EV.luogo + '</em>';
+    // Titolo: "Padania Tuning a Covo" -> ultima parte col contorno rosa
+    document.getElementById('evTitle').innerHTML = 'Padania Tuning<br><em>' + EV.nome.replace(/^Padania Tuning\s*/i, '') + '</em>';
     document.getElementById('evDate').innerHTML = PT.dateBox(EV.data);
     document.getElementById('evWhere').innerHTML = PT.where(EV);
     document.getElementById('evPerks').innerHTML = EV.vantaggi.map(function (v) { return '<li>' + v + '</li>'; }).join('');

@@ -295,7 +295,7 @@
   document.getElementById('passWhere').innerHTML =
     '<b>' + EV.luogo + '</b>' +
     '<span>' + EV.indirizzo + '</span>' +
-    '<span class="times">' + giorno + ' · raduno ' + EV.orarioRaduno + ', serata ' + EV.orarioSerata + '</span>';
+    '<span class="times">' + giorno + ' · raduno ' + EV.orarioRaduno + (EV.orarioSerata ? ', serata ' + EV.orarioSerata : '') + '</span>';
 
   // Coriandoli che cadono sempre
   if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;

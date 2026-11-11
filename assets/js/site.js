@@ -93,7 +93,7 @@
             var giorno = ev.data.split(' ')[0];
             return '<b>' + ev.luogo + '</b>' +
                 '<span>' + ev.indirizzo + '</span>' +
-                '<span class="times">' + giorno + ' · raduno ' + ev.orarioRaduno + ', serata ' + ev.orarioSerata + '</span>';
+                '<span class="times">' + giorno + ' · raduno ' + ev.orarioRaduno + (ev.orarioSerata ? ', serata ' + ev.orarioSerata : '') + '</span>';
         },
 
         // Countdown a blocchi giorni/ore/minuti/secondi

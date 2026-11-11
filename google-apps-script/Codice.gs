@@ -14,13 +14,16 @@ var NOME_FOGLIO   = 'Iscrizioni';               // nome della scheda (in basso) 
 var NOME_CARTELLA = 'Padania Tuning - Foto iscrizioni';
 
 var EVENTO = {
-  nome: 'Padania Tuning al Qi Clubbing',
-  luogo: 'Qi Clubbing',
-  indirizzo: "Via dell'Industria, 83, 25030 Erbusco (BS)",
-  data: 'Sabato 7 Novembre 2026',
-  orarioRaduno: 'dalle ore 21:00',
-  orarioSerata: 'dalle ore 23:30'
+  nome: 'Padania Tuning a Covo',
+  luogo: 'Covo (BG)',
+  indirizzo: 'Via Giacomo Gregis 46, 24050 Covo (BG)',
+  data: 'Domenica 13 Dicembre 2026',
+  orarioRaduno: 'dalle 13:30 alle 18:30',
+  orarioSerata: ''            // lascia '' se non c'è la serata: non viene scritta
 };
+
+// Mail di conferma in versione natalizia 🎄 (metti false dopo le feste: torna quella classica)
+var NATALE = true;
 
 var COLONNE = [
   'Data invio', 'Evento', 'Nome', 'Cognome', 'Telefono', 'Email', 'Instagram', 'N. veicoli',
@@ -111,6 +114,8 @@ function inviaConferma(d) {
   var h = 'margin:0 0 12px;' + F + 'font-size:22px;font-style:italic;font-weight:900;color:' + T + ';text-transform:uppercase';
   var td = 'padding:11px 0;border-bottom:1px solid ' + L + ';';
   var box = 'border:1px solid ' + L + ';border-radius:14px;';
+  var A = NATALE ? '#d4142a' : T;            // colore d'accento: rosso Natale oppure nero classico
+  var cT = NATALE ? '' : 'dm-t';             // in versione natalizia il rosso resta rosso anche col tema scuro
 
   var auto = d.veicoli.map(function (v, i) {
     return '<tr><td class="dm-m dm-l" style="' + td + 'font-size:14px;color:' + M + ';width:90px">Veicolo ' + (i + 1) + '</td>' +
@@ -143,6 +148,13 @@ function inviaConferma(d) {
   '<tr><td align="center" style="padding:10px 6px">' +
   '<table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="max-width:560px">' +
 
+    // FASCIA NATALIZIA
+    (NATALE ?
+    '<tr><td style="padding:8px 12px 0">' +
+      '<table role="presentation" width="100%" cellpadding="0" cellspacing="0"><tr><td align="center" style="background:#0f6b3f;border-radius:12px 12px 0 0;padding:11px 12px;' + F + 'font-size:17px;font-weight:800;font-style:italic;color:#ffffff;text-transform:uppercase;letter-spacing:.5px">&#127876; Christmas Edition &middot; ' + gg + ' ' + mese + ' &#127876;</td></tr>' +
+      '<tr><td style="background:#d4142a;height:4px;line-height:4px;font-size:0;border-radius:0 0 4px 4px">&nbsp;</td></tr></table>' +
+    '</td></tr>' : '') +
+
     // INTESTAZIONE
     '<tr><td style="padding:18px 20px 0">' +
       '<table role="presentation" cellpadding="0" cellspacing="0"><tr>' +
@@ -155,14 +167,14 @@ function inviaConferma(d) {
     '<tr><td style="padding:24px 20px 4px">' +
       '<div class="dm-s" style="font-size:13px;font-weight:bold;color:#1f8a4c">&#10003; Candidatura ricevuta</div>' +
       '<h1 class="dm-t" style="margin:10px 0 0;' + F + 'font-size:40px;line-height:1;font-style:italic;font-weight:900;color:' + T + ';text-transform:uppercase">Ciao ' + esc(d.nome) + ',<br>ci siamo!</h1>' +
-      '<p class="dm-s" style="' + p + ';margin-top:14px">Abbiamo ricevuto la tua candidatura per l\'evento Padania Tuning al <b class="dm-t" style="color:' + T + '">' + EVENTO.luogo + '</b>. Lo staff ha i dati del tuo profilo e del tuo garage. &#127937;</p>' +
+      '<p class="dm-s" style="' + p + ';margin-top:14px">Abbiamo ricevuto la tua candidatura per <b class="dm-t" style="color:' + T + '">' + EVENTO.nome + '</b>' + (NATALE ? ', il nostro raduno di Natale' : '') + '. Lo staff ha i dati del tuo profilo e del tuo garage. ' + (NATALE ? '&#127876;' : '&#127937;') + '</p>' +
     '</td></tr>' +
 
     // EVENTO
     '<tr><td style="padding:6px 20px">' +
       '<table role="presentation" width="100%" cellpadding="0" cellspacing="0" class="dm-l" style="' + box + '"><tr>' +
         '<td width="84" valign="middle" style="padding:14px 0 14px 14px">' +
-          '<table role="presentation" cellpadding="0" cellspacing="0" width="70" class="dm-l" style="border:2px solid ' + T + ';border-radius:10px"><tr><td align="center" class="dm-t" style="padding:8px 0;' + F + 'color:' + T + ';line-height:1">' +
+          '<table role="presentation" cellpadding="0" cellspacing="0" width="70" class="' + (NATALE ? '' : 'dm-l') + '" style="border:2px solid ' + A + ';border-radius:10px"><tr><td align="center" class="' + cT + '" style="padding:8px 0;' + F + 'color:' + A + ';line-height:1">' +
             '<div style="font-size:32px;font-weight:900">' + gg + '</div>' +
             '<div style="font-size:14px;font-weight:bold">' + mese + '</div>' +
             '<div class="dm-m" style="font-size:12px;color:' + M + ';margin-top:2px">' + anno + '</div>' +
@@ -171,16 +183,15 @@ function inviaConferma(d) {
         '<td valign="middle" style="padding:14px">' +
           '<div class="dm-t" style="' + F + 'font-size:22px;font-weight:800;color:' + T + '">' + EVENTO.luogo + '</div>' +
           '<div class="dm-m" style="font-size:13px;color:' + M + ';margin-top:2px">' + EVENTO.indirizzo + '</div>' +
-          '<div class="dm-t" style="font-size:14px;color:' + T + ';font-weight:bold;margin-top:6px">' + giorno + ' &middot; raduno ' + EVENTO.orarioRaduno + '<br>serata ' + EVENTO.orarioSerata + '</div>' +
+          '<div class="dm-t" style="font-size:14px;color:' + T + ';font-weight:bold;margin-top:6px">' + giorno + ' &middot; raduno ' + EVENTO.orarioRaduno + (EVENTO.orarioSerata ? '<br>serata ' + EVENTO.orarioSerata : '') + '</div>' +
         '</td>' +
       '</tr></table>' +
     '</td></tr>' +
 
     // VANTAGGI
     '<tr><td class="dm-s" style="padding:12px 20px 4px;font-size:14px;line-height:2;color:' + S + '">' +
-      '&#127359;&#65039; +100 posti auto<br>' +
-      '&#127379; Ingresso al raduno totalmente gratuito<br>' +
-      '&#127903;&#65039; Con Padania Tuning ingresso omaggio anche in discoteca al ' + EVENTO.luogo +
+      '&#128663; 250+ auto<br>' +
+      (NATALE ? '&#127876;' : '&#127937;') + ' Raduno di domenica pomeriggio' +
     '</td></tr>' +
 
     '<tr><td style="padding:16px 20px"><div class="dm-l" style="border-top:1px solid ' + L + '"></div></td></tr>' +
@@ -190,7 +201,7 @@ function inviaConferma(d) {
       '<h2 class="dm-t" style="' + h + '">Cosa succede ora</h2>' +
       '<p class="dm-s" style="' + p + '">Questa mail conferma solo che la candidatura è arrivata: <b class="dm-t" style="color:' + T + '">non è ancora una conferma di partecipazione</b>. Lo staff valuterà ogni auto candidata e ti scriverà l\'esito a questo indirizzo.</p>' +
       '<p class="dm-s" style="' + p + '"><b class="dm-t" style="color:' + T + '">&#9989; Se vieni selezionato:</b> accedi all\'area espositiva e ricevi le indicazioni per ingresso e posizionamento.</p>' +
-      '<p class="dm-s" style="' + p + '"><b class="dm-t" style="color:' + T + '">&#127937; Se non vieni selezionato:</b> puoi comunque venire come visitatore e vivere la serata con noi.</p>' +
+      '<p class="dm-s" style="' + p + '"><b class="dm-t" style="color:' + T + '">&#127937; Se non vieni selezionato:</b> puoi comunque venire come visitatore e vivere il raduno con noi.</p>' +
     '</td></tr>' +
 
     '<tr><td style="padding:6px 20px 16px"><div class="dm-l" style="border-top:1px solid ' + L + '"></div></td></tr>' +
@@ -215,11 +226,11 @@ function inviaConferma(d) {
 
     // CHIUSURA + BOTTONI
     '<tr><td style="padding:20px 20px 6px">' +
-      '<p class="dm-s" style="' + p + '">Grazie per la passione che condividi con noi. In bocca al lupo per la selezione! &#127808;&#128293;</p>' +
-      '<p class="dm-t" style="' + p + ';color:' + T + '">Team Padania Tuning &#127937;</p>' +
+      '<p class="dm-s" style="' + p + '">Grazie per la passione che condividi con noi. In bocca al lupo per la selezione! &#127808;&#128293;' + (NATALE ? '<br>E intanto buone feste da tutti noi. &#127876;' : '') + '</p>' +
+      '<p class="dm-t" style="' + p + ';color:' + T + '">Team Padania Tuning ' + (NATALE ? '&#127877;' : '&#127937;') + '</p>' +
     '</td></tr>' +
     '<tr><td style="padding:8px 20px 22px">' +
-      '<a href="' + INSTAGRAM_URL + '" class="dm-btn" style="display:block;text-align:center;background:' + T + ';color:#ffffff;text-decoration:none;' + F + 'font-size:19px;font-weight:900;font-style:italic;padding:14px;border-radius:12px">Seguici su Instagram</a>' +
+      '<a href="' + INSTAGRAM_URL + '" class="' + (NATALE ? '' : 'dm-btn') + '" style="display:block;text-align:center;background:' + A + ';color:#ffffff;text-decoration:none;' + F + 'font-size:19px;font-weight:900;font-style:italic;padding:14px;border-radius:12px">Seguici su Instagram</a>' +
       '<a href="' + SITO_URL + '" class="dm-t dm-l" style="display:block;text-align:center;margin-top:10px;color:' + T + ';text-decoration:none;font-size:14px;font-weight:bold;padding:12px;border-radius:12px;border:1px solid ' + L + '">Vai al sito</a>' +
     '</td></tr>' +
 
@@ -234,7 +245,7 @@ function inviaConferma(d) {
 
   MailApp.sendEmail({
     to: d.email,
-    subject: '🏁 Candidatura ricevuta — ' + EVENTO.luogo + ', ' + EVENTO.data,
+    subject: (NATALE ? '🎄' : '🏁') + ' Candidatura ricevuta — ' + EVENTO.luogo + ', ' + EVENTO.data,
     htmlBody: html,
     name: NOME_MITTENTE,
     replyTo: EMAIL_STAFF

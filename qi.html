@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Iscrizione evento Qi Clubbing — Padania Tuning</title>
+<title>Iscrizione evento — Padania Tuning</title>
 <link rel="icon" href="assets/img/logo.jpg">
 <link rel="stylesheet" href="assets/css/site.css">
 <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -619,7 +619,7 @@
   document.getElementById('passWhere').innerHTML =
     '<b>' + EV.luogo + '</b>' +
     '<span>' + EV.indirizzo + '</span>' +
-    '<span class="times">' + giorno + ' · raduno ' + EV.orarioRaduno + ', serata ' + EV.orarioSerata + '</span>';
+    '<span class="times">' + giorno + ' · raduno ' + EV.orarioRaduno + (EV.orarioSerata ? ', serata ' + EV.orarioSerata : '') + '</span>';
   document.getElementById('passPerks').innerHTML = EV.vantaggi.map(function (v) {
     return '<li>' + v + '</li>';
   }).join('');

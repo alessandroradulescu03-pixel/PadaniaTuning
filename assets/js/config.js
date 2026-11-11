@@ -22,19 +22,18 @@ window.PT_CONFIG = {
     },
 
     // Chiusura iscrizioni (AAAA-MM-GGTHH:MM:SS+01:00 = ora italiana invernale, +02:00 d'estate)
-    CHIUSURA_ISCRIZIONI: '2026-11-06T23:59:00+01:00',
+    CHIUSURA_ISCRIZIONI: '2026-12-12T23:59:00+01:00',
 
     EVENTO: {
-        nome: 'Padania Tuning al Qi Clubbing',
-        luogo: 'Qi Clubbing',
-        indirizzo: "Via dell'Industria, 83, 25030 Erbusco (BS)",
-        data: 'Sabato 7 Novembre 2026',
-        orarioRaduno: 'dalle 21:00',
-        orarioSerata: 'dalle 23:30',
+        nome: 'Padania Tuning a Covo',
+        luogo: 'Covo (BG)',
+        indirizzo: 'Via Giacomo Gregis 46, 24050 Covo (BG)',
+        data: 'Domenica 13 Dicembre 2026',
+        orarioRaduno: 'dalle 13:30 alle 18:30',
+        orarioSerata: '',          // lascia '' se non c'è la serata: non viene mostrata
         vantaggi: [
-            '+100 posti auto',
-            'Ingresso al raduno totalmente gratuito',
-            'Se vieni con Padania Tuning, ingresso omaggio anche in discoteca al Qi Clubbing'
+            '250+ auto',
+            'Raduno di domenica pomeriggio'
         ]
     }
 };

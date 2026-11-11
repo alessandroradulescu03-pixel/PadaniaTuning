@@ -251,7 +251,7 @@
     document.getElementById('mIndirizzo').textContent = EV.indirizzo;
     document.getElementById('mData').textContent = EV.data;
     document.getElementById('mRaduno').textContent = 'Raduno ' + EV.orarioRaduno;
-    document.getElementById('mSerata').textContent = 'Serata al ' + EV.luogo + ' ' + EV.orarioSerata;
+    document.getElementById('mSerata').textContent = EV.orarioSerata ? 'Serata ' + EV.orarioSerata : '';
     document.getElementById('mVantaggi').innerHTML = EV.vantaggi.join('<br>');
 
     var modal = document.getElementById('infoModal');
