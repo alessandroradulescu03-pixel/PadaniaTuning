@@ -233,8 +233,8 @@ html.natale .pt-footer-social a:hover { border-color: var(--xm-gold); color: var
 .xmas-road {
     position: absolute;
     left: 0; right: 0;
-    top: -44px;
-    height: 52px;
+    top: -64px;
+    height: 76px;
     overflow: hidden;
     pointer-events: none;
     z-index: 3;
@@ -242,14 +242,14 @@ html.natale .pt-footer-social a:hover { border-color: var(--xm-gold); color: var
 .xmas-car {
     position: absolute;
     left: 0; bottom: 0;
-    width: 132px;
-    height: 52px;
-    transform: translateX(-160px);
+    width: 144px;
+    height: auto;
+    max-width: none;
+    filter: drop-shadow(0 3px 4px rgba(0, 0, 0, 0.45));
+    transform: translateX(-170px);
     animation: xmasDrive 22s linear infinite;
 }
-.xmas-car .w { transform-box: fill-box; transform-origin: center; animation: xmasWheel 0.7s linear infinite; }
-@keyframes xmasDrive { 0% { transform: translateX(-160px); } 70%, 100% { transform: translateX(calc(100vw + 40px)); } }
-@keyframes xmasWheel { to { transform: rotate(360deg); } }
+@keyframes xmasDrive { 0% { transform: translateX(-170px); } 70%, 100% { transform: translateX(calc(100vw + 40px)); } }
 
 /* ---------- RITOCCHI ALLE PAGINE ---------- */
 html.natale .hero-bg::after {

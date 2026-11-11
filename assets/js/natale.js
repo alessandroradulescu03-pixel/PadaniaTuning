@@ -71,27 +71,7 @@
 
         footer.insertAdjacentHTML('afterbegin',
             '<div class="xmas-road" aria-hidden="true">' +
-            '<svg class="xmas-car" viewBox="0 0 132 52">' +
-                /* albero legato sul tetto */
-                '<g transform="rotate(-4 66 16)">' +
-                    '<path d="M22 17 L50 8 L48 13 L72 7 L70 13 L98 9 L100 21 L70 22 L72 26 L48 23 L50 27 Z" fill="#17894f"/>' +
-                    '<path d="M22 17 L50 8 L48 13 L72 7 L70 13 L98 9 L98 13 L22 19 Z" fill="#1fbf6b" opacity=".6"/>' +
-                    '<rect x="98" y="13" width="9" height="4" rx="1" fill="#7a4a21"/>' +
-                    '<circle cx="40" cy="15" r="1.8" fill="#ffd257"/><circle cx="58" cy="18" r="1.8" fill="#ff3b4b"/>' +
-                    '<circle cx="76" cy="14" r="1.8" fill="#5cb8ff"/><circle cx="89" cy="17" r="1.8" fill="#ffd257"/>' +
-                '</g>' +
-                '<path d="M44 24 V28 M88 22 V28" stroke="#f2c96b" stroke-width="1.6"/>' +
-                /* carrozzeria */
-                '<path d="M6 42 C6 35 12 33 22 32 L40 27 C56 25 76 25 88 27 L104 33 C118 34 126 36 126 42 L126 44 L6 44 Z" fill="#e11d2e"/>' +
-                '<path d="M6 42 C6 35 12 33 22 32 L40 27 C56 25 76 25 88 27 L104 33 C80 31 30 33 6 42 Z" fill="#ff5d69" opacity=".55"/>' +
-                '<path d="M44 29 L62 28 L62 34 L34 34 Z M66 28 L86 29 L98 34 L66 34 Z" fill="#0b1418" opacity=".85"/>' +
-                '<rect x="2" y="40" width="10" height="4" rx="2" fill="#8f0d1a"/>' +
-                '<circle cx="124" cy="39" r="2.4" fill="#fff6c9"/>' +
-                '<path d="M126 38 L132 35 L132 44 L126 41 Z" fill="#fff6c9" opacity=".35"/>' +
-                /* ruote */
-                '<g class="w"><circle cx="32" cy="44" r="8" fill="#0b0b0d"/><circle cx="32" cy="44" r="4.6" fill="#d9d9de"/><path d="M32 39.4 V48.6 M27.4 44 H36.6" stroke="#0b0b0d" stroke-width="1.4"/></g>' +
-                '<g class="w"><circle cx="100" cy="44" r="8" fill="#0b0b0d"/><circle cx="100" cy="44" r="4.6" fill="#d9d9de"/><path d="M100 39.4 V48.6 M95.4 44 H104.6" stroke="#0b0b0d" stroke-width="1.4"/></g>' +
-            '</svg>' +
+            '<img class="xmas-car" src="assets/img/natale-auto.webp" alt="" width="560" height="280">' +
             '</div>');
     }
 
